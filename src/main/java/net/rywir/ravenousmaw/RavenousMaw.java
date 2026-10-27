@@ -1,34 +1,26 @@
 package net.rywir.ravenousmaw;
 
-import net.minecraft.client.Minecraft;
-import net.neoforged.bus.api.Event;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import net.rywir.ravenousmaw.content.decorator.EnergyBarDecorator;
 import net.rywir.ravenousmaw.content.entity.model.IrisBulletModel;
 import net.rywir.ravenousmaw.content.entity.renderer.IrisBulletRenderer;
 import net.rywir.ravenousmaw.content.event.*;
-import net.rywir.ravenousmaw.content.gui.menu.ConfigurationMenu;
 import net.rywir.ravenousmaw.content.gui.screen.ConfigurationScreen;
 import net.rywir.ravenousmaw.content.gui.screen.MutationMatrixScreen;
 import net.rywir.ravenousmaw.registry.*;
 import net.rywir.ravenousmaw.util.Configs;
-import net.rywir.ravenousmaw.util.HelperData;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 

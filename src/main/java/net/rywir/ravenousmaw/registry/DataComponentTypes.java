@@ -10,9 +10,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class DataComponentTypes {
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, RavenousMaw.MOD_ID);
 

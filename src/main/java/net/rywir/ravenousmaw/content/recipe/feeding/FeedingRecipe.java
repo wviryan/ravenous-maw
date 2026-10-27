@@ -2,14 +2,12 @@ package net.rywir.ravenousmaw.content.recipe.feeding;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousItems;

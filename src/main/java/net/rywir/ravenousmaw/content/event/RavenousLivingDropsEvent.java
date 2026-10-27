@@ -10,7 +10,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
-import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.EnchantmentHandler;
