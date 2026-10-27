@@ -59,6 +59,7 @@
   "ravenousmaw.maw_threshold_message": "The Ravenous Maw refuses to work in order to survive! (Feed the beast!)",
   "ravenousmaw.tectonic_low_durability": "The Maw is too weak to devour the whole area!",
   "ravenousmaw.electric_mending_low_energy": "The Maw's battery is drained! Hits are weakened.",
+  "ravenousmaw.symbiotic_aid_absorbed": "The Maw devours the affliction!",
 
   "item.ravenousmaw.ravenous_maw_latent": "Latent Maw",
   "item.ravenousmaw.ravenous_maw_advanced": "Advanced Maw",
