@@ -49,7 +49,7 @@ public class MutateCommand {
         MutationHandler handler = new MutationHandler(stack);
         Mutations target = Mutations.byKey(key);
 
-        handler.addWithCraft(target);
+        handler.addWithCraft(target, player.level().registryAccess());
 
         return 1;
     }
@@ -66,7 +66,7 @@ public class MutateCommand {
         MutationHandler handler = new MutationHandler(stack);
 
         for (Mutations mut : Mutations.values()) {
-            handler.addWithCraft(mut);
+            handler.addWithCraft(mut, player.level().registryAccess());
         }
 
         return 1;

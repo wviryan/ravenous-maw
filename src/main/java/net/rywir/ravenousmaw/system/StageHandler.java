@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -41,7 +42,7 @@ public class StageHandler {
         return null;
     }
 
-    public ItemStack stageUp(int currentStage, ItemStack source) {
+    public ItemStack stageUp(int currentStage, ItemStack source, HolderLookup.Provider registries) {
         if (currentStage >= 3) {
             return source;
         }
@@ -55,7 +56,7 @@ public class StageHandler {
         transferCustomItemData(newMaw);
 
         for (Mutations mutation : Mutations.values()) {
-            mutation.ability().onUpdate(newMaw, null);
+            mutation.ability().onUpdate(newMaw, registries);
         }
 
         return newMaw;

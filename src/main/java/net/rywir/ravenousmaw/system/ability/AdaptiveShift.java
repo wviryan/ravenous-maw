@@ -1,6 +1,7 @@
 package net.rywir.ravenousmaw.system.ability;
 
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -33,7 +34,21 @@ public class AdaptiveShift implements IMutationAbility {
     }
 
     @Override
-    public void onUpdate(ItemStack stack, Level level) {
+    public void onCraft(ItemStack stack, HolderLookup.Provider registries) {
+        // The default toggle state (Silky Fang off) must already give Fortune III, not only after the first toggle.
+        onUpdate(stack, registries);
+    }
+
+    @Override
+    public void decraft(ItemStack stack, HolderLookup.Provider registries) {
+        EnchantmentHandler enchantmentHandler = new EnchantmentHandler(stack);
+
+        enchantmentHandler.without(Enchantments.FORTUNE, registries);
+        enchantmentHandler.without(Enchantments.SILK_TOUCH, registries);
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, HolderLookup.Provider registries) {
         MutationHandler mutationHandler = new MutationHandler(stack);
         boolean hasShift = mutationHandler.has(Mutations.ADAPTIVE_SHIFT);
 
@@ -46,11 +61,11 @@ public class AdaptiveShift implements IMutationAbility {
         EnchantmentHandler enchantmentHandler = new EnchantmentHandler(stack);
 
         if (isSilkTouchActivated == 1) {
-            enchantmentHandler.without(Enchantments.FORTUNE, level);
-            enchantmentHandler.with(Enchantments.SILK_TOUCH, 1, level);
+            enchantmentHandler.without(Enchantments.FORTUNE, registries);
+            enchantmentHandler.with(Enchantments.SILK_TOUCH, 1, registries);
         } else {
-            enchantmentHandler.without(Enchantments.SILK_TOUCH, level);
-            enchantmentHandler.with(Enchantments.FORTUNE, 3, level);
+            enchantmentHandler.without(Enchantments.SILK_TOUCH, registries);
+            enchantmentHandler.with(Enchantments.FORTUNE, 3, registries);
         }
     }
 
@@ -58,6 +73,6 @@ public class AdaptiveShift implements IMutationAbility {
     public boolean isMutatable(ItemStack stack, Level level) {
         EnchantmentHandler handler = new EnchantmentHandler(stack);
 
-        return handler.hasMaxedOut(Enchantments.SILK_TOUCH, level);
+        return handler.hasMaxedOut(Enchantments.SILK_TOUCH, level.registryAccess());
     }
 }

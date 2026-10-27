@@ -93,7 +93,7 @@ public class RavenousLivingDropsEvent {
 
         if (hasArcaneHypertrophy) {
             EnchantmentHandler enchantmentHandler = new EnchantmentHandler(stack);
-            boolean hasLootingMaxedOut = enchantmentHandler.hasMaxedOut(Enchantments.LOOTING, level);
+            boolean hasLootingMaxedOut = enchantmentHandler.hasMaxedOut(Enchantments.LOOTING, level.registryAccess());
 
             if (!hasLootingMaxedOut) {
                 return;

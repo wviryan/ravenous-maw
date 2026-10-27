@@ -45,7 +45,7 @@ public class RavenousBlockDropsEvent {
         Level level = player.level();
         EnchantmentHandler enchantmentHandler = new EnchantmentHandler(stack);
 
-        boolean isFortuneMaxed = enchantmentHandler.hasMaxedOut(Enchantments.FORTUNE, level);
+        boolean isFortuneMaxed = enchantmentHandler.hasMaxedOut(Enchantments.FORTUNE, level.registryAccess());
 
         if (!isFortuneMaxed) {
             return;
@@ -60,7 +60,7 @@ public class RavenousBlockDropsEvent {
         }
 
         // Silk Touch drops the ore block itself, duplicating it would be a free ore farm
-        boolean hasSilkTouch = enchantmentHandler.getEnchLevel(Enchantments.SILK_TOUCH, level) > 0;
+        boolean hasSilkTouch = enchantmentHandler.getEnchLevel(Enchantments.SILK_TOUCH, level.registryAccess()) > 0;
 
         if (hasSilkTouch) {
             return;
@@ -71,7 +71,7 @@ public class RavenousBlockDropsEvent {
             return;
         }
 
-        int fortuneLevel = enchantmentHandler.getEnchLevel(Enchantments.FORTUNE, level);
+        int fortuneLevel = enchantmentHandler.getEnchLevel(Enchantments.FORTUNE, level.registryAccess());
 
         // 0 to fortuneLevel extra copies of every drop, so Fortune III gives 1x to 4x the vanilla amount
         int extraCopies = level.random.nextInt(fortuneLevel + 1);

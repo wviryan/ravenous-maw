@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -59,7 +60,7 @@ public class AbilityDispatcher implements IMutationAbility {
     public void onMine() {}
 
     @Override
-    public void onCraft(ItemStack stack) {}
+    public void onCraft(ItemStack stack, HolderLookup.Provider registries) {}
 
     @Override
     public void onInstability(MutationHandler mutationHandler, ItemStack stack, Player player) {}

@@ -70,7 +70,7 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
 
         mutationHandler.add(target);
 
-        target.ability().onCraft(mutationHandler.getStack());
+        target.ability().onCraft(mutationHandler.getStack(), provider);
 
         return mutationHandler.getStack();
     }
@@ -86,7 +86,7 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
         MutationHandler handler = new MutationHandler(baseStack);
         handler.add(target);
 
-        target.ability().onCraft(handler.getStack());
+        target.ability().onCraft(handler.getStack(), provider);
 
         return handler.getStack();
     }

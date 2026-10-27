@@ -46,7 +46,7 @@ public class DismutateCommand {
         MutationHandler handler = new MutationHandler(stack);
         Mutations target = Mutations.byKey(key);
 
-        handler.remove(target);
+        handler.remove(target, player.level().registryAccess());
 
         return 1;
     }

@@ -34,7 +34,7 @@ public class UpCommand {
 
         StageHandler handler = new StageHandler(stack);
         int currentStage = handler.getStage().getId();
-        ItemStack newMaw = handler.stageUp(currentStage, stack);
+        ItemStack newMaw = handler.stageUp(currentStage, stack, player.level().registryAccess());
 
         player.setItemSlot(EquipmentSlot.MAINHAND, newMaw);
 

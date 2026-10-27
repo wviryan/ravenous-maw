@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system.ability;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.level.Level;
+import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.system.MutationHandler;
@@ -19,13 +20,26 @@ import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 import net.rywir.ravenousmaw.util.Constants;
 
 public class TendrilLash implements IMutationAbility {
+    private static final ResourceLocation BLOCK_RANGE_ID = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "tendril_lash_block_range");
+    private static final ResourceLocation ENTITY_RANGE_ID = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "tendril_lash_entity_range");
+
+    // Early versions used vanilla's base ids, which also stacked on every update. Clean those up on existing items.
+    private static final ResourceLocation LEGACY_BLOCK_RANGE_ID = ResourceLocation.withDefaultNamespace("base_block_interaction_range");
+    private static final ResourceLocation LEGACY_ENTITY_RANGE_ID = ResourceLocation.withDefaultNamespace("base_entity_interaction_range");
+
     @Override
-    public void onCraft(ItemStack stack) {
-        onUpdate(stack, null);
+    public void onCraft(ItemStack stack, HolderLookup.Provider registries) {
+        onUpdate(stack, registries);
     }
 
     @Override
-    public void onUpdate(ItemStack stack, Level level) {
+    public void decraft(ItemStack stack, HolderLookup.Provider registries) {
+        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, withoutReachModifiers(stack).build());
+    }
+
+    /** Rebuilds the reach modifiers from the current stage. Idempotent: old reach modifiers are replaced, never stacked. */
+    @Override
+    public void onUpdate(ItemStack stack, HolderLookup.Provider registries) {
         MutationHandler handler = new MutationHandler(stack);
 
         if (!handler.has(Mutations.TENDRIL_LASH)) {
@@ -48,32 +62,42 @@ public class TendrilLash implements IMutationAbility {
                 break;
         }
 
+        ItemAttributeModifiers.Builder builder = withoutReachModifiers(stack);
+
+        if (extraRange > 0) {
+            builder.add(
+                Attributes.BLOCK_INTERACTION_RANGE,
+                new AttributeModifier(BLOCK_RANGE_ID, extraRange, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
+            );
+
+            builder.add(
+                Attributes.ENTITY_INTERACTION_RANGE,
+                new AttributeModifier(ENTITY_RANGE_ID, extraRange, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
+            );
+        }
+
+        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
+    }
+
+    /** A builder holding every attribute modifier of the stack except the reach ones this mutation owns. */
+    private static ItemAttributeModifiers.Builder withoutReachModifiers(ItemStack stack) {
         ItemAttributeModifiers existingModifiers = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
 
-        existingModifiers.modifiers().forEach(entry -> builder.add(entry.attribute(), entry.modifier(), entry.slot()));
+        existingModifiers.modifiers().forEach(entry -> {
+            ResourceLocation id = entry.modifier().id();
 
-        builder.add(
-            Attributes.BLOCK_INTERACTION_RANGE,
-            new AttributeModifier(
-                ResourceLocation.withDefaultNamespace("base_block_interaction_range"),
-                extraRange,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.MAINHAND
-        );
+            boolean isReachModifier = id.equals(BLOCK_RANGE_ID) || id.equals(ENTITY_RANGE_ID)
+                || id.equals(LEGACY_BLOCK_RANGE_ID) || id.equals(LEGACY_ENTITY_RANGE_ID);
 
-        builder.add(
-            Attributes.ENTITY_INTERACTION_RANGE,
-            new AttributeModifier(
-                ResourceLocation.withDefaultNamespace("base_entity_interaction_range"),
-                extraRange,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.MAINHAND
-        );
+            if (!isReachModifier) {
+                builder.add(entry.attribute(), entry.modifier(), entry.slot());
+            }
+        });
 
-        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
+        return builder;
     }
 
     @Override
