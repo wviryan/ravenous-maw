@@ -172,7 +172,11 @@ public class MawItem extends Item {
         MutationHandler mutationHandler = new MutationHandler(stack);
         AbilityDispatcher dispatcher = new AbilityDispatcher();
 
-        return dispatcher.getAttackDamageBonus(mutationHandler, stack, livingTarget, level, stage);
+        float bonus = dispatcher.getAttackDamageBonus(mutationHandler, stack, livingTarget, level, stage);
+        float multiplier = dispatcher.getDamageMultiplier(mutationHandler);
+
+        // Vanilla adds our return value to `damage`, so return only what is left after multiplying the whole hit.
+        return (damage + bonus) * multiplier - damage;
     }
 
     @Override

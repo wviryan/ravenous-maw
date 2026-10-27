@@ -262,7 +262,7 @@ public class IrisBulletEntity extends AbstractArrow {
 
             entity.hurt(
                 this.damageSources().thrown(this, this.getOwner()),
-                (2.0F + bonus) * getPower()
+                (2.0F + bonus) * dispatcher.getDamageMultiplier(handler) * getPower()
             );
 
             if (handler.has(Mutations.COMBUSTIVE_ENZYME)) {

@@ -47,13 +47,14 @@ public class AbilityDispatcher implements IMutationAbility {
         float combustionBonus = Mutations.COMBUSTIVE_ENZYME.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float rendingBonus = Mutations.RESONANT_RENDING.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float voracityBonus = Mutations.INSATIABLE_VORACITY.ability().getAttackDamageBonus(handler, stack, target, level, stage);
-        float adaptiveMultiplier = Mutations.ADAPTIVE_SHIFT.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float arcaneBonus = Mutations.ARCANE_HYPERTROPHY.ability().getAttackDamageBonus(handler, stack, target, level, stage);
 
-        // Reckless Devourer's multiplier (Adaptive Shift) applies to every bonus, including Arcane Hypertrophy's Sharpness.
-        float bonus = (combustionBonus + rendingBonus + voracityBonus + arcaneBonus) * adaptiveMultiplier;
+        return combustionBonus + rendingBonus + voracityBonus + arcaneBonus;
+    }
 
-        return bonus;
+    /** Reckless Devourer (Adaptive Shift): multiplies the whole hit, base damage included. */
+    public float getDamageMultiplier(MutationHandler handler) {
+        return Mutations.ADAPTIVE_SHIFT.ability().getDamageMultiplier(handler);
     }
 
     @Override
