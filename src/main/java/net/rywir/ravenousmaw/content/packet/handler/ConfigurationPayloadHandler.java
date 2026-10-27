@@ -18,11 +18,17 @@ public class ConfigurationPayloadHandler {
         context.enqueueWork(() -> {
                 if (!(context.player() instanceof ServerPlayer player)) return;
 
-                ItemStack stack = player.getMainHandItem();
+                // Edit the stack the open menu is bound to, never whatever is in hand.
+                if (!(player.containerMenu instanceof ConfigurationMenu menu)) return;
+
+                ItemStack stack = menu.getStack();
 
                 if (!stack.is(RavenousItemTagsProvider.MAW)) return;
 
-                if (!(player.containerMenu instanceof ConfigurationMenu)) return;
+                // Keys come from the client as free strings, so reject unknown ones.
+                Mutations.Parameters parameter = Mutations.Parameters.byKey(payload.paramkey());
+
+                if (parameter == null) return;
 
                 MutationHandler handler = new MutationHandler(stack);
 
@@ -30,14 +36,12 @@ public class ConfigurationPayloadHandler {
                 Stages stage = stageHandler.getStage();
 
                 switch (payload.action()) {
-                    case DECREMENT -> handler.prevConfigVal(payload.paramkey(), player.level(), stage);
-                    case INCREMENT -> handler.nextConfVal(payload.paramkey(), player.level(), stage);
-                    case RESET -> handler.resetConfigVal(payload.paramkey(), player.level());
+                    case DECREMENT -> handler.prevConfigVal(parameter, player.level(), stage);
+                    case INCREMENT -> handler.nextConfval(parameter, player.level(), stage);
+                    case RESET -> handler.resetConfigVal(parameter, player.level());
                 }
 
-                int newValue = handler.getConfigVal(
-                    Mutations.Parameters.byKey(payload.paramkey())
-                );
+                int newValue = handler.getConfigVal(parameter);
 
                 PacketDistributor.sendToPlayer(
                     player,

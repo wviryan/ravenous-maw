@@ -200,6 +200,12 @@ public class MawItem extends Item {
             return dispatcher.use(handler, player.getItemInHand(hand), level, player, hand);
         }
 
+        // The menu is bound to the main hand. From the offhand, let shift+use fall through so the main hand
+        // item (e.g. a torch) keeps working.
+        if (hand != InteractionHand.MAIN_HAND) {
+            return InteractionResultHolder.pass(stack);
+        }
+
         callMenu(serverPlayer, player, stack);
 
         return InteractionResultHolder.success(stack);
