@@ -80,6 +80,16 @@ public enum Stages implements Tier {
         return this.repairIngredient.get();
     }
 
+    /** Electric Mending battery size in FE; grows with the stage. */
+    public int getEnergyCapacity() {
+        return switch (this) {
+            case LATENT -> Constants.LATENT_TIER_ENERGY_CAPACITY;
+            case ADVANCED -> Constants.ADVANCED_TIER_ENERGY_CAPACITY;
+            case NOBLE -> Constants.NOBLE_TIER_ENERGY_CAPACITY;
+            case EXCELSIOR -> Constants.EXCELSIOR_TIER_ENERGY_CAPACITY;
+        };
+    }
+
     public String getDisplayName() {
         return displayName.getString();
     }

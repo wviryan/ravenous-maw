@@ -16,7 +16,7 @@
       "item": {
         "item": "minecraft:raw_copper"
       },
-      "text": "The Maw can store a reserve of up to 5,000 FE, burning through this charge to restore its durability. Furthermore, this raw static potential generates a magnetic vortex, dragging nearby items into its grasp faster with each higher Stage."
+      "text": "The Maw can store a reserve of FE that grows with each Stage (5,000 at Latent, up to 40,000 at Excelsior), burning through this charge to restore its durability. Furthermore, this raw static potential generates a magnetic vortex, dragging nearby items into its grasp faster with each higher Stage."
     },
     {
       "type": "patchouli:text",

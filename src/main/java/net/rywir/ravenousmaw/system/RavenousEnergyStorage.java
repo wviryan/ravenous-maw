@@ -9,13 +9,13 @@ import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class RavenousEnergyStorage extends EnergyStorage {
-    private static final int CAPACITY = 5000;
     private static final int MAX_RECEIVE = 1000;
     private static final int MAX_EXTRACT = 1000;
     protected final ItemStack stack;
 
     public RavenousEnergyStorage(ItemStack stack) {
-        super(CAPACITY, MAX_RECEIVE, MAX_EXTRACT, 0);
+        // The stage is read from the item type, so the capacity follows the Maw through stage-ups.
+        super(new StageHandler(stack).getStage().getEnergyCapacity(), MAX_RECEIVE, MAX_EXTRACT, 0);
         this.stack = stack;
         this.energy = stack.getOrDefault(DataComponentTypes.STORED_ENERGY, 0);
     }

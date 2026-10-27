@@ -6,24 +6,28 @@ public class Constants {
     public static final float LATENT_TIER_SPEED = 6;
     public static final float LATENT_TIER_ATTACK_DAMAGE_BONUS = 2;
     public static final int LATENT_TIER_ENCHANTMENT_VALUE = 8;
+    public static final int LATENT_TIER_ENERGY_CAPACITY = 5000;
 
     // ADVANCED
     public static final int ADVANCED_TIER_USES = 500;
     public static final float ADVANCED_TIER_SPEED = 8;
     public static final float ADVANCED_TIER_ATTACK_DAMAGE_BONUS = 3;
     public static final int ADVANCED_TIER_ENCHANTMENT_VALUE = 12;
+    public static final int ADVANCED_TIER_ENERGY_CAPACITY = 10000;
 
     // NOBLE
     public static final int NOBLE_TIER_USES = 1000;
     public static final float NOBLE_TIER_SPEED = 10;
     public static final float NOBLE_TIER_ATTACK_DAMAGE_BONUS = 4;
     public static final int NOBLE_TIER_ENCHANTMENT_VALUE = 16;
+    public static final int NOBLE_TIER_ENERGY_CAPACITY = 20000;
 
     // EXCELSIOR
     public static final int EXCELSIOR_TIER_USES = 2000;
     public static final float EXCELSIOR_TIER_SPEED = 12;
     public static final float EXCELSIOR_TIER_ATTACK_DAMAGE_BONUS = 5;
     public static final int EXCELSIOR_TIER_ENCHANTMENT_VALUE = 20;
+    public static final int EXCELSIOR_TIER_ENERGY_CAPACITY = 40000;
     
     // MAW
     public static final float MAW_ATTACK_DAMAGE_MODIFIER = 3.0F;
