@@ -11,6 +11,7 @@ import net.rywir.ravenousmaw.content.item.MawItem;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousRecipes;
 import net.rywir.ravenousmaw.system.MutationHandler;
+import net.rywir.ravenousmaw.system.StageHandler;
 
 public class MutationRecipe implements Recipe<MutationRecipeInput> {
     private final Ingredient base;
@@ -43,11 +44,12 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
             return false;
         }
 
-        if (input.base().getItem() instanceof MawItem maw) {
-            if (maw.getStage().getId() < target.stage().getId()) {
-                return false;
-            }
-        } else {
+        // The Maw's stage comes from its item type; a Maw below the mutation's stage cannot take it.
+        if (!(input.base().getItem() instanceof MawItem)) {
+            return false;
+        }
+
+        if (new StageHandler(input.base()).getStage().getId() < target.stage().getId()) {
             return false;
         }
 
