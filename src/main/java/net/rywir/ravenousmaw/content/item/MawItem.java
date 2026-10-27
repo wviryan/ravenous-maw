@@ -416,8 +416,11 @@ public class MawItem extends Item {
 
         List<BlockPos> positions = new ArrayList<>();
 
+        // Trace as far as the player can actually reach (Tendril Lash extends it), plus a margin so the
+        // targeted block is never missed by rounding at the edge of the reach.
+        double reach = player.blockInteractionRange() + 1.0;
         BlockHitResult traceResult = player.level().clip(new ClipContext(player.getEyePosition(1f),
-            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(6f))),
+            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(reach))),
             ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         if(traceResult.getType() == HitResult.Type.MISS) {
             return positions;
@@ -455,8 +458,10 @@ public class MawItem extends Item {
 
         Set<BlockPos> positions = new HashSet<>();
 
+        // Same reach as the List overload, so the highlight matches what is really broken.
+        double reach = player.blockInteractionRange() + 1.0;
         BlockHitResult traceResult = player.level().clip(new ClipContext(player.getEyePosition(1f),
-            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(6f))),
+            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(reach))),
             ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         if(traceResult.getType() == HitResult.Type.MISS) {
             return positions;
@@ -593,11 +598,21 @@ public class MawItem extends Item {
             .build();
     }
 
-    public boolean canSurvive(ItemStack stack, Level level, LivingEntity entity) {
+    /**
+     * Whether spending {@code cost} durability still leaves the Maw above its protected threshold.
+     * Unbreakable Maws (Undying Flesh) never lose durability, so any cost is affordable.
+     */
+    public static boolean canAfford(ItemStack stack, int cost) {
+        if (!stack.isDamageableItem()) return true;
+
         int remainingDurability = stack.getMaxDamage() - stack.getDamageValue();
         int threshold = (int) (stack.getMaxDamage() * Constants.MAW_DURABILITY_PERCENTAGE_THRESHOLD);
 
-        if (remainingDurability > threshold) {
+        return remainingDurability - cost > threshold;
+    }
+
+    public boolean canSurvive(ItemStack stack, Level level, LivingEntity entity) {
+        if (canAfford(stack, 0)) {
             return true;
         }
 

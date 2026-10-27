@@ -11,6 +11,8 @@ import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.MutationHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -58,12 +60,23 @@ public class RavenousBreakEvent {
         }
 
         try {
-            for (BlockPos pos : MawItem.getBlocksToBeDestroyed(range, initialBlockPos, serverPlayer)) {
-                if (pos.equals(initialBlockPos) ||
-                    !stack.isCorrectToolForDrops(event.getLevel().getBlockState(pos))) {
-                    continue;
-                }
+            List<BlockPos> extraBlocks = new ArrayList<>();
 
+            for (BlockPos pos : MawItem.getBlocksToBeDestroyed(range, initialBlockPos, serverPlayer)) {
+                if (!pos.equals(initialBlockPos) &&
+                    stack.isCorrectToolForDrops(event.getLevel().getBlockState(pos))) {
+                    extraBlocks.add(pos);
+                }
+            }
+
+            // Each block costs 1 durability (the initial block included). Area breaking is all or nothing:
+            // if the Maw cannot pay for the whole area and stay above its protected threshold, only the
+            // initial block breaks.
+            if (!MawItem.canAfford(stack, extraBlocks.size() + 1)) {
+                return;
+            }
+
+            for (BlockPos pos : extraBlocks) {
                 if (playerHarvestedBlocks.add(pos)) {
                     try {
                         serverPlayer.gameMode.destroyBlock(pos);
