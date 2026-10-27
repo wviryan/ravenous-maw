@@ -1,5 +1,13 @@
 package net.rywir.ravenousmaw.content.event;
 
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -11,6 +19,7 @@ import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.StageHandler;
+import net.rywir.ravenousmaw.util.Constants;
 
 public class RavenousLivingDeathEvent {
     @SubscribeEvent
@@ -54,5 +63,23 @@ public class RavenousLivingDeathEvent {
         }
 
         player.setItemSlot(EquipmentSlot.MAINHAND, newMaw);
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            announceStageUp(serverPlayer, Stages.byId(stage.getId() + 1));
+        }
+    }
+
+    /** Totem sound for everyone nearby, a soul particle burst, and a title with the new stage for the player. */
+    private static void announceStageUp(ServerPlayer player, Stages newStage) {
+        ServerLevel level = player.serverLevel();
+
+        level.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+        level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, player.getX(), player.getY() + 1.0, player.getZ(),
+                Constants.STAGE_UP_PARTICLE_COUNT, 0.5, 0.8, 0.5, 0.05);
+
+        // The subtitle packet must be sent before the title packet, which is what shows both.
+        player.connection.send(new ClientboundSetSubtitleTextPacket(
+                Component.translatable("ravenousmaw.stage_up_subtitle", newStage.getDisplayComponent())));
+        player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("ravenousmaw.stage_up_title")));
     }
 }

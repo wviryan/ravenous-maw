@@ -90,6 +90,11 @@ public enum Stages implements Tier {
         return displayName.getString();
     }
 
+    /** Translatable form of the stage name, for messages the client localizes itself. */
+    public Component getDisplayComponent() {
+        return displayName;
+    }
+
     public int getId() {
         return id;
     }

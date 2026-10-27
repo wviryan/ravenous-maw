@@ -65,6 +65,9 @@ public class Constants {
     /** Minimum ticks between two "effect absorbed" notices (sound + message) for the same player. */
     public static final int SYMBIOTIC_AID_ABSORB_COOLDOWN_TICKS = 80;
 
+    // STAGE-UP ANNOUNCEMENT
+    public static final int STAGE_UP_PARTICLE_COUNT = 60;
+
     // MUTATION CONSTANTS - COMBUSTIVE ENZYME
     public static final float COMBUSTIVE_ENZYME_ADVANCED_DAMAGE_BONUS = 2.0F;
     public static final float COMBUSTIVE_ENZYME_NOBLE_DAMAGE_BONUS = 4.0F;
