@@ -43,8 +43,14 @@ public class DestabilizeCommand {
 
         String key = StringArgumentType.getString(context, "mutation");
 
-        MutationHandler handler = new MutationHandler(stack);
         Mutations target = Mutations.byKey(key);
+
+        if (target == null) {
+            player.sendSystemMessage(Component.translatable("warning.ravenousmaw.unknown_mutation", key));
+            return 0;
+        }
+
+        MutationHandler handler = new MutationHandler(stack);
 
         target.ability().onInstability(handler, stack, player);
 

@@ -43,8 +43,14 @@ public class DismutateCommand {
 
         String key = StringArgumentType.getString(context, "mutation");
 
-        MutationHandler handler = new MutationHandler(stack);
         Mutations target = Mutations.byKey(key);
+
+        if (target == null) {
+            player.sendSystemMessage(Component.translatable("warning.ravenousmaw.unknown_mutation", key));
+            return 0;
+        }
+
+        MutationHandler handler = new MutationHandler(stack);
 
         handler.remove(target, player.level().registryAccess());
 
