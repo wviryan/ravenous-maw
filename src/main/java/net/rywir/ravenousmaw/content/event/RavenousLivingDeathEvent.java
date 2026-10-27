@@ -9,64 +9,77 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Mutations;
+import net.rywir.ravenousmaw.registry.RavenousAttachments;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.util.Constants;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class RavenousLivingDeathEvent {
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
-        EntityType<?> type = event.getEntity().getType();
+        LivingEntity dead = event.getEntity();
+        Player killer = event.getSource().getEntity() instanceof Player player ? player : null;
 
-        if (!(event.getSource().getEntity() instanceof Player player)) {
-            return;
+        if (killer != null) {
+            countVoracityKill(killer);
         }
 
-        ItemStack stack = player.getMainHandItem();
+        if (!Stages.getOBJECTIVES().contains(dead.getType())) return;
+        if (!(dead.level() instanceof ServerLevel level)) return;
 
-        if (!stack.is(RavenousItemTagsProvider.MAW)) {
-            return;
+        // Everyone who hurt the boss while carrying a fitting Maw shares the feast, plus the killer.
+        Set<UUID> credited = new HashSet<>(dead.getData(RavenousAttachments.BOSS_CONTRIBUTORS).getPlayers());
+
+        if (killer != null) {
+            credited.add(killer.getUUID());
         }
+
+        for (UUID id : credited) {
+            ServerPlayer player = level.getServer().getPlayerList().getPlayer(id);
+
+            // A contributor who logged off or left the dimension misses the feast.
+            if (player != null && player.level() == level) {
+                stageUpMaw(player, dead.getType(), level);
+            }
+        }
+    }
+
+    private static void countVoracityKill(Player killer) {
+        ItemStack stack = killer.getMainHandItem();
+
+        if (!stack.is(RavenousItemTagsProvider.MAW)) return;
 
         MutationHandler mutationHandler = new MutationHandler(stack);
-        Mutations voracity = Mutations.INSATIABLE_VORACITY;
 
-        boolean hasVoracity = mutationHandler.has(voracity);
-
-        if (hasVoracity) {
+        if (mutationHandler.has(Mutations.INSATIABLE_VORACITY)) {
             mutationHandler.increaseKill();
         }
+    }
 
-        if (!Stages.getOBJECTIVES().contains(type)) {
-            return;
-        }
+    /** Ranks up the player's Maw that has {@code boss} as its objective, if they carry one. */
+    private static void stageUpMaw(ServerPlayer player, EntityType<?> boss, ServerLevel level) {
+        int slot = StageHandler.findMawSlotFor(player.getInventory(), boss);
 
+        if (slot < 0) return;
+
+        ItemStack stack = player.getInventory().getItem(slot);
         StageHandler handler = new StageHandler(stack);
         Stages stage = handler.getStage();
 
-        if (!(stage.getObjective() == type)) {
-            return;
-        }
-
-        ItemStack newMaw = handler.stageUp(stage.getId(), stack, player.level().registryAccess());
-
-        if (!(player.getMainHandItem().is(RavenousItemTagsProvider.MAW))) {
-            return;
-        }
-
-        player.setItemSlot(EquipmentSlot.MAINHAND, newMaw);
-
-        if (player instanceof ServerPlayer serverPlayer) {
-            announceStageUp(serverPlayer, Stages.byId(stage.getId() + 1));
-        }
+        player.getInventory().setItem(slot, handler.stageUp(stage.getId(), stack, level.registryAccess()));
+        announceStageUp(player, Stages.byId(stage.getId() + 1));
     }
 
     /** Totem sound for everyone nearby, a soul particle burst, and a title with the new stage for the player. */

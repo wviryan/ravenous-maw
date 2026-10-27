@@ -6,6 +6,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.rywir.ravenousmaw.RavenousMaw;
+import net.rywir.ravenousmaw.content.attachment.BossContributors;
 import net.rywir.ravenousmaw.content.attachment.MawTickData;
 
 public class RavenousAttachments {
@@ -14,6 +15,12 @@ public class RavenousAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MawTickData>> MAW_TICK_DATA = ATTACHMENT_TYPES.register("maw_tick_data",
         () -> AttachmentType.builder(() -> new MawTickData())
             .serialize(MawTickData.CODEC)
+            .build()
+    );
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BossContributors>> BOSS_CONTRIBUTORS = ATTACHMENT_TYPES.register("boss_contributors",
+        () -> AttachmentType.builder(() -> new BossContributors())
+            .serialize(BossContributors.CODEC)
             .build()
     );
 
