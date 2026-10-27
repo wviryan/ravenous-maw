@@ -19,16 +19,22 @@ public class MentalSupremacy implements IMutationAbility {
     public boolean interactLivingEntity(ItemStack stack, Player player, Entity entity) {
         MutationHandler handler = new MutationHandler(stack);
 
-        if (player.level().isClientSide()) return false;
-
         if (!(entity instanceof TamableAnimal tamable)) return false;
         if (tamable.isTame()) return false;
 
         if (!handler.has(Mutations.MENTAL_SUPREMACY)) return false;
         if (handler.getConfigVal(Mutations.Parameters.DREADFUL_GLANCE) != 1) return false;
 
+        // The client must report success too. Otherwise Minecraft.startUseItem sees PASS for the main hand
+        // and sends a second interact packet for the offhand; the now-tamed pet's own mobInteract
+        // handles it and toggles it back to standing.
+        if (player.level().isClientSide()) return true;
+
         tamable.tame(player);
         tamable.setOwnerUUID(player.getUUID());
+        // Same cleanup as vanilla taming: an angry wolf must not keep chasing its target.
+        tamable.getNavigation().stop();
+        tamable.setTarget(null);
         tamable.setOrderedToSit(true);
 
         player.level().broadcastEntityEvent(tamable, (byte)7);

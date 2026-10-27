@@ -317,8 +317,8 @@ public class MawItem extends Item {
         boolean result = dispatcher.interactLivingEntity(stack, player, entity);
 
         if (result) {
-            // SUCCESS consumes the interaction. PASS would let the pet's own mobInteract run,
-            // which sees its new owner clicking and toggles it back to standing.
+            // SUCCESS consumes the interaction on both sides, so the client does not retry with the
+            // offhand (which would make the new pet toggle back to standing).
             return InteractionResult.SUCCESS;
         } else {
             return super.interactLivingEntity(stack, player, entity, hand);
