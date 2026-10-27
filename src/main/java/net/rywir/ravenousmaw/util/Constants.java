@@ -58,6 +58,8 @@ public class Constants {
     // MUTATION CONSTANTS - ELECTRIC MENDING
     public static final int ELECTRIC_MENDING_ATTACK_ENERGY_COST = 25;
     public static final float ELECTRIC_MENDING_LOW_ENERGY_DAMAGE_MULTIPLIER = 0.1F;
+    /** Minimum ticks between two "battery drained" warnings (sound + message) for the same player. */
+    public static final int ELECTRIC_MENDING_WARNING_COOLDOWN_TICKS = 80;
 
     // MUTATION CONSTANTS - COMBUSTIVE ENZYME
     public static final float COMBUSTIVE_ENZYME_ADVANCED_DAMAGE_BONUS = 2.0F;

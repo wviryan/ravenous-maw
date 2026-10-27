@@ -180,7 +180,12 @@ public class MawItem extends Item {
         float multiplier = dispatcher.getDamageMultiplier(mutationHandler);
 
         // Electric Mending: an empty battery weakens the whole hit, applied after every other multiplier.
-        multiplier *= dispatcher.getHitDamageMultiplier(mutationHandler, stack);
+        float energyMultiplier = dispatcher.getHitDamageMultiplier(mutationHandler, stack);
+        multiplier *= energyMultiplier;
+
+        if (energyMultiplier < 1.0F && damageSource.getEntity() instanceof ServerPlayer attacker) {
+            dispatcher.warnLowEnergy(attacker);
+        }
 
         // Vanilla adds our return value to `damage`, so return only what is left after multiplying the whole hit.
         return (damage + bonus) * multiplier - damage;
