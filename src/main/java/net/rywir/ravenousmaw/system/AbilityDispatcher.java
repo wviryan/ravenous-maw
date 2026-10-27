@@ -22,7 +22,8 @@ public class AbilityDispatcher implements IMutationAbility {
         boolean hasIrisOut = mutationHandler.has(Mutations.IRIS_OUT);
         int isActive = mutationHandler.getConfigVal(Mutations.Parameters.LIVING_PROJECTILE);
 
-        if (hasIrisOut || isActive == 1) {
+        // Both are required, like MawItem.getUseDuration: with the toggle off there is no charge to draw.
+        if (hasIrisOut && isActive == 1) {
             return Mutations.IRIS_OUT.ability().use(mutationHandler, stack, level, player, hand);
         } else {
             return InteractionResultHolder.fail(stack);
