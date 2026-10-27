@@ -87,7 +87,7 @@ public class StageHandler {
 
         ItemEnchantments stored = stack.get(DataComponents.STORED_ENCHANTMENTS);
 
-        if (enchantments != null) {
+        if (stored != null) {
             target.set(DataComponents.STORED_ENCHANTMENTS, stored);
         }
 
