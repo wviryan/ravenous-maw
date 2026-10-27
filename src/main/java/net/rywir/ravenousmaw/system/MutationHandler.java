@@ -118,10 +118,10 @@ public class MutationHandler {
                 case EXCELSIOR -> 9;
             };
 
-            boolean isApplicable = parameter.next(pseudoConfmap.get(parameter.key())) <= limit;
-            newval = isApplicable ? parameter.next(pseudoConfmap.get(parameter.key())) : parameter.head();
+            boolean isApplicable = parameter.next(storedValOrDefault(pseudoConfmap, parameter)) <= limit;
+            newval = isApplicable ? parameter.next(storedValOrDefault(pseudoConfmap, parameter)) : parameter.head();
         } else {
-            newval = parameter.next(pseudoConfmap.get(parameter.key()));
+            newval = parameter.next(storedValOrDefault(pseudoConfmap, parameter));
         }
 
         pseudoConfmap.put(
@@ -163,10 +163,10 @@ public class MutationHandler {
                 case EXCELSIOR -> 9;
             };
 
-            boolean isApplicable = parameter.prev(pseudoConfmap.get(parameter.key())) <= limit;
-            newval = isApplicable ? parameter.prev(pseudoConfmap.get(parameter.key())) : limit;
+            boolean isApplicable = parameter.prev(storedValOrDefault(pseudoConfmap, parameter)) <= limit;
+            newval = isApplicable ? parameter.prev(storedValOrDefault(pseudoConfmap, parameter)) : limit;
         } else {
-            newval = parameter.prev(pseudoConfmap.get(parameter.key()));
+            newval = parameter.prev(storedValOrDefault(pseudoConfmap, parameter));
         }
 
         pseudoConfmap.put(
@@ -222,8 +222,22 @@ public class MutationHandler {
 
         ImmutableMap<String, MutationComponent.ConfigurationComponent> currentMutmap = stack.get(DataComponentTypes.MUTATION_COMPONENT_TYPE).mutmap();
 
-        int configVal = currentMutmap.get(mutation.key()).confmap().get(parameter.key());
-        return configVal;
+        return storedValOrDefault(currentMutmap.get(mutation.key()).confmap(), parameter);
+    }
+
+    /**
+     * Reads a parameter from a stored config map. Items saved before a parameter was added or renamed
+     * lack its key, and a changed value range can leave a value that is no longer an option.
+     * Both cases fall back to the parameter's default instead of crashing on a null unbox.
+     */
+    private static int storedValOrDefault(Map<String, Integer> confmap, Mutations.Parameters parameter) {
+        Integer stored = confmap.get(parameter.key());
+
+        if (stored == null || parameter.list().byValue(stored) == null) {
+            return parameter.getDefaultVal();
+        }
+
+        return stored;
     }
 
     public int getKills() {
@@ -296,9 +310,14 @@ public class MutationHandler {
 
         Set<Mutations> muts = new HashSet<>();
 
-        mutationKeys.forEach(
-            (key) -> muts.add(Mutations.byKey(key))
-        );
+        // Skip keys of mutations that no longer exist, byKey returns null for them.
+        mutationKeys.forEach((key) -> {
+            Mutations mutation = Mutations.byKey(key);
+
+            if (mutation != null) {
+                muts.add(mutation);
+            }
+        });
 
         return muts;
     }

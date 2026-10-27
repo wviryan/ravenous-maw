@@ -16,6 +16,9 @@ public class RavenousEntityTypes {
 
     public static final Supplier<EntityType<IrisBulletEntity>> IRIS_BULLET_ENTITY_TYPE = ENTITY_TYPES.register("iris_bullet",
         () -> EntityType.Builder.<IrisBulletEntity>of(IrisBulletEntity::new, MobCategory.MISC)
+            // The bullet holds live references (handler, dispatcher, stack) that cannot be
+            // serialized, so it must never be written to disk. It simply vanishes on unload.
+            .noSave()
             .sized(0.5f, 1.15f).build("iris_bullet")
     );
 

@@ -56,6 +56,11 @@ public class RavenousLivingDropsEvent {
             }
         }
 
+        // Loot rules below (Reckless Devourer, Looting III) must never touch a player's death inventory
+        if (entity instanceof Player) {
+            return;
+        }
+
         ItemStack stack = event.getSource().getWeaponItem();
 
         if (stack == null || !stack.is(RavenousItemTagsProvider.MAW)) {
@@ -72,9 +77,10 @@ public class RavenousLivingDropsEvent {
         }
 
         if (hasAdaptiveShift) {
-            int isLootAllowed = mutationHandler.getConfigVal(Mutations.Parameters.RECKLESS_DEVOURER);
+            // Reckless Devourer ON (1) = double damage in exchange for no loot
+            int isRecklessActive = mutationHandler.getConfigVal(Mutations.Parameters.RECKLESS_DEVOURER);
 
-            if (isLootAllowed == 0) {
+            if (isRecklessActive == 1) {
                 event.getDrops().clear();
                 return;
             }
