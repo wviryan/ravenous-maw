@@ -1,14 +1,18 @@
 package net.rywir.ravenousmaw.system;
 
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousItems;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.util.HelperData;
+
+import java.util.function.Supplier;
 
 public class StageHandler {
     private final ItemStack stack;
@@ -95,5 +99,19 @@ public class StageHandler {
         int damageVal = stack.getDamageValue();
 
         target.setDamageValue(damageVal);
+
+        // Mutation state components are only created by each ability's onCraft, which stageUp never calls.
+        // Copy them when present so energy, kill count and the charge flag survive the stage-up.
+        copyComponent(target, DataComponentTypes.CHARGING_SOUND_TYPE);
+        copyComponent(target, DataComponentTypes.STORED_ENERGY);
+        copyComponent(target, DataComponentTypes.VORACITY_COMPONENT_TYPE);
+    }
+
+    private <T> void copyComponent(ItemStack target, Supplier<DataComponentType<T>> type) {
+        T value = stack.get(type);
+
+        if (value != null) {
+            target.set(type, value);
+        }
     }
 }

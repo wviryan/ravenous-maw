@@ -362,7 +362,8 @@ public class MawItem extends Item {
 
         int used = stack.getUseDuration(entity) - remainingUseDuration;
 
-        boolean alreadyPlayed = stack.get(DataComponentTypes.CHARGING_SOUND_TYPE);
+        // The component may be missing on a Maw that never went through Iris Out's onCraft (e.g. older saves), so default to "not played".
+        boolean alreadyPlayed = stack.getOrDefault(DataComponentTypes.CHARGING_SOUND_TYPE, false);
 
         if (used >= FULL_CHARGE_TICKS && !alreadyPlayed) {
             stack.set(DataComponentTypes.CHARGING_SOUND_TYPE, true);
