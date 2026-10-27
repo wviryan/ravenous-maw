@@ -17,6 +17,7 @@ import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.StageHandler;
+import net.rywir.ravenousmaw.system.ability.SymbioticAid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class RavenousPlayerTickEvent {
         Player player = event.getEntity();
 
         if (player.level().isClientSide()) return;
+
+        SymbioticAid.cleanse(player);
 
         ItemStack stack = player.getMainHandItem();
 
