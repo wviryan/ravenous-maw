@@ -37,5 +37,17 @@ public class Configs {
         .comment("Excelsior Stage - Insatiable Voracity Damage Multiplier")
         .defineInRange("excelsiorVoracity", Constants.INSATIABLE_VORACITY_EXCELSIOR_DAMAGE_MULTIPLIER, 0, Double.MAX_VALUE);
 
+    public static final ModConfigSpec.DoubleValue INSATIABLE_VORACITY_ADVANCED_MAX_DAMAGE = BUILDER
+        .comment("Advanced Stage - Insatiable Voracity Max Bonus Damage")
+        .defineInRange("advancedVoracityMax", Constants.INSATIABLE_VORACITY_ADVANCED_MAX_DAMAGE, 0, Double.MAX_VALUE);
+
+    public static final ModConfigSpec.DoubleValue INSATIABLE_VORACITY_NOBLE_MAX_DAMAGE = BUILDER
+        .comment("Noble Stage - Insatiable Voracity Max Bonus Damage")
+        .defineInRange("nobleVoracityMax", Constants.INSATIABLE_VORACITY_NOBLE_MAX_DAMAGE, 0, Double.MAX_VALUE);
+
+    public static final ModConfigSpec.DoubleValue INSATIABLE_VORACITY_EXCELSIOR_MAX_DAMAGE = BUILDER
+        .comment("Excelsior Stage - Insatiable Voracity Max Bonus Damage")
+        .defineInRange("excelsiorVoracityMax", Constants.INSATIABLE_VORACITY_EXCELSIOR_MAX_DAMAGE, 0, Double.MAX_VALUE);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 }

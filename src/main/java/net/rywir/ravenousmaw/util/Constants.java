@@ -71,6 +71,10 @@ public class Constants {
     public static final float INSATIABLE_VORACITY_ADVANCED_DAMAGE_MULTIPLIER = 0.01F;
     public static final float INSATIABLE_VORACITY_NOBLE_DAMAGE_MULTIPLIER = 0.02F;
     public static final float INSATIABLE_VORACITY_EXCELSIOR_DAMAGE_MULTIPLIER = 0.03F;
+    // Ceiling of the kill bonus per stage (deliberately generous)
+    public static final float INSATIABLE_VORACITY_ADVANCED_MAX_DAMAGE = 15.0F;
+    public static final float INSATIABLE_VORACITY_NOBLE_MAX_DAMAGE = 40.0F;
+    public static final float INSATIABLE_VORACITY_EXCELSIOR_MAX_DAMAGE = 100.0F;
 
     // REPAIR AMOUNTS
     public static final int LATENT_ROTTEN_FLESH = 125;

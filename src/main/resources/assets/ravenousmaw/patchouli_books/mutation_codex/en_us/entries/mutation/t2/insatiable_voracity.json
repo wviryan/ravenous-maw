@@ -16,7 +16,7 @@
       "item": {
         "item": "minecraft:enchanted_golden_apple"
       },
-      "text": "With each ascension to a higher Stage, damage granted by the essence of the fallen ones increases."
+      "text": "With each ascension to a higher Stage, damage granted by the essence of the fallen ones increases. The bonus is not endless: it stops growing at a ceiling that rises with every Stage."
     },
     {
       "type": "patchouli:text",
