@@ -2,6 +2,7 @@ package net.rywir.ravenousmaw.content.event;
 
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.item.ItemStack;
@@ -19,19 +20,25 @@ public class RavenousMobEffectAddedEvent {
             return;
         }
 
-        ItemStack stack = player.getMainHandItem();
+        // Drinking a potion occupies a hand, so the Maw can also be held in the offhand.
+        MutationHandler handler = null;
 
-        if (stack.isEmpty()) {
-            return;
+        for (InteractionHand hand : InteractionHand.values()) {
+            ItemStack held = player.getItemInHand(hand);
+
+            if (!held.is(RavenousItemTagsProvider.MAW)) {
+                continue;
+            }
+
+            MutationHandler candidate = new MutationHandler(held);
+
+            if (candidate.has(Mutations.SYMBIOTIC_AID)) {
+                handler = candidate;
+                break;
+            }
         }
 
-        if (!stack.is(RavenousItemTagsProvider.MAW)) {
-            return;
-        }
-
-        MutationHandler handler = new MutationHandler(stack);
-
-        if (!handler.has(Mutations.SYMBIOTIC_AID)) {
+        if (handler == null) {
             return;
         }
 
