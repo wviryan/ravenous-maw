@@ -23,12 +23,7 @@ public class MutateCommand {
                         .executes(MutateCommand::executeAll)
                     )
                     .then(Commands.argument("mutation", StringArgumentType.string())
-                        .suggests((context, builder) -> {
-                            for (var mut : Mutations.values()) {
-                                builder.suggest(mut.key());
-                            }
-                            return builder.buildFuture();
-                        })
+                        .suggests(MutationSuggestions.PROVIDER)
                         .executes(MutateCommand::execute)
                     )
                 )
