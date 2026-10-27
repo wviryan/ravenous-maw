@@ -43,6 +43,13 @@ public class MutationMatrixBlockEntity extends BlockEntity implements MenuProvid
     protected final ContainerData data;
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
+        // The result slot is output only: crafting fills it through setStackInSlot (which skips
+        // this check), and players can only take from it. A foreign item there would block crafting.
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return slot != RESULT_SLOT;
+        }
+
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
