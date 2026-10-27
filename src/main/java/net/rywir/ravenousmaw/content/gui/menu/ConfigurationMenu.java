@@ -41,7 +41,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
     }
 
     public List<Mutations.Parameters> parameters() {
-        return this.handler.getNonHiddenParameters();
+        return this.handler.getAllParameters();
     }
 
     public ItemStack getStack() {

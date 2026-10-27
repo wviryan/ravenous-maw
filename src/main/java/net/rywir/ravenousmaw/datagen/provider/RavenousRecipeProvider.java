@@ -95,7 +95,7 @@ public class RavenousRecipeProvider extends RecipeProvider implements ICondition
 
         for (Mutations mutation : Mutations.values()) {
             for (DeferredHolder<Item, ? extends Item> mawHolder : RavenousItems.MAWS.getEntries()) {
-                if (!(mawHolder.get() instanceof MawItem mawItem)) {
+                if (!(mawHolder.get() instanceof MawItem)) {
                     continue;
                 }
 

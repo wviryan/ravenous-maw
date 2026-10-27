@@ -53,8 +53,7 @@ public class RavenousMobEffectAddedEvent {
             return;
         }
 
-        var result = player.server.submit(() -> {
-            player.removeEffect(effect);
-        });
+        // Deferred so the effect is removed after the add event has finished.
+        player.server.execute(() -> player.removeEffect(effect));
     }
 }

@@ -24,7 +24,7 @@ public class IrisBulletModel extends EntityModel<IrisBulletEntity> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition iris_bullet = partdefinition.addOrReplaceChild("iris_bullet", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -6.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
+        partdefinition.addOrReplaceChild("iris_bullet", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -6.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
             .texOffs(0, 8).addBox(-1.0F, -5.0F, 2.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
             .texOffs(8, 8).addBox(-1.0F, -5.0F, -4.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
             .texOffs(0, 12).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
