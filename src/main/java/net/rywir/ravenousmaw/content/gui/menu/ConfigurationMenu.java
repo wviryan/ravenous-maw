@@ -26,13 +26,14 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player player, int i) {
-        //noinspection DataFlowIssue
-        return null;
+        // No slots, nothing to move.
+        return ItemStack.EMPTY;
     }
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return true;
+        // The menu edits this exact stack (main hand), so it closes once the Maw leaves that hand.
+        return player.getMainHandItem() == stack;
     }
 
     public int configVal(Mutations.Parameters parameter) {

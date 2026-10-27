@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system.interfaces;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -26,13 +27,19 @@ public interface IMutationAbility {
 
     default boolean interactLivingEntity(ItemStack stack, Player player, Entity entity) { return false; }
 
-    default void onCraft(ItemStack stack) {}
+    /** Called once when the mutation is added to the Maw. Sets up the components and modifiers it needs. */
+    default void onCraft(ItemStack stack, HolderLookup.Provider registries) {}
 
     default void onInstability(MutationHandler mutationHandler, ItemStack stack, Player player) {}
 
-    default void onUpdate(ItemStack stack, Level level) {}
+    /**
+     * Re-applies the mutation to the Maw after a parameter change or a stage-up.
+     * Must be idempotent, since it runs many times over the life of an item.
+     */
+    default void onUpdate(ItemStack stack, HolderLookup.Provider registries) {}
 
-    default void decraft(ItemStack stack) {}
+    /** Called when the mutation is removed from the Maw. Undoes everything onCraft and onUpdate applied. */
+    default void decraft(ItemStack stack, HolderLookup.Provider registries) {}
 
     default boolean isMutatable(ItemStack stack, Level level) { return true; }
 

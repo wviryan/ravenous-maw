@@ -42,6 +42,8 @@ public class MutationMatrixMenu extends AbstractContainerMenu {
         this.addSlot(new SlotItemHandler(entity.itemHandler, 0, 30, 35));
         this.addSlot(new SlotItemHandler(entity.itemHandler, 1, 48, 35));
         this.addSlot(new SlotItemHandler(entity.itemHandler, 2, 66, 35));
+        // Result slot: take-only, because the handler's isItemValid rejects inserts into it
+        // (this also stops shift-click from moving inventory items here).
         this.addSlot(new SlotItemHandler(entity.itemHandler, 3, 124, 35));
 
         addDataSlots(data);

@@ -11,6 +11,7 @@ public class RavenousRegisterCommandsEvent {
         UpCommand.register(event.getDispatcher());
         DismutateCommand.register(event.getDispatcher());
         ChargeCommand.register(event.getDispatcher());
+        SurchargeCommand.register(event.getDispatcher());
         DestabilizeCommand.register(event.getDispatcher());
     }
 }

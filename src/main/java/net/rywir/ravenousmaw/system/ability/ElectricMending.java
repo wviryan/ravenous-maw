@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system.ability;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -16,12 +17,12 @@ public class ElectricMending implements IMutationAbility {
     private static final int COOLDOWN = 20 * 60 * 4;
 
     @Override
-    public void onCraft(ItemStack stack) {
+    public void onCraft(ItemStack stack, HolderLookup.Provider registries) {
         stack.set(DataComponentTypes.STORED_ENERGY, 0);
     }
 
     @Override
-    public void decraft(ItemStack stack) {
+    public void decraft(ItemStack stack, HolderLookup.Provider registries) {
         stack.remove(DataComponentTypes.STORED_ENERGY);
     }
 

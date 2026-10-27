@@ -35,17 +35,25 @@ public class ChargeCommand {
 
         MutationHandler handler = new MutationHandler(stack);
 
-        boolean hasElectricMending = handler.has(Mutations.ELECTRIC_MENDING);
-
-        if (!hasElectricMending) return 0;
+        if (!handler.has(Mutations.ELECTRIC_MENDING)) {
+            player.sendSystemMessage(Component.translatable("warning.ravenousmaw.no_electric_mending"));
+            return 0;
+        }
 
         var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
 
         if (energy == null) return 0;
 
-        if (energy.getEnergyStored() != energy.getMaxEnergyStored()) {
-            energy.receiveEnergy(energy.getMaxEnergyStored(), false);
+        if (energy.getEnergyStored() >= energy.getMaxEnergyStored()) {
+            player.sendSystemMessage(Component.translatable("message.ravenousmaw.already_charged"));
+            return 0;
         }
+
+        // A single partial charge on purpose: the storage caps one call, so repeated runs test half-filled states.
+        // Use /ravenousmaw surcharge to fill it completely.
+        int received = energy.receiveEnergy(energy.getMaxEnergyStored(), false);
+        player.sendSystemMessage(Component.translatable("message.ravenousmaw.charged", received,
+            energy.getEnergyStored(), energy.getMaxEnergyStored()));
 
         return 1;
     }

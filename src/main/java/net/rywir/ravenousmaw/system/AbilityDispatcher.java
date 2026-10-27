@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +23,8 @@ public class AbilityDispatcher implements IMutationAbility {
         boolean hasIrisOut = mutationHandler.has(Mutations.IRIS_OUT);
         int isActive = mutationHandler.getConfigVal(Mutations.Parameters.LIVING_PROJECTILE);
 
-        if (hasIrisOut || isActive == 1) {
+        // Both are required, like MawItem.getUseDuration: with the toggle off there is no charge to draw.
+        if (hasIrisOut && isActive == 1) {
             return Mutations.IRIS_OUT.ability().use(mutationHandler, stack, level, player, hand);
         } else {
             return InteractionResultHolder.fail(stack);
@@ -48,7 +50,8 @@ public class AbilityDispatcher implements IMutationAbility {
         float adaptiveMultiplier = Mutations.ADAPTIVE_SHIFT.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float arcaneBonus = Mutations.ARCANE_HYPERTROPHY.ability().getAttackDamageBonus(handler, stack, target, level, stage);
 
-        float bonus = (combustionBonus + rendingBonus + voracityBonus) * adaptiveMultiplier;
+        // Reckless Devourer's multiplier (Adaptive Shift) applies to every bonus, including Arcane Hypertrophy's Sharpness.
+        float bonus = (combustionBonus + rendingBonus + voracityBonus + arcaneBonus) * adaptiveMultiplier;
 
         return bonus;
     }
@@ -57,7 +60,7 @@ public class AbilityDispatcher implements IMutationAbility {
     public void onMine() {}
 
     @Override
-    public void onCraft(ItemStack stack) {}
+    public void onCraft(ItemStack stack, HolderLookup.Provider registries) {}
 
     @Override
     public void onInstability(MutationHandler mutationHandler, ItemStack stack, Player player) {}

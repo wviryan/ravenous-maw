@@ -47,16 +47,12 @@ public class RavenousLivingDeathEvent {
             return;
         }
 
-        ItemStack newMaw = handler.stageUp(stage.getId(), stack);
+        ItemStack newMaw = handler.stageUp(stage.getId(), stack, player.level().registryAccess());
 
         if (!(player.getMainHandItem().is(RavenousItemTagsProvider.MAW))) {
             return;
         }
 
         player.setItemSlot(EquipmentSlot.MAINHAND, newMaw);
-
-        for (Mutations mutation : Mutations.values()) {
-            mutation.ability().onUpdate(newMaw, player.level());
-        }
     }
 }

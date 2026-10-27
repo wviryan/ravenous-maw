@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system.ability;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -91,12 +92,12 @@ public class IrisOut implements IMutationAbility {
     }
 
     @Override
-    public void onCraft(ItemStack stack) {
+    public void onCraft(ItemStack stack, HolderLookup.Provider registries) {
         stack.set(DataComponentTypes.CHARGING_SOUND_TYPE, false);
     }
 
     @Override
-    public void decraft(ItemStack stack) {
+    public void decraft(ItemStack stack, HolderLookup.Provider registries) {
         stack.remove(DataComponentTypes.CHARGING_SOUND_TYPE);
     }
 }

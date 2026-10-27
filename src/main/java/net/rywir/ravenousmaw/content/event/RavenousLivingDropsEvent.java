@@ -1,6 +1,7 @@
 package net.rywir.ravenousmaw.content.event;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -45,13 +46,17 @@ public class RavenousLivingDropsEvent {
                 toSave.add(itemEntity);
             }
 
-            for (ItemEntity saved : toSave) {
-                event.getDrops().remove(saved);
-
-                Tag itemTag = saved.getItem().save(player.registryAccess());
-
+            if (!toSave.isEmpty()) {
                 CompoundTag persisted = player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
-                persisted.put("SavedMaw", itemTag);
+                // Every saved Maw is appended, so several Symbiotic Aid Maws never overwrite each other
+                ListTag savedMaws = persisted.getList(RavenousCloneEvent.SAVED_MAWS_KEY, Tag.TAG_COMPOUND);
+
+                for (ItemEntity saved : toSave) {
+                    event.getDrops().remove(saved);
+                    savedMaws.add(saved.getItem().save(player.registryAccess()));
+                }
+
+                persisted.put(RavenousCloneEvent.SAVED_MAWS_KEY, savedMaws);
                 player.getPersistentData().put(Player.PERSISTED_NBT_TAG, persisted);
             }
         }
@@ -88,7 +93,7 @@ public class RavenousLivingDropsEvent {
 
         if (hasArcaneHypertrophy) {
             EnchantmentHandler enchantmentHandler = new EnchantmentHandler(stack);
-            boolean hasLootingMaxedOut = enchantmentHandler.hasMaxedOut(Enchantments.LOOTING, level);
+            boolean hasLootingMaxedOut = enchantmentHandler.hasMaxedOut(Enchantments.LOOTING, level.registryAccess());
 
             if (!hasLootingMaxedOut) {
                 return;

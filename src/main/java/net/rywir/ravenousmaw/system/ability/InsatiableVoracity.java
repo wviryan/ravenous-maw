@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system.ability;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -39,12 +40,12 @@ public class InsatiableVoracity implements IMutationAbility {
     }
 
     @Override
-    public void onCraft(ItemStack stack) {
+    public void onCraft(ItemStack stack, HolderLookup.Provider registries) {
         stack.set(DataComponentTypes.VORACITY_COMPONENT_TYPE, 0);
     }
 
     @Override
-    public void decraft(ItemStack stack) {
+    public void decraft(ItemStack stack, HolderLookup.Provider registries) {
         stack.remove(DataComponentTypes.VORACITY_COMPONENT_TYPE);
     }
 

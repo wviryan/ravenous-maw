@@ -1,6 +1,7 @@
 package net.rywir.ravenousmaw.system;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
@@ -45,7 +46,7 @@ public class MutationHandler {
         updateMap();
     }
 
-    public void addWithCraft(Mutations mutation) {
+    public void addWithCraft(Mutations mutation, HolderLookup.Provider registries) {
         if (has(mutation)) {
             return;
         }
@@ -59,12 +60,12 @@ public class MutationHandler {
         pseudoMutmap.put(mutation.key(), new MutationComponent.ConfigurationComponent(ImmutableMap.copyOf(pseudoConfmap)));
         stack.set(DataComponentTypes.MUTATION_COMPONENT_TYPE, new MutationComponent(ImmutableMap.copyOf(pseudoMutmap)));
 
-        mutation.ability().onCraft(stack);
+        mutation.ability().onCraft(stack, registries);
 
         updateMap();
     }
 
-    public void remove(Mutations mutation) {
+    public void remove(Mutations mutation, HolderLookup.Provider registries) {
         if (!has(mutation)) {
             return;
         }
@@ -73,7 +74,7 @@ public class MutationHandler {
         pseudo.remove(mutation.key());
         stack.set(DataComponentTypes.MUTATION_COMPONENT_TYPE, new MutationComponent(ImmutableMap.copyOf(pseudo)));
 
-        mutation.ability().decraft(stack);
+        mutation.ability().decraft(stack, registries);
 
         updateMap();
     }
@@ -132,7 +133,7 @@ public class MutationHandler {
         pseudoMutmap.put(mutation.key(), new MutationComponent.ConfigurationComponent(ImmutableMap.copyOf(pseudoConfmap)));
         stack.set(DataComponentTypes.MUTATION_COMPONENT_TYPE, new MutationComponent(ImmutableMap.copyOf(pseudoMutmap)));
 
-        mutation.ability().onUpdate(stack, level);
+        mutation.ability().onUpdate(stack, level.registryAccess());
 
         updateMap();
     }
@@ -177,7 +178,7 @@ public class MutationHandler {
         pseudoMutmap.put(mutation.key(), new MutationComponent.ConfigurationComponent(ImmutableMap.copyOf(pseudoConfmap)));
         stack.set(DataComponentTypes.MUTATION_COMPONENT_TYPE, new MutationComponent(ImmutableMap.copyOf(pseudoMutmap)));
 
-        mutation.ability().onUpdate(stack, level);
+        mutation.ability().onUpdate(stack, level.registryAccess());
 
         updateMap();
     }
@@ -204,7 +205,7 @@ public class MutationHandler {
         pseudoMutmap.put(mutation.key(), new MutationComponent.ConfigurationComponent(ImmutableMap.copyOf(pseudoConfmap)));
         stack.set(DataComponentTypes.MUTATION_COMPONENT_TYPE, new MutationComponent(ImmutableMap.copyOf(pseudoMutmap)));
 
-        mutation.ability().onUpdate(stack, level);
+        mutation.ability().onUpdate(stack, level.registryAccess());
 
         updateMap();
     }

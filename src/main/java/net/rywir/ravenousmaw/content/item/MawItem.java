@@ -60,11 +60,8 @@ public class MawItem extends Item {
 
     private static final Component DURABILITY_WARNING = Component.translatable("ravenousmaw.maw_threshold_message");
 
-    private static Stages stage;
-
     public MawItem(Stages stage) {
         super(createProperties(stage));
-        this.stage = stage;
     }
 
     @Override
@@ -203,6 +200,12 @@ public class MawItem extends Item {
             return dispatcher.use(handler, player.getItemInHand(hand), level, player, hand);
         }
 
+        // The menu is bound to the main hand. From the offhand, let shift+use fall through so the main hand
+        // item (e.g. a torch) keeps working.
+        if (hand != InteractionHand.MAIN_HAND) {
+            return InteractionResultHolder.pass(stack);
+        }
+
         callMenu(serverPlayer, player, stack);
 
         return InteractionResultHolder.success(stack);
@@ -251,7 +254,7 @@ public class MawItem extends Item {
         if (!(entity instanceof ServerPlayer player) || level.isClientSide()) return;
 
         MawTickData tickData = player.getData(RavenousAttachments.MAW_TICK_DATA);
-        tickData.incrementTicks();
+        tickData.advance(level.getGameTime());
         int ticks = tickData.getTickCounter();
 
         MutationHandler mutationHandler = new MutationHandler(stack);
@@ -314,7 +317,9 @@ public class MawItem extends Item {
         boolean result = dispatcher.interactLivingEntity(stack, player, entity);
 
         if (result) {
-            return InteractionResult.PASS;
+            // SUCCESS consumes the interaction. PASS would let the pet's own mobInteract run,
+            // which sees its new owner clicking and toggles it back to standing.
+            return InteractionResult.SUCCESS;
         } else {
             return super.interactLivingEntity(stack, player, entity, hand);
         }
@@ -417,8 +422,11 @@ public class MawItem extends Item {
 
         List<BlockPos> positions = new ArrayList<>();
 
+        // Trace as far as the player can actually reach (Tendril Lash extends it), plus a margin so the
+        // targeted block is never missed by rounding at the edge of the reach.
+        double reach = player.blockInteractionRange() + 1.0;
         BlockHitResult traceResult = player.level().clip(new ClipContext(player.getEyePosition(1f),
-            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(6f))),
+            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(reach))),
             ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         if(traceResult.getType() == HitResult.Type.MISS) {
             return positions;
@@ -456,8 +464,10 @@ public class MawItem extends Item {
 
         Set<BlockPos> positions = new HashSet<>();
 
+        // Same reach as the List overload, so the highlight matches what is really broken.
+        double reach = player.blockInteractionRange() + 1.0;
         BlockHitResult traceResult = player.level().clip(new ClipContext(player.getEyePosition(1f),
-            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(6f))),
+            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(reach))),
             ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         if(traceResult.getType() == HitResult.Type.MISS) {
             return positions;
@@ -594,11 +604,21 @@ public class MawItem extends Item {
             .build();
     }
 
-    public boolean canSurvive(ItemStack stack, Level level, LivingEntity entity) {
+    /**
+     * Whether spending {@code cost} durability still leaves the Maw above its protected threshold.
+     * Unbreakable Maws (Undying Flesh) never lose durability, so any cost is affordable.
+     */
+    public static boolean canAfford(ItemStack stack, int cost) {
+        if (!stack.isDamageableItem()) return true;
+
         int remainingDurability = stack.getMaxDamage() - stack.getDamageValue();
         int threshold = (int) (stack.getMaxDamage() * Constants.MAW_DURABILITY_PERCENTAGE_THRESHOLD);
 
-        if (remainingDurability > threshold) {
+        return remainingDurability - cost > threshold;
+    }
+
+    public boolean canSurvive(ItemStack stack, Level level, LivingEntity entity) {
+        if (canAfford(stack, 0)) {
             return true;
         }
 
@@ -608,9 +628,5 @@ public class MawItem extends Item {
         }
 
         return false;
-    }
-
-    public static Stages getStage() {
-        return stage;
     }
 }

@@ -12,6 +12,10 @@ public class MawTickData {
 
     private int tickCounter;
 
+    // Not saved: only used to tell whether this game tick was already counted.
+    private long lastGameTime = -1;
+    private boolean resetPending;
+
     public MawTickData() {
         this.tickCounter = 0;
     }
@@ -24,11 +28,24 @@ public class MawTickData {
         return tickCounter;
     }
 
-    public void incrementTicks() {
+    /**
+     * Advances the counter once per game tick, however many Maw stacks call it.
+     * inventoryTick runs once per stack, so every stack in the same tick must see the same value.
+     * A pending reset is applied here, on the next tick, so it never lands in the middle of a tick.
+     */
+    public void advance(long gameTime) {
+        if (gameTime == lastGameTime) return;
+        lastGameTime = gameTime;
+
+        if (resetPending) {
+            tickCounter = 0;
+            resetPending = false;
+        }
         tickCounter++;
     }
 
+    /** Restarts the counter on the next {@link #advance(long)}, keeping the current value for this tick. */
     public void resetTicks() {
-        tickCounter = 0;
+        resetPending = true;
     }
 }

@@ -12,7 +12,7 @@ import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 
 public class ArcaneHypertrophy implements IMutationAbility {
     // look into RavenousLivingDropsEvent for Looting III
-    // look into RavenousBlockDropsEvent for Fortune III
+    // look into RavenousBlockDropsEvent for Fortune III (duplicates every drop, skipped with Silk Touch)
 
     // Sharpness V
     @Override
@@ -25,13 +25,13 @@ public class ArcaneHypertrophy implements IMutationAbility {
 
         EnchantmentHandler enchantmentHandler = new EnchantmentHandler(stack);
 
-        boolean hasMaxedOutSharpness = enchantmentHandler.hasMaxedOut(Enchantments.SHARPNESS, level);
+        boolean hasMaxedOutSharpness = enchantmentHandler.hasMaxedOut(Enchantments.SHARPNESS, level.registryAccess());
 
         if (!hasMaxedOutSharpness) {
             return 0;
         }
         
-        int enchantmentLevel = enchantmentHandler.getEnchLevel(Enchantments.SHARPNESS, level);
+        int enchantmentLevel = enchantmentHandler.getEnchLevel(Enchantments.SHARPNESS, level.registryAccess());
 
         return 0.5f * ((float) enchantmentLevel) + 0.5f;
     }
