@@ -35,6 +35,10 @@ public class Constants {
     public static final float MAW_DURABILITY_PERCENTAGE_THRESHOLD = 0.05F;
     public static final int MAW_HIT_DURABILITY_COST = 1;
 
+    // MUTATION CONSTANTS - TECTONIC BITE
+    /** Minimum ticks between two "not enough durability" warnings for the same player. */
+    public static final int TECTONIC_BITE_WARNING_COOLDOWN_TICKS = 80;
+
     // FEAST
     public static final int BASE_NUTRITION_MODIFIER = 4;
     public static final float BASE_SATURATION_MODIFIER = 2.0F;
