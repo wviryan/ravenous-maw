@@ -584,11 +584,26 @@ public class MawItem extends Item {
             return true;
         }
 
-        if (level.isClientSide && entity instanceof Player player) {
+        // Client only, and rate limited: holding attack or mine calls this every tick.
+        if (level.isClientSide && entity instanceof Player player && isWarningReady(level)) {
             level.playSound(player, player.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 0.5F, 0.5F);
             player.displayClientMessage(DURABILITY_WARNING, true);
         }
 
         return false;
+    }
+
+    /** Game time of the last durability warning shown on this client. Only touched on the client. */
+    private static long lastDurabilityWarningTick = Long.MIN_VALUE;
+
+    private static boolean isWarningReady(Level level) {
+        long now = level.getGameTime();
+
+        if (now - lastDurabilityWarningTick < Constants.MAW_DURABILITY_WARNING_COOLDOWN_TICKS) {
+            return false;
+        }
+
+        lastDurabilityWarningTick = now;
+        return true;
     }
 }

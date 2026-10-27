@@ -34,6 +34,8 @@ public class Constants {
     public static final float MAW_ATTACK_SPEED_MODIFIER = -2.4F;
     public static final float MAW_DURABILITY_PERCENTAGE_THRESHOLD = 0.05F;
     public static final int MAW_HIT_DURABILITY_COST = 1;
+    /** Minimum ticks between two "below the durability threshold" warnings (sound + message) on a client. */
+    public static final int MAW_DURABILITY_WARNING_COOLDOWN_TICKS = 80;
 
     // MUTATION CONSTANTS - TECTONIC BITE
     /** Minimum ticks between two "not enough durability" warnings for the same player. */
