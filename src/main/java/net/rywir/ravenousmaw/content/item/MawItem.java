@@ -20,6 +20,7 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -143,29 +144,38 @@ public class MawItem extends Item {
 
     @Override
     public float getAttackDamageBonus(Entity target, float damage, DamageSource damageSource) {
-        Level level;
+        ItemStack stack = damageSource.getWeaponItem();
 
-        try {
-            level = target.level();
-        } catch (Exception e) {
-            return 1.0F;
+        if (stack == null) {
+            return 0F;
         }
+
+        Stages stage = new StageHandler(stack).getStage();
+
+        if (stage == null) {
+            return 0F;
+        }
+
+        Level level = target.level();
 
         if (level.isClientSide()) {
             return 0F;
         }
 
-        ItemStack stack = damageSource.getWeaponItem();
+        // Dragon hitboxes are separate entities; the bonus applies to the dragon itself (as in IrisBulletEntity).
+        if (target instanceof EnderDragonPart part) {
+            target = part.parentMob;
+        }
 
-        StageHandler handler = new StageHandler(stack);
-        Stages stage = handler.getStage();
+        // Boats, minecarts, item frames, end crystals, etc. take no mutation bonus.
+        if (!(target instanceof LivingEntity livingTarget)) {
+            return 0F;
+        }
 
         MutationHandler mutationHandler = new MutationHandler(stack);
-
         AbilityDispatcher dispatcher = new AbilityDispatcher();
-        float bonusDamage = dispatcher.getAttackDamageBonus(mutationHandler, stack, (LivingEntity) target, level, stage);
 
-        return bonusDamage;
+        return dispatcher.getAttackDamageBonus(mutationHandler, stack, livingTarget, level, stage);
     }
 
     @Override
