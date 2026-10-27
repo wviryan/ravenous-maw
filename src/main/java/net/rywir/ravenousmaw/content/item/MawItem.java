@@ -2,7 +2,6 @@ package net.rywir.ravenousmaw.content.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -33,10 +32,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.rywir.ravenousmaw.content.attachment.MawTickData;
+import net.rywir.ravenousmaw.content.client.ClientHooks;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
 import net.rywir.ravenousmaw.content.gui.menu.ConfigurationMenu;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
@@ -119,7 +120,8 @@ public class MawItem extends Item {
             tooltipComponents.add(tooltip);
         }
 
-        if (Screen.hasShiftDown()) {
+        // Tooltips are built on the client, but the dist check keeps the client class from loading on a server.
+        if (FMLEnvironment.dist.isClient() && ClientHooks.isShiftDown()) {
             String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
             tooltipComponents.add(Component.literal(mutationString + ":").withStyle(ChatFormatting.YELLOW));
             displayNames.forEach(name -> tooltipComponents.add(Component.literal("・" + name).withStyle(ChatFormatting.GRAY))
