@@ -35,7 +35,6 @@ public class IrisBulletEntity extends AbstractArrow {
     private static final double DEFAULT_GRAVITY = 0.01;
     private static final int DESTRUCTION_TICKS = 20 * 2;
 
-    private final boolean tracing;
     private MutationHandler handler;
     private AbilityDispatcher dispatcher;
     private Stages stage;
@@ -48,9 +47,12 @@ public class IrisBulletEntity extends AbstractArrow {
     private static final EntityDataAccessor<Float> POWER =
         SynchedEntityData.defineId(IrisBulletEntity.class, EntityDataSerializers.FLOAT);
 
+    // Synced so the client copy (built from the spawn packet) knows to draw the tracing particles.
+    private static final EntityDataAccessor<Boolean> TRACING =
+        SynchedEntityData.defineId(IrisBulletEntity.class, EntityDataSerializers.BOOLEAN);
+
     public IrisBulletEntity(EntityType<? extends AbstractArrow> type, Level level) {
         super(type, level);
-        this.tracing = false;
     }
 
     public IrisBulletEntity(LivingEntity shooter, Level level, boolean tracing, MutationHandler handler, AbilityDispatcher dispatcher, Stages stage, ItemStack stack) {
@@ -63,7 +65,7 @@ public class IrisBulletEntity extends AbstractArrow {
         );
         this.setNoGravity(tracing);
 
-        this.tracing = tracing;
+        this.entityData.set(TRACING, tracing);
         this.handler = handler;
         this.stage = stage;
         this.dispatcher = dispatcher;
@@ -79,6 +81,11 @@ public class IrisBulletEntity extends AbstractArrow {
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(POWER, 1.0F);
+        builder.define(TRACING, false);
+    }
+
+    public boolean isTracing() {
+        return this.entityData.get(TRACING);
     }
 
     public void setPower(float power) {
@@ -99,7 +106,7 @@ public class IrisBulletEntity extends AbstractArrow {
         super.tick();
 
         if (this.level().isClientSide) {
-            if (tracing) {
+            if (isTracing()) {
                 this.level().addParticle(
                     ParticleTypes.ENCHANT,
                     this.getX(), this.getY(), this.getZ(),
@@ -126,7 +133,7 @@ public class IrisBulletEntity extends AbstractArrow {
             return;
         }
 
-        if (!tracing) {
+        if (!isTracing()) {
             return;
         }
 
