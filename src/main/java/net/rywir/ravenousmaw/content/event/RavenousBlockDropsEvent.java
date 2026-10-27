@@ -15,7 +15,7 @@ import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.EnchantmentHandler;
 import net.rywir.ravenousmaw.system.MutationHandler;
 
-import java.util.Random;
+import java.util.List;
 
 public class RavenousBlockDropsEvent {
     @SubscribeEvent
@@ -59,22 +59,41 @@ public class RavenousBlockDropsEvent {
             return;
         }
 
+        // Silk Touch drops the ore block itself, duplicating it would be a free ore farm
+        boolean hasSilkTouch = enchantmentHandler.getEnchLevel(Enchantments.SILK_TOUCH, level) > 0;
+
+        if (hasSilkTouch) {
+            return;
+        }
+
+        // Some loot tables or mods leave nothing to duplicate
+        if (event.getDrops().isEmpty()) {
+            return;
+        }
+
         int fortuneLevel = enchantmentHandler.getEnchLevel(Enchantments.FORTUNE, level);
 
-        Random random = new Random();
-        int multiplier = random.nextInt(fortuneLevel + 1);
+        // 0 to fortuneLevel extra copies of every drop, so Fortune III gives 1x to 4x the vanilla amount
+        int extraCopies = level.random.nextInt(fortuneLevel + 1);
 
-        ItemEntity drop = event.getDrops().getFirst();
+        // Snapshot, because the duplicates are added to the same list
+        List<ItemEntity> originals = List.copyOf(event.getDrops());
 
-        for (int i = 0; i < multiplier + 1; i++) {
-            ItemEntity duplicate = new ItemEntity(
-                level,
-                event.getPos().getX(),
-                event.getPos().getY(),
-                event.getPos().getZ(),
-                drop.getItem().copy()
-            );
-            level.addFreshEntity(duplicate);
+        for (int i = 0; i < extraCopies; i++) {
+            for (ItemEntity original : originals) {
+                // Same position and motion as the original drop (block centre, vanilla scatter)
+                ItemEntity duplicate = new ItemEntity(
+                    level,
+                    original.getX(),
+                    original.getY(),
+                    original.getZ(),
+                    original.getItem().copy(),
+                    original.getDeltaMovement().x,
+                    original.getDeltaMovement().y,
+                    original.getDeltaMovement().z
+                );
+                event.getDrops().add(duplicate);
+            }
         }
     }
 }

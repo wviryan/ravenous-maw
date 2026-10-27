@@ -12,7 +12,7 @@ import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 
 public class ArcaneHypertrophy implements IMutationAbility {
     // look into RavenousLivingDropsEvent for Looting III
-    // look into RavenousBlockDropsEvent for Fortune III
+    // look into RavenousBlockDropsEvent for Fortune III (duplicates every drop, skipped with Silk Touch)
 
     // Sharpness V
     @Override
