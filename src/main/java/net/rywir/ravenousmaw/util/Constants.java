@@ -51,6 +51,8 @@ public class Constants {
     public static final float COMBUSTIVE_ENZYME_ADVANCED_DAMAGE_BONUS = 2.0F;
     public static final float COMBUSTIVE_ENZYME_NOBLE_DAMAGE_BONUS = 4.0F;
     public static final float COMBUSTIVE_ENZYME_EXCELSIOR_DAMAGE_BONUS = 6.0F;
+    /** Fire Aspect Maws: ticks between the hit and the explosion. */
+    public static final int COMBUSTIVE_ENZYME_FUSE_TICKS = 12;
 
     // MUTATION CONSTANTS - RESONANT RENDING
     public static final float RESONANT_RENDING_PERCENTAGE = 0.06F;

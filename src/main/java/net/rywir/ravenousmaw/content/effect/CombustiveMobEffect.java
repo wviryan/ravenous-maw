@@ -20,6 +20,24 @@ public class CombustiveMobEffect extends MobEffect {
 
     private static final float EXPLOSION_POWER = 1.5F;
 
+    /** Amplifier of the short-fuse variant applied by Fire Aspect Maws; it explodes when it runs out. */
+    public static final int FUSE_AMPLIFIER = 1;
+
+    @Override
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+        return amplifier == FUSE_AMPLIFIER && duration == 1;
+    }
+
+    @Override
+    public boolean applyEffectTick(@NotNull LivingEntity target, int amplifier) {
+        if (amplifier == FUSE_AMPLIFIER && !target.level().isClientSide()) {
+            // The effect carries no source, so the last attacker is credited and spared from the blast.
+            explode(target, target.getLastHurtByMob());
+        }
+
+        return true;
+    }
+
     @Override
     public void onMobHurt(LivingEntity target, int amplifier, @NotNull DamageSource damageSource, float amount) {
         Level level = target.level();
@@ -28,14 +46,21 @@ public class CombustiveMobEffect extends MobEffect {
             return;
         }
 
-        if (!damageSource.is(DamageTypeTags.IS_FIRE)) {
+        // The fuse variant explodes on its own timer, not on fire damage.
+        if (amplifier == FUSE_AMPLIFIER || !damageSource.is(DamageTypeTags.IS_FIRE)) {
             return;
         }
 
         // Credited to whoever dealt the fire damage, who is also spared from the blast.
-        Entity owner = damageSource.getEntity();
+        explode(target, damageSource.getEntity());
 
-        level.explode(
+        // Vanilla calls this while iterating the live effect map, so removing the effect here would throw a
+        // ConcurrentModificationException when the target has other effects. Remove it after the loop instead.
+        target.getServer().execute(() -> target.removeEffect(RavenousMobEffects.COMBUSTIVE));
+    }
+
+    private static void explode(LivingEntity target, Entity owner) {
+        target.level().explode(
             owner,
             null,
             new ExplosionDamageCalculator() {
@@ -51,9 +76,5 @@ public class CombustiveMobEffect extends MobEffect {
             false,
             Level.ExplosionInteraction.NONE
         );
-
-        // Vanilla calls this while iterating the live effect map, so removing the effect here would throw a
-        // ConcurrentModificationException when the target has other effects. Remove it after the loop instead.
-        target.getServer().execute(() -> target.removeEffect(RavenousMobEffects.COMBUSTIVE));
     }
 }

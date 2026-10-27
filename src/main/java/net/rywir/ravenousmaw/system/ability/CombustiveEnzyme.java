@@ -3,6 +3,12 @@ package net.rywir.ravenousmaw.system.ability;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.rywir.ravenousmaw.content.effect.CombustiveMobEffect;
+import net.rywir.ravenousmaw.system.EnchantmentHandler;
+import net.rywir.ravenousmaw.util.Constants;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,6 +36,14 @@ public class CombustiveEnzyme implements IMutationAbility {
             return;
         }
 
+        // Fire Aspect: no two-hit combo, the hit lights a short fuse and the target explodes right after.
+        boolean hasFireAspect = new EnchantmentHandler(stack).getEnchLevel(Enchantments.FIRE_ASPECT, level.registryAccess()) > 0;
+
+        if (hasFireAspect) {
+            lightFuse(target, (ServerLevel) level);
+            return;
+        }
+
         boolean hasEffect = target.hasEffect(RavenousMobEffects.COMBUSTIVE);
 
         int durationInSeconds = 5;
@@ -40,6 +54,21 @@ public class CombustiveEnzyme implements IMutationAbility {
             target.removeEffect(RavenousMobEffects.COMBUSTIVE);
             ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + 0.5, target.getZ(), 8, 0.2, 0.2, 0.2, 0.02);
         }
+    }
+
+    private static void lightFuse(LivingEntity target, ServerLevel level) {
+        MobEffectInstance current = target.getEffect(RavenousMobEffects.COMBUSTIVE);
+
+        // A running fuse keeps its timer. Anything else is replaced so a stale normal effect doesn't resurface after the blast.
+        if (current != null && current.getAmplifier() == CombustiveMobEffect.FUSE_AMPLIFIER) {
+            return;
+        }
+
+        target.removeEffect(RavenousMobEffects.COMBUSTIVE);
+        target.addEffect(new MobEffectInstance(RavenousMobEffects.COMBUSTIVE, Constants.COMBUSTIVE_ENZYME_FUSE_TICKS, CombustiveMobEffect.FUSE_AMPLIFIER));
+
+        level.playSound(null, target.blockPosition(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+        level.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + 0.5, target.getZ(), 8, 0.2, 0.2, 0.2, 0.02);
     }
 
     @Override
@@ -53,7 +82,8 @@ public class CombustiveEnzyme implements IMutationAbility {
         Holder<MobEffect> effect = RavenousMobEffects.COMBUSTIVE;
         boolean hasEffect = target.hasEffect(effect);
 
-        if (!hasEffect) {
+        // Fuse hits only get the explosion, not the stage bonus.
+        if (!hasEffect || target.getEffect(effect).getAmplifier() == CombustiveMobEffect.FUSE_AMPLIFIER) {
             return 0.0F;
         }
 
