@@ -42,6 +42,10 @@ public class Constants {
     public static final int TENDRIL_LASH_NOBLE_EXTRA_RANGE = 1;
     public static final int TENDRIL_LASH_EXCELSIOR_EXTRA_RANGE = 2;
 
+    // MUTATION CONSTANTS - ELECTRIC MENDING
+    public static final int ELECTRIC_MENDING_ATTACK_ENERGY_COST = 25;
+    public static final float ELECTRIC_MENDING_LOW_ENERGY_DAMAGE_MULTIPLIER = 0.1F;
+
     // MUTATION CONSTANTS - COMBUSTIVE ENZYME
     public static final float COMBUSTIVE_ENZYME_ADVANCED_DAMAGE_BONUS = 2.0F;
     public static final float COMBUSTIVE_ENZYME_NOBLE_DAMAGE_BONUS = 4.0F;

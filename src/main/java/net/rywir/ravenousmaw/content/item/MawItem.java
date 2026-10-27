@@ -175,6 +175,9 @@ public class MawItem extends Item {
         float bonus = dispatcher.getAttackDamageBonus(mutationHandler, stack, livingTarget, level, stage);
         float multiplier = dispatcher.getDamageMultiplier(mutationHandler);
 
+        // Electric Mending: an empty battery weakens the whole hit, applied after every other multiplier.
+        multiplier *= dispatcher.getHitDamageMultiplier(mutationHandler, stack);
+
         // Vanilla adds our return value to `damage`, so return only what is left after multiplying the whole hit.
         return (damage + bonus) * multiplier - damage;
     }

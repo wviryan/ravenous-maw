@@ -10,12 +10,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.Stages;
+import net.rywir.ravenousmaw.system.ability.ElectricMending;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 
 public class AbilityDispatcher implements IMutationAbility {
     @Override
     public void onAttack(ItemStack stack, LivingEntity target, Level level) {
         Mutations.COMBUSTIVE_ENZYME.ability().onAttack(stack, target, level);
+        Mutations.ELECTRIC_MENDING.ability().onAttack(stack, target, level);
     }
 
     @Override
@@ -55,6 +57,11 @@ public class AbilityDispatcher implements IMutationAbility {
     /** Reckless Devourer (Adaptive Shift): multiplies the whole hit, base damage included. */
     public float getDamageMultiplier(MutationHandler handler) {
         return Mutations.ADAPTIVE_SHIFT.ability().getDamageMultiplier(handler);
+    }
+
+    /** Electric Mending: weakens the whole melee hit when the battery cannot pay for it. */
+    public float getHitDamageMultiplier(MutationHandler handler, ItemStack stack) {
+        return ((ElectricMending) Mutations.ELECTRIC_MENDING.ability()).getHitDamageMultiplier(handler, stack);
     }
 
     @Override
