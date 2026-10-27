@@ -109,6 +109,12 @@ public class IrisBulletEntity extends AbstractArrow {
             return;
         }
 
+        // A bullet loaded from an old save (before noSave) has no ability state; it cannot hit anything.
+        if (dispatcher == null) {
+            this.discard();
+            return;
+        }
+
         if (this.inGround || this.tickCount > 200) {
             onGroundTicks++;
 
