@@ -248,7 +248,7 @@ public class MawItem extends Item {
         if (!(entity instanceof ServerPlayer player) || level.isClientSide()) return;
 
         MawTickData tickData = player.getData(RavenousAttachments.MAW_TICK_DATA);
-        tickData.incrementTicks();
+        tickData.advance(level.getGameTime());
         int ticks = tickData.getTickCounter();
 
         MutationHandler mutationHandler = new MutationHandler(stack);
