@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public enum Stages implements Tier {
-    LATENT(Component.translatable("stage.ravenousmaw.latent"), 0, Items.ROTTEN_FLESH, RavenousBlockTagsProvider.INCORRECT_MAW, Constants.LATENT_TIER_USES, Constants.LATENT_TIER_SPEED, Constants.LATENT_TIER_ATTACK_DAMAGE_BONUS, Constants.LATENT_TIER_ENCHANTMENT_VALUE, EntityType.ENDER_DRAGON),
-    ADVANCED(Component.translatable("stage.ravenousmaw.advanced"), 1, RavenousItems.PIGLIN_PIE.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.ADVANCED_TIER_USES, Constants.ADVANCED_TIER_SPEED, Constants.ADVANCED_TIER_ATTACK_DAMAGE_BONUS, Constants.ADVANCED_TIER_ENCHANTMENT_VALUE, EntityType.WITHER),
+    LATENT(Component.translatable("stage.ravenousmaw.latent"), 0, Items.ROTTEN_FLESH, RavenousBlockTagsProvider.INCORRECT_MAW, Constants.LATENT_TIER_USES, Constants.LATENT_TIER_SPEED, Constants.LATENT_TIER_ATTACK_DAMAGE_BONUS, Constants.LATENT_TIER_ENCHANTMENT_VALUE, EntityType.WITHER),
+    ADVANCED(Component.translatable("stage.ravenousmaw.advanced"), 1, RavenousItems.PIGLIN_PIE.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.ADVANCED_TIER_USES, Constants.ADVANCED_TIER_SPEED, Constants.ADVANCED_TIER_ATTACK_DAMAGE_BONUS, Constants.ADVANCED_TIER_ENCHANTMENT_VALUE, EntityType.ENDER_DRAGON),
     NOBLE(Component.translatable("stage.ravenousmaw.noble"), 2, RavenousItems.CHORUS_CRACKER.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.NOBLE_TIER_USES, Constants.NOBLE_TIER_SPEED, Constants.NOBLE_TIER_ATTACK_DAMAGE_BONUS, Constants.NOBLE_TIER_ENCHANTMENT_VALUE, EntityType.WARDEN ),
     EXCELSIOR(Component.translatable("stage.ravenousmaw.excelsior"), 3, RavenousItems.SCULK_CROISSANT.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.EXCELSIOR_TIER_USES, Constants.EXCELSIOR_TIER_SPEED, Constants.EXCELSIOR_TIER_ATTACK_DAMAGE_BONUS, Constants.EXCELSIOR_TIER_ENCHANTMENT_VALUE, null );
 
