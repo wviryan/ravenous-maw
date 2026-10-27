@@ -291,19 +291,6 @@ public class MutationHandler {
         return parameters;
     }
 
-    public List<Mutations.Parameters> getNonHiddenParameters() {
-        Set<Mutations> muts = matchMutations();
-        List<Mutations.Parameters> parameters = new ArrayList<>();
-
-        for (var mut : muts) {
-            for (var param : mut.parameters()) {
-                parameters.add(param);
-            }
-        }
-
-        return parameters;
-    }
-
     public Set<Mutations> matchMutations() {
         MutationComponent component = stack.get(DataComponentTypes.MUTATION_COMPONENT_TYPE);
 

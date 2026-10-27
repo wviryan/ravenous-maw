@@ -19,7 +19,7 @@ import net.rywir.ravenousmaw.content.item.MawItem;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.MutationHandler;
 
-import java.util.Set;
+import java.util.List;
 
 public class RavenousRenderHighlightEvent {
     private static final float RED = 0.0F;
@@ -37,7 +37,7 @@ public class RavenousRenderHighlightEvent {
 
         ItemStack heldItem = player.getMainHandItem();
 
-        if (!(heldItem.getItem() instanceof MawItem mawItem)) {
+        if (!(heldItem.getItem() instanceof MawItem)) {
             return;
         }
 
@@ -56,7 +56,7 @@ public class RavenousRenderHighlightEvent {
         }
 
         BlockPos targetPos = event.getTarget().getBlockPos();
-        Set<BlockPos> blocksToDestroy = mawItem.getBlocksToBeDestroyed(range, targetPos, player);
+        List<BlockPos> blocksToDestroy = MawItem.getBlocksToBeDestroyed(range, targetPos, player);
 
         Vec3 cameraPos = event.getCamera().getPosition();
         VertexConsumer lineRenderer = event.getMultiBufferSource().getBuffer(RenderType.lines());

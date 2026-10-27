@@ -417,7 +417,11 @@ public class MawItem extends Item {
             && !player.isSecondaryUseActive();
     }
 
-    public static List<BlockPos> getBlocksToBeDestroyed(int range, BlockPos initalBlockPos, ServerPlayer player) {
+    /**
+     * Blocks of the square (side {@code range}) around {@code initalBlockPos}, on the face the player is looking at.
+     * Used by both the server (Tectonic Bite break) and the client (highlight), so they always agree.
+     */
+    public static List<BlockPos> getBlocksToBeDestroyed(int range, BlockPos initalBlockPos, Player player) {
         range = (range - 1) / 2;
 
         List<BlockPos> positions = new ArrayList<>();
@@ -432,68 +436,15 @@ public class MawItem extends Item {
             return positions;
         }
 
-        if(traceResult.getDirection() == Direction.DOWN || traceResult.getDirection() == Direction.UP) {
-            for(int x = -range; x <= range; x++) {
-                for(int y = -range; y <= range; y++) {
-                    positions.add(new BlockPos(initalBlockPos.getX() + x, initalBlockPos.getY(), initalBlockPos.getZ() + y));
-                }
-            }
-        }
+        // The square lies in the plane of the hit face: the two axes other than the face normal.
+        Direction.Axis normal = traceResult.getDirection().getAxis();
 
-        if(traceResult.getDirection() == Direction.NORTH || traceResult.getDirection() == Direction.SOUTH) {
-            for(int x = -range; x <= range; x++) {
-                for(int y = -range; y <= range; y++) {
-                    positions.add(new BlockPos(initalBlockPos.getX() + x, initalBlockPos.getY() + y, initalBlockPos.getZ()));
-                }
-            }
-        }
-
-        if(traceResult.getDirection() == Direction.EAST || traceResult.getDirection() == Direction.WEST) {
-            for(int x = -range; x <= range; x++) {
-                for(int y = -range; y <= range; y++) {
-                    positions.add(new BlockPos(initalBlockPos.getX(), initalBlockPos.getY() + y, initalBlockPos.getZ() + x));
-                }
-            }
-        }
-
-        return positions;
-    }
-
-    public static Set<BlockPos> getBlocksToBeDestroyed(int range, BlockPos initalBlockPos, Player player) {
-        range = (range - 1) / 2;
-
-        Set<BlockPos> positions = new HashSet<>();
-
-        // Same reach as the List overload, so the highlight matches what is really broken.
-        double reach = player.blockInteractionRange() + 1.0;
-        BlockHitResult traceResult = player.level().clip(new ClipContext(player.getEyePosition(1f),
-            (player.getEyePosition(1f).add(player.getViewVector(1f).scale(reach))),
-            ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
-        if(traceResult.getType() == HitResult.Type.MISS) {
-            return positions;
-        }
-
-        if(traceResult.getDirection() == Direction.DOWN || traceResult.getDirection() == Direction.UP) {
-            for(int x = -range; x <= range; x++) {
-                for(int y = -range; y <= range; y++) {
-                    positions.add(new BlockPos(initalBlockPos.getX() + x, initalBlockPos.getY(), initalBlockPos.getZ() + y));
-                }
-            }
-        }
-
-        if(traceResult.getDirection() == Direction.NORTH || traceResult.getDirection() == Direction.SOUTH) {
-            for(int x = -range; x <= range; x++) {
-                for(int y = -range; y <= range; y++) {
-                    positions.add(new BlockPos(initalBlockPos.getX() + x, initalBlockPos.getY() + y, initalBlockPos.getZ()));
-                }
-            }
-        }
-
-        if(traceResult.getDirection() == Direction.EAST || traceResult.getDirection() == Direction.WEST) {
-            for(int x = -range; x <= range; x++) {
-                for(int y = -range; y <= range; y++) {
-                    positions.add(new BlockPos(initalBlockPos.getX(), initalBlockPos.getY() + y, initalBlockPos.getZ() + x));
-                }
+        for(int a = -range; a <= range; a++) {
+            for(int b = -range; b <= range; b++) {
+                int dx = normal == Direction.Axis.X ? 0 : a;
+                int dy = normal == Direction.Axis.Y ? 0 : (normal == Direction.Axis.X ? a : b);
+                int dz = normal == Direction.Axis.Z ? 0 : b;
+                positions.add(initalBlockPos.offset(dx, dy, dz));
             }
         }
 
