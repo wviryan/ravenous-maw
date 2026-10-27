@@ -33,6 +33,7 @@ public class Constants {
     public static final float MAW_ATTACK_DAMAGE_MODIFIER = 3.0F;
     public static final float MAW_ATTACK_SPEED_MODIFIER = -2.4F;
     public static final float MAW_DURABILITY_PERCENTAGE_THRESHOLD = 0.05F;
+    public static final int MAW_HIT_DURABILITY_COST = 1;
 
     // FEAST
     public static final int BASE_NUTRITION_MODIFIER = 4;

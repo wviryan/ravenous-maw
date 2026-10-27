@@ -16,6 +16,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -136,6 +137,9 @@ public class MawItem extends Item {
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         AbilityDispatcher dispatcher = new AbilityDispatcher();
         dispatcher.onAttack(stack, target, target.level());
+
+        // One cost per landed hit (sweep and Tendril Lash targets are free). Unbreakable Maws (Undying Flesh) ignore it.
+        stack.hurtAndBreak(Constants.MAW_HIT_DURABILITY_COST, attacker, EquipmentSlot.MAINHAND);
         return true;
     }
 

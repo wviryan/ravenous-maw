@@ -7,6 +7,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -56,6 +57,7 @@ public class RavenousMaw {
         NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, RavenousRegisterCommandsEvent::onRegisterCommandsEvent);
         NeoForge.EVENT_BUS.addListener(PlayerEvent.Clone.class, RavenousCloneEvent::onCloneEvent);
         NeoForge.EVENT_BUS.addListener(LivingDamageEvent.Post.class, RavenousLivingDamageEvent::onLivingDamageEvent);
+        NeoForge.EVENT_BUS.addListener(AttackEntityEvent.class, RavenousAttackEntityEvent::onAttackEntityEvent);
         NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Pre.class, RavenousPlayerTickEvent::onPlayerTickEvent);
 
         modEventBus.addListener(RegisterPayloadHandlersEvent.class, RavenousRegisterPayloadHandlersEvent::onRegisterPayloadHandlersEvent);
