@@ -8,8 +8,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.rywir.ravenousmaw.RavenousMaw;
 
-import java.util.function.Supplier;
-
 public class RavenousCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, RavenousMaw.MOD_ID);
 
@@ -17,7 +15,8 @@ public class RavenousCreativeModeTabs {
         CREATIVE_MODE_TABS.register(eventBus);
     }
 
-    private static final Supplier<CreativeModeTab> RAVENOUS_MAW_TAB = CREATIVE_MODE_TABS.register("ravenous_maw_creative_mode_tab", () -> CreativeModeTab.builder().icon(() -> new ItemStack(RavenousItems.PIGLIN_PIE.get())).title(Component.translatable("creativetab.ravenousmaw.ravenous_tab")).displayItems((itemDisplayParameters, output) -> {
+    static {
+        CREATIVE_MODE_TABS.register("ravenous_maw_creative_mode_tab", () -> CreativeModeTab.builder().icon(() -> new ItemStack(RavenousItems.PIGLIN_PIE.get())).title(Component.translatable("creativetab.ravenousmaw.ravenous_tab")).displayItems((itemDisplayParameters, output) -> {
         output.accept(RavenousItems.RAVENOUS_MAW_LATENT);
         output.accept(RavenousItems.RAVENOUS_MAW_ADVANCED);
         output.accept(RavenousItems.RAVENOUS_MAW_NOBLE);
@@ -32,4 +31,5 @@ public class RavenousCreativeModeTabs {
 
         output.accept(RavenousBlocks.MUTATION_MATRIX.get());
     }).build());
+    }
 }

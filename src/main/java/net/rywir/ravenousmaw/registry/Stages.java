@@ -31,12 +31,12 @@ public enum Stages implements Tier {
     private final float speed;
     private final float damage;
     private final int enchantmentValue;
-    private @Nullable final EntityType objective;
+    private @Nullable final EntityType<?> objective;
     private final Supplier<Ingredient> repairIngredient;
     private static final Map<Integer, Stages> BY_ID = new HashMap<>();
     private static final Set<EntityType<?>> OBJECTIVES = new HashSet<>();
 
-    Stages(Component displayName, int id, Item feast, TagKey<Block> incorrectBlockForDrops, int uses, float speed, float damage, int enchantmentValue, EntityType objective, Supplier<Ingredient> repairIngredient) {
+    Stages(Component displayName, int id, Item feast, TagKey<Block> incorrectBlockForDrops, int uses, float speed, float damage, int enchantmentValue, EntityType<?> objective, Supplier<Ingredient> repairIngredient) {
         this.displayName = displayName;
         this.id = id;
         this.feast = feast;
@@ -92,7 +92,7 @@ public enum Stages implements Tier {
         return feast;
     }
 
-    public @Nullable EntityType getObjective() {
+    public @Nullable EntityType<?> getObjective() {
         return objective;
     }
 

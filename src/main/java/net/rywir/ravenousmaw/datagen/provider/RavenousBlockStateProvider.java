@@ -19,10 +19,6 @@ public class RavenousBlockStateProvider extends BlockStateProvider {
         topSideBottom(RavenousBlocks.MUTATION_MATRIX);
     }
 
-    private void blockWithItem(DeferredBlock<?> deferredBlock) {
-        simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
-    }
-
     private void topSideBottom(DeferredBlock<?> deferred) {
         String name = deferred.getId().getPath();
         Block block = deferred.get();

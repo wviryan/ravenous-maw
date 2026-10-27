@@ -14,8 +14,6 @@ import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 
 public class ElectricMending implements IMutationAbility {
-    private static final int COOLDOWN = 20 * 60 * 4;
-
     @Override
     public void onCraft(ItemStack stack, HolderLookup.Provider registries) {
         stack.set(DataComponentTypes.STORED_ENERGY, 0);
