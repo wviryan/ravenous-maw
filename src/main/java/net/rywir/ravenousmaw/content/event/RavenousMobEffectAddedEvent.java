@@ -45,10 +45,11 @@ public class RavenousMobEffectAddedEvent {
 
         MobEffect instance = effect.value();
 
-        boolean isInstability = instance == RavenousMobEffects.SYMBIOTIC_INFECTION.get();
-        boolean isHarmful = instance.getCategory() != MobEffectCategory.HARMFUL;
+        boolean isInfection = instance == RavenousMobEffects.SYMBIOTIC_INFECTION.get();
+        boolean isHarmful = instance.getCategory() == MobEffectCategory.HARMFUL;
 
-        if (!isHarmful && isInstability) {
+        // Immunity only cleanses harmful effects, and never the Maw's own infection.
+        if (isInfection || !isHarmful) {
             return;
         }
 
