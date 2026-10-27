@@ -1,7 +1,6 @@
 package net.rywir.ravenousmaw.registry;
 
 import com.google.common.base.Suppliers;
-import com.ibm.icu.impl.CollectionSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -10,7 +9,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.rywir.ravenousmaw.util.Configs;
 import net.rywir.ravenousmaw.util.Constants;
 import net.rywir.ravenousmaw.datagen.provider.RavenousBlockTagsProvider;
 import org.jetbrains.annotations.NotNull;

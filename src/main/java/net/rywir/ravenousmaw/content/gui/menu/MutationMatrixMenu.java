@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.block.entity.MutationMatrixBlockEntity;
 import net.rywir.ravenousmaw.registry.MenuTypes;
 import net.rywir.ravenousmaw.registry.RavenousBlocks;

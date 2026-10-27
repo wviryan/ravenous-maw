@@ -8,7 +8,6 @@ import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 import net.rywir.ravenousmaw.util.Configs;
-import net.rywir.ravenousmaw.util.Constants;
 
 public class ResonantRending implements IMutationAbility {
     @Override

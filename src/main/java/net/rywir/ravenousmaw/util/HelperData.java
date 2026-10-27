@@ -1,11 +1,7 @@
 package net.rywir.ravenousmaw.util;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.rywir.ravenousmaw.content.item.FeastItem;
-import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousItems;
 import net.rywir.ravenousmaw.registry.Stages;
 

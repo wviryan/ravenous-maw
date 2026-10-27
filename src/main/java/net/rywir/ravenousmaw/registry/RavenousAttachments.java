@@ -1,6 +1,5 @@
 package net.rywir.ravenousmaw.registry;
 
-import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;

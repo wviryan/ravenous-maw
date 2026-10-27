@@ -8,7 +8,6 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.Tags;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;

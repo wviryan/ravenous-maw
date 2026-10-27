@@ -48,9 +48,7 @@ import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.util.Constants;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Supplier;
 
 public class MawItem extends Item {
     private static final int USE_DURATION               = 72000;

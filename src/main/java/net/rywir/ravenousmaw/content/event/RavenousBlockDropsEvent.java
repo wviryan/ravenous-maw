@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
-import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.EnchantmentHandler;

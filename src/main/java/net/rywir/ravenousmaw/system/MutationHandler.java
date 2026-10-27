@@ -1,10 +1,8 @@
 package net.rywir.ravenousmaw.system;
 
 import com.google.common.collect.ImmutableMap;
-import com.ibm.icu.impl.CollectionSet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
