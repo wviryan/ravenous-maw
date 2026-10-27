@@ -101,6 +101,7 @@
   "warning.ravenousmaw.unknown_mutation": "Unknown mutation: %s",
   "warning.ravenousmaw.no_electric_mending": "This maw has no Electric Mending!",
   "message.ravenousmaw.already_charged": "The maw is already fully charged.",
+  "message.ravenousmaw.tick_set": "Maw tick counter set to %s (instability at %s).",
   "message.ravenousmaw.charged": "Charged +%s FE (%s / %s FE).",
 
   "dialogue.ravenousmaw.latent": "Ravenous Maw: RmVlZCBtZSBtb3J0YWwh",

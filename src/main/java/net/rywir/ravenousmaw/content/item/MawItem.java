@@ -56,8 +56,6 @@ public class MawItem extends Item {
     private static final int USE_DURATION               = 72000;
     private static final int FULL_CHARGE_TICKS          = 20;
     private static final int ENERGY_COST_PER_DURABIITY  = 50;
-    private static final int MAX_TICKS                  = 20 * 60 * 9;
-    private static final int DIALOGUE_FREQUENCY         = 20 * 60 * 3;
 
     private static final Component DURABILITY_WARNING = Component.translatable("ravenousmaw.maw_threshold_message");
 
@@ -277,11 +275,11 @@ public class MawItem extends Item {
             mend(stack, mutationHandler);
         }
 
-        if (ticks % DIALOGUE_FREQUENCY == 0 && ticks != 0) {
+        if (ticks % Constants.MAW_DIALOGUE_TICKS == 0 && ticks != 0) {
             talk(stack, player, stage);
         }
 
-        if (ticks >= MAX_TICKS) {
+        if (ticks >= Constants.MAW_INSTABILITY_TICKS) {
             destabilize(stack, player, stage, mutationHandler);
             tickData.resetTicks();
         }

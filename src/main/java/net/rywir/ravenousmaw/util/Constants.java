@@ -39,6 +39,12 @@ public class Constants {
     /** Minimum ticks between two "not enough durability" warnings for the same player. */
     public static final int TECTONIC_BITE_WARNING_COOLDOWN_TICKS = 80;
 
+    // MAW TICK COUNTER (MawItem.inventoryTick)
+    /** Ticks between two instabilities (9 minutes). */
+    public static final int MAW_INSTABILITY_TICKS = 20 * 60 * 9;
+    /** Ticks between two dialogue lines (3 minutes). */
+    public static final int MAW_DIALOGUE_TICKS = 20 * 60 * 3;
+
     // FEAST
     public static final int BASE_NUTRITION_MODIFIER = 4;
     public static final float BASE_SATURATION_MODIFIER = 2.0F;

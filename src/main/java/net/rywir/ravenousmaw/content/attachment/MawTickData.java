@@ -28,6 +28,12 @@ public class MawTickData {
         return tickCounter;
     }
 
+    /** Debug only (/ravenousmaw tick): jumps the counter to {@code ticks} and drops any pending reset. */
+    public void setTickCounter(int ticks) {
+        this.tickCounter = ticks;
+        this.resetPending = false;
+    }
+
     /**
      * Advances the counter once per game tick, however many Maw stacks call it.
      * inventoryTick runs once per stack, so every stack in the same tick must see the same value.
