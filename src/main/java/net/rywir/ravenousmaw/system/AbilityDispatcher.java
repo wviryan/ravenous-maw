@@ -49,9 +49,18 @@ public class AbilityDispatcher implements IMutationAbility {
         float combustionBonus = Mutations.COMBUSTIVE_ENZYME.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float rendingBonus = Mutations.RESONANT_RENDING.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float voracityBonus = Mutations.INSATIABLE_VORACITY.ability().getAttackDamageBonus(handler, stack, target, level, stage);
-        float arcaneBonus = Mutations.ARCANE_HYPERTROPHY.ability().getAttackDamageBonus(handler, stack, target, level, stage);
+        float arcaneBonus = getTargetIndependentBonus(handler, stack, level, stage);
 
         return combustionBonus + rendingBonus + voracityBonus + arcaneBonus;
+    }
+
+    /**
+     * Bonus that does not depend on the target (Arcane Hypertrophy's Sharpness).
+     * Shared by {@link #getAttackDamageBonus} and the {@code /ravenousmaw damage} command.
+     */
+    public float getTargetIndependentBonus(MutationHandler handler, ItemStack stack, Level level, Stages stage) {
+        // Arcane Hypertrophy only reads the stack's enchantments, so it needs no target.
+        return Mutations.ARCANE_HYPERTROPHY.ability().getAttackDamageBonus(handler, stack, null, level, stage);
     }
 
     /** Reckless Devourer (Adaptive Shift): multiplies the whole hit, base damage included. */
