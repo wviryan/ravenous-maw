@@ -4,6 +4,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.EnderManAngerEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -62,6 +63,7 @@ public class RavenousMaw {
         NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Pre.class, RavenousPlayerTickEvent::onPlayerTickEvent);
         NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Pre.class, RavenousDimensionDeedEvent::onPlayerTickEvent);
         NeoForge.EVENT_BUS.addListener(LivingChangeTargetEvent.class, RavenousLivingChangeTargetEvent::onLivingChangeTarget);
+        NeoForge.EVENT_BUS.addListener(EnderManAngerEvent.class, RavenousEnderManAngerEvent::onEnderManAngerEvent);
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, RavenousAssimilationSyncEvent::onLoggedIn);
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerRespawnEvent.class, RavenousAssimilationSyncEvent::onRespawn);
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, RavenousAssimilationSyncEvent::onChangedDimension);

@@ -21,7 +21,8 @@ import java.util.Map;
  */
 public class RavenousDimensionDeedEvent {
     private static final Map<ResourceKey<Level>, Assimilations> DEED_BY_DIMENSION = Map.of(
-        Level.NETHER, Assimilations.GILDED_PHEROMONES
+        Level.NETHER, Assimilations.GILDED_PHEROMONES,
+        Level.END, Assimilations.NICTITATING_MEMBRANE
     );
 
     @SubscribeEvent
