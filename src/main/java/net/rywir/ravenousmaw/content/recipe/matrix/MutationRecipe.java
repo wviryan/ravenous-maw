@@ -118,6 +118,12 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
         return RavenousRecipes.MUTATION_RECIPE_TYPE.get();
     }
 
+    /** Only the Mutation Matrix runs this recipe, so it never shows in the recipe book (also silences the "can't be placed" warning). */
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
     /** Only the Mutation Matrix runs this recipe, so it never takes part in recipe-book placement. */
     @Override
     public PlacementInfo placementInfo() {
