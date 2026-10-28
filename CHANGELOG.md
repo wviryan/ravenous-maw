@@ -1,3 +1,10 @@
+[1.3.0]
+----------
+### Changed
+*   Ported to Minecraft 26.1.2 (NeoForge 26.1.2.124, Java 25). Gameplay is unchanged.
+*   Requires JEI 29 and Patchouli 26.1 for their integrations.
+*   Saved data from 1.21.1 does not carry over for assimilations and the Mutation Matrix contents.
+
 [1.2.0]
 ----------
 ### Added
