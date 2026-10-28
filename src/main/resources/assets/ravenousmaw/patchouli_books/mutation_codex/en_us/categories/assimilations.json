@@ -1,6 +1,6 @@
 {
   "name": "Assimilations",
-  "description": "Not every gift of the Maw is brewed in the Matrix. Some traits it drinks in from the world itself, once the hunter has proven a deed. Assimilations belong to the hunter, not to the vessel: a replacement Maw benefits at once, and nothing is lost on death.",
-  "icon": "minecraft:sculk_catalyst",
+  "description": "Not every gift of the Maw is brewed in the Matrix. Some traits it drinks in from the world itself, once the hunter has proven a deed. Assimilations belong to the hunter, not to the vessel: a replacement Maw benefits at once, and nothing is lost on death. Their power slumbers unless a Maw is carried, and hovering over the beast shows how many have been taken in.",
+  "icon": "ravenousmaw:textures/codex/assimilation.png",
   "sortnum": 4
 }

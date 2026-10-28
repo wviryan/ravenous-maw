@@ -1,8 +1,8 @@
 {
   "name": "Gilded Pheromones",
-  "icon": "minecraft:gold_ingot",
+  "icon": "ravenousmaw:textures/codex/gilded_pheromones.png",
   "category": "ravenousmaw:assimilations",
-  "sortnum": 1,
+  "sortnum": 0,
   "pages": [
     {
       "type": "patchouli:spotlight",

@@ -1,8 +1,8 @@
 {
   "name": "Aquanaut Coalescence",
-  "icon": "minecraft:heart_of_the_sea",
+  "icon": "ravenousmaw:textures/codex/aquanaut_coalescence.png",
   "category": "ravenousmaw:assimilations",
-  "sortnum": 3,
+  "sortnum": 2,
   "pages": [
     {
       "type": "patchouli:spotlight",

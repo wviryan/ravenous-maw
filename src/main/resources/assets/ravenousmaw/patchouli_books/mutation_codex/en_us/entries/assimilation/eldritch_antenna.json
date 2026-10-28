@@ -1,8 +1,8 @@
 {
   "name": "Eldritch Antenna",
-  "icon": "minecraft:echo_shard",
+  "icon": "ravenousmaw:textures/codex/eldritch_antenna.png",
   "category": "ravenousmaw:assimilations",
-  "sortnum": 5,
+  "sortnum": 4,
   "pages": [
     {
       "type": "patchouli:spotlight",

@@ -1,8 +1,8 @@
 {
   "name": "Nictitating Membrane",
-  "icon": "minecraft:ender_eye",
+  "icon": "ravenousmaw:textures/codex/nictitating_membrane.png",
   "category": "ravenousmaw:assimilations",
-  "sortnum": 2,
+  "sortnum": 1,
   "pages": [
     {
       "type": "patchouli:spotlight",

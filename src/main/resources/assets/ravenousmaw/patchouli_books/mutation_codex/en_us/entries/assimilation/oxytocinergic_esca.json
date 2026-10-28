@@ -1,8 +1,8 @@
 {
   "name": "Oxytocinergic Esca",
-  "icon": "minecraft:emerald",
+  "icon": "ravenousmaw:textures/codex/oxytocinergic_esca.png",
   "category": "ravenousmaw:assimilations",
-  "sortnum": 4,
+  "sortnum": 3,
   "pages": [
     {
       "type": "patchouli:spotlight",
