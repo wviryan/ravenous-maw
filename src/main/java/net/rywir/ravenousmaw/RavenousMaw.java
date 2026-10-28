@@ -4,9 +4,13 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.EnderManAngerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
@@ -59,6 +63,14 @@ public class RavenousMaw {
         NeoForge.EVENT_BUS.addListener(LivingDamageEvent.Post.class, RavenousLivingDamageEvent::onLivingDamageEvent);
         NeoForge.EVENT_BUS.addListener(AttackEntityEvent.class, RavenousAttackEntityEvent::onAttackEntityEvent);
         NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Pre.class, RavenousPlayerTickEvent::onPlayerTickEvent);
+        NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Pre.class, RavenousDimensionDeedEvent::onPlayerTickEvent);
+        NeoForge.EVENT_BUS.addListener(LivingChangeTargetEvent.class, RavenousLivingChangeTargetEvent::onLivingChangeTarget);
+        NeoForge.EVENT_BUS.addListener(EnderManAngerEvent.class, RavenousEnderManAngerEvent::onEnderManAngerEvent);
+        NeoForge.EVENT_BUS.addListener(MobEffectEvent.Added.class, RavenousMobEffectEvent::onMobEffectAdded);
+        NeoForge.EVENT_BUS.addListener(PlayerContainerEvent.Open.class, RavenousContainerOpenEvent::onContainerOpen);
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class,RavenousAssimilationSyncEvent::onLoggedIn);
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerRespawnEvent.class, RavenousAssimilationSyncEvent::onRespawn);
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, RavenousAssimilationSyncEvent::onChangedDimension);
 
         modEventBus.addListener(RegisterPayloadHandlersEvent.class, RavenousRegisterPayloadHandlersEvent::onRegisterPayloadHandlersEvent);
 
@@ -84,6 +96,8 @@ public class RavenousMaw {
         RavenousEntityTypes.register(modEventBus);
 
         RavenousAttachments.register(modEventBus);
+
+        RavenousLootModifiers.register(modEventBus);
 
         modEventBus.addListener(this::addCreative);
 

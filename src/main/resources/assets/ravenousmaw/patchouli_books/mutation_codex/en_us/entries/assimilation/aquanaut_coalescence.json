@@ -1,0 +1,26 @@
+{
+  "name": "Aquanaut Coalescence",
+  "icon": "ravenousmaw:textures/codex/aquanaut_coalescence.png",
+  "category": "ravenousmaw:assimilations",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:heart_of_the_sea"
+      },
+      "text": "Slay the Elder Guardian, and the Maw will drink in the ancient horror's gills. Beneath the waves, you breathe as the drowned do, without fear of the dark below."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:prismarine_shard"
+      },
+      "text": "The deep ceases to resist you. The beast bends the current to its will, and you glide through the water with a hunter's swiftness."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Deed (Advanced): slay an Elder Guardian. The deed counts only while you carry a Maw of the Advanced Stage or higher, and the gift sleeps without one."
+    }
+  ]
+}

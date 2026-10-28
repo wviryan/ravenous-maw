@@ -1,0 +1,26 @@
+{
+  "parent": "ravenousmaw:assimilation/gilded_pheromones",
+  "criteria": {
+    "assimilated": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.ravenousmaw.assimilation.nictitating_membrane.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:ender_eye"
+    },
+    "title": {
+      "translate": "advancement.ravenousmaw.assimilation.nictitating_membrane.title"
+    }
+  },
+  "requirements": [
+    [
+      "assimilated"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

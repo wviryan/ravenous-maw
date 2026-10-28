@@ -1,0 +1,26 @@
+{
+  "name": "Oxytocinergic Esca",
+  "icon": "ravenousmaw:textures/codex/oxytocinergic_esca.png",
+  "category": "ravenousmaw:assimilations",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:emerald"
+      },
+      "text": "Break a raid brought by the gravest of omens, and the Maw will learn how to lure the villagers with false kindness, as an angler dangles a glowing lure before the unwary."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:bread"
+      },
+      "text": "Each raid conquered thereafter deepens the lure, ever more so the greater its omen, until it can deepen no further. The villagers sell for less and less. Now and then, one will press a gift into your hands, and those with a strong lure give freely."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Deed (Noble): win a raid under the Bad Omen of the highest level. The deed counts only while you carry a Maw of the Noble Stage or higher, and the gift sleeps without one."
+    }
+  ]
+}

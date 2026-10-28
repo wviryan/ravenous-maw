@@ -1,5 +1,8 @@
 package net.rywir.ravenousmaw.content.event;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -13,17 +16,24 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
+import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.Stages;
+import net.rywir.ravenousmaw.system.AssimilationHandler;
 import net.rywir.ravenousmaw.system.MutationHandler;
+import net.rywir.ravenousmaw.system.OxytocinergicEsca;
 import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.system.ability.SymbioticAid;
+import net.rywir.ravenousmaw.util.Constants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class RavenousPlayerTickEvent {
     private static final int ENERGY_COST_PER_OPERATION = 5;
+    private static final int AQUANAUT_REFRESH_TICKS = 20;
+    private static final int GIFT_CHECK_TICKS = 20;
+    private static final int AQUANAUT_EFFECT_TICKS = 60;
 
     @SubscribeEvent
     public static void onPlayerTickEvent(PlayerTickEvent.Pre event) {
@@ -32,6 +42,13 @@ public class RavenousPlayerTickEvent {
         if (player.level().isClientSide()) return;
 
         SymbioticAid.cleanse(player);
+        applyAquanaut(player);
+        if (player instanceof ServerPlayer serverPlayer && player.tickCount % GIFT_CHECK_TICKS == 0) {
+            OxytocinergicEsca.tryGift(serverPlayer);
+        }
+        if (player instanceof ServerPlayer serverPlayer && player.tickCount % Constants.ELDRITCH_ANTENNA_CHECK_TICKS == 0) {
+            AssimilationHandler.checkEldritchAntenna(serverPlayer);
+        }
 
         ItemStack stack = player.getMainHandItem();
 
@@ -96,6 +113,20 @@ public class RavenousPlayerTickEvent {
 
             energy.extractEnergy(ENERGY_COST_PER_OPERATION, false);
         }
+    }
+
+    /**
+     * Aquanaut Coalescence: while in water, keeps hidden Water Breathing and Dolphin's Grace on the player.
+     * The effects are short and renewed every second, so they fade soon after leaving the water or dropping the Maw.
+     */
+    private static void applyAquanaut(Player player) {
+        if (player.tickCount % AQUANAUT_REFRESH_TICKS != 0) return;
+        if (!player.isInWaterOrBubble()) return;
+        if (!AssimilationHandler.isActive(player, Assimilations.AQUANAUT_COALESCENCE)) return;
+
+        // Ambient, no particles, no HUD icon: the trait is part of the Maw, not a potion.
+        player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, AQUANAUT_EFFECT_TICKS, 0, true, false, false));
+        player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, AQUANAUT_EFFECT_TICKS, 0, true, false, false));
     }
 
     private static boolean canReachPlayer(@NotNull Player player, @NotNull ItemEntity target) {

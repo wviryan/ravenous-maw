@@ -16,7 +16,7 @@
       "item": {
         "item": "minecraft:slime_ball"
       },
-      "text": "As the beast reaches higher Stages, its jaws distend further, capable of swallowing even greater areas. The precise reach of this hunger can be tempered within the Configuration Menu. Sneaking while digging makes the Maw bite a single block. If it is too weak to pay for the whole area, it bites only one block and growls a warning."
+      "text": "As the beast reaches higher Stages, its jaws distend further, capable of swallowing even greater areas. The precise reach of this hunger can be tempered within the Configuration Menu. Crouch as you dig and the beast will nibble a single morsel. Should it lack the strength to devour the whole area, it will content itself with one block and growl its displeasure."
     },
     {
       "type": "patchouli:text",

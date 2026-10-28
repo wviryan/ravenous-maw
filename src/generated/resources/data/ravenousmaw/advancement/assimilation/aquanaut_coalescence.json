@@ -1,0 +1,26 @@
+{
+  "parent": "ravenousmaw:assimilation/gilded_pheromones",
+  "criteria": {
+    "assimilated": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.ravenousmaw.assimilation.aquanaut_coalescence.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:heart_of_the_sea"
+    },
+    "title": {
+      "translate": "advancement.ravenousmaw.assimilation.aquanaut_coalescence.title"
+    }
+  },
+  "requirements": [
+    [
+      "assimilated"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

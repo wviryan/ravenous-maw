@@ -1,0 +1,26 @@
+{
+  "name": "Nictitating Membrane",
+  "icon": "ravenousmaw:textures/codex/nictitating_membrane.png",
+  "category": "ravenousmaw:assimilations",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:ender_eye"
+      },
+      "text": "Dwell within the End until the Void has watched you back. A second lid slides across the Maw's gaze, and the Endermen, once outraged by a stare, now meet it with indifference."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:ender_pearl"
+      },
+      "text": "Yet the peace is fragile. The Enderman you wound remembers the insult, and will teleport to your throat all the same."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Deed (Advanced): remain within the End for a spell. The deed counts only while you carry a Maw of the Advanced Stage or higher, and the gift sleeps without one."
+    }
+  ]
+}

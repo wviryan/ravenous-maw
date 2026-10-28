@@ -40,12 +40,17 @@ import net.rywir.ravenousmaw.content.attachment.MawTickData;
 import net.rywir.ravenousmaw.content.client.ClientHooks;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
 import net.rywir.ravenousmaw.content.gui.menu.ConfigurationMenu;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.rywir.ravenousmaw.content.packet.payload.ConfigurationSyncPayload;
+import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
+import net.rywir.ravenousmaw.system.AssimilationHandler;
 import net.rywir.ravenousmaw.registry.RavenousAttachments;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.datagen.provider.RavenousBlockTagsProvider;
 import net.rywir.ravenousmaw.system.AbilityDispatcher;
+import net.rywir.ravenousmaw.system.MawTooltip;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.util.Constants;
@@ -107,7 +112,6 @@ public class MawItem extends Item {
         tooltipComponents.add(Component.literal(stageString + ": " + stageHandler.getStage().getDisplayName()));
 
         MutationHandler handler = new MutationHandler(stack);
-        List<String> displayNames = handler.getDisplayNames();
 
         boolean hasElectricMending = handler.has(Mutations.ELECTRIC_MENDING);
 
@@ -121,14 +125,16 @@ public class MawItem extends Item {
         }
 
         // Tooltips are built on the client, but the dist check keeps the client class from loading on a server.
+        if (FMLEnvironment.dist.isClient()) {
+            String assimilationString = Component.translatable("maw.ravenousmaw.assimilation_string").getString();
+            tooltipComponents.add(Component.literal(assimilationString + ": " + ClientHooks.getAssimilationCount() + "/" + Assimilations.values().length).withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+
         if (FMLEnvironment.dist.isClient() && ClientHooks.isShiftDown()) {
-            String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
-            tooltipComponents.add(Component.literal(mutationString + ":").withStyle(ChatFormatting.YELLOW));
-            displayNames.forEach(name -> tooltipComponents.add(Component.literal("・" + name).withStyle(ChatFormatting.GRAY))
-            );
+            tooltipComponents.addAll(MawTooltip.mutationLines(stack));
         } else {
             String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
-            tooltipComponents.add(Component.literal(mutationString + ": " + displayNames.size()).withStyle(ChatFormatting.YELLOW));
+            tooltipComponents.add(Component.literal(mutationString + ": " + handler.matchMutations().size() + "/" + Mutations.values().length).withStyle(ChatFormatting.YELLOW));
             tooltipComponents.add(Component.translatable("tooltip.ravenousmaw.shift").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         }
     }
@@ -424,6 +430,17 @@ public class MawItem extends Item {
             (id, inv, entity) -> new ConfigurationMenu(id, player.getInventory(), stack),
             Component.translatable("maw.ravenousmaw.configuration_string")
         ));
+
+        // The client cannot read the Antenna switch or the Esca stacks (attachments are not synced), so send them for the screen just opened
+        if (AssimilationHandler.has(serverPlayer, Assimilations.ELDRITCH_ANTENNA)) {
+            PacketDistributor.sendToPlayer(serverPlayer, new ConfigurationSyncPayload(
+                Mutations.Parameters.ELDRITCH_ANTENNA.key(), AssimilationHandler.getAntennaSwitch(serverPlayer)));
+        }
+
+        if (AssimilationHandler.has(serverPlayer, Assimilations.OXYTOCINERGIC_ESCA)) {
+            PacketDistributor.sendToPlayer(serverPlayer, new ConfigurationSyncPayload(
+                ConfigurationMenu.STAT_OXYTOCIN_STACKS, serverPlayer.getData(RavenousAttachments.OXYTOCIN_STACKS)));
+        }
     }
 
     private boolean playerHasShieldUseIntent(UseOnContext context) {

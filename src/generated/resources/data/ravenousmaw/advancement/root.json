@@ -1,0 +1,33 @@
+{
+  "criteria": {
+    "has_maw": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#ravenousmaw:maw"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.ravenousmaw.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "ravenousmaw:ravenous_maw_latent"
+    },
+    "title": {
+      "translate": "advancement.ravenousmaw.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_maw"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

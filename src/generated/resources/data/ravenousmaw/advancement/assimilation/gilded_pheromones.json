@@ -1,0 +1,26 @@
+{
+  "parent": "ravenousmaw:root",
+  "criteria": {
+    "assimilated": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.ravenousmaw.assimilation.gilded_pheromones.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:gold_ingot"
+    },
+    "title": {
+      "translate": "advancement.ravenousmaw.assimilation.gilded_pheromones.title"
+    }
+  },
+  "requirements": [
+    [
+      "assimilated"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
