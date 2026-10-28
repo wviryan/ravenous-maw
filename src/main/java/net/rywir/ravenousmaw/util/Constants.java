@@ -52,6 +52,16 @@ public class Constants {
     public static final int DIMENSION_DEED_MIN_DELAY_TICKS = 20 * 10;
     public static final int DIMENSION_DEED_MAX_DELAY_TICKS = 20 * 30;
 
+    // ASSIMILATIONS - OXYTOCINERGIC ESCA
+    /** Bad Omen level of the raid that earns the assimilation (the strongest, V). */
+    public static final int OXYTOCINERGIC_ESCA_MAX_RAID_LEVEL = 5;
+    /** Stacks gained are the raid's Bad Omen level, up to this cap. */
+    public static final int OXYTOCINERGIC_ESCA_MAX_STACKS = 10;
+    /** Share of an offer's base price taken off per stack (10 stacks = 30%). */
+    public static final float OXYTOCINERGIC_ESCA_DISCOUNT_PER_STACK = 0.03F;
+    /** Blocks around the player searched for the villager they are trading with. */
+    public static final double OXYTOCINERGIC_ESCA_TRADER_SEARCH_RADIUS = 16.0;
+
     // FEAST
     public static final int BASE_NUTRITION_MODIFIER = 4;
     public static final float BASE_SATURATION_MODIFIER = 2.0F;

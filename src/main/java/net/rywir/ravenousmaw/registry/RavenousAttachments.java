@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.registry;
 
+import com.mojang.serialization.Codec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -30,6 +31,14 @@ public class RavenousAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<AssimilationData>> ASSIMILATIONS = ATTACHMENT_TYPES.register("assimilations",
         () -> AttachmentType.builder(() -> new AssimilationData())
             .serialize(AssimilationData.CODEC)
+            .copyOnDeath()
+            .build()
+    );
+
+    // Oxytocinergic Esca stacks (raid wins), kept through death like the assimilation they belong to
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> OXYTOCIN_STACKS = ATTACHMENT_TYPES.register("oxytocin_stacks",
+        () -> AttachmentType.builder(() -> 0)
+            .serialize(Codec.INT)
             .copyOnDeath()
             .build()
     );
