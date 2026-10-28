@@ -50,6 +50,7 @@ import net.rywir.ravenousmaw.registry.RavenousAttachments;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.datagen.provider.RavenousBlockTagsProvider;
 import net.rywir.ravenousmaw.system.AbilityDispatcher;
+import net.rywir.ravenousmaw.system.MawTooltip;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.util.Constants;
@@ -111,7 +112,6 @@ public class MawItem extends Item {
         tooltipComponents.add(Component.literal(stageString + ": " + stageHandler.getStage().getDisplayName()));
 
         MutationHandler handler = new MutationHandler(stack);
-        List<String> displayNames = handler.getDisplayNames();
 
         boolean hasElectricMending = handler.has(Mutations.ELECTRIC_MENDING);
 
@@ -131,13 +131,10 @@ public class MawItem extends Item {
         }
 
         if (FMLEnvironment.dist.isClient() && ClientHooks.isShiftDown()) {
-            String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
-            tooltipComponents.add(Component.literal(mutationString + ":").withStyle(ChatFormatting.YELLOW));
-            displayNames.forEach(name -> tooltipComponents.add(Component.literal("・" + name).withStyle(ChatFormatting.GRAY))
-            );
+            tooltipComponents.addAll(MawTooltip.mutationLines(stack));
         } else {
             String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
-            tooltipComponents.add(Component.literal(mutationString + ": " + displayNames.size()).withStyle(ChatFormatting.YELLOW));
+            tooltipComponents.add(Component.literal(mutationString + ": " + handler.matchMutations().size() + "/" + Mutations.values().length).withStyle(ChatFormatting.YELLOW));
             tooltipComponents.add(Component.translatable("tooltip.ravenousmaw.shift").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         }
     }
@@ -434,10 +431,15 @@ public class MawItem extends Item {
             Component.translatable("maw.ravenousmaw.configuration_string")
         ));
 
-        // The client cannot read the Antenna switch (attachments are not synced), so send it for the screen just opened
+        // The client cannot read the Antenna switch or the Esca stacks (attachments are not synced), so send them for the screen just opened
         if (AssimilationHandler.has(serverPlayer, Assimilations.ELDRITCH_ANTENNA)) {
             PacketDistributor.sendToPlayer(serverPlayer, new ConfigurationSyncPayload(
                 Mutations.Parameters.ELDRITCH_ANTENNA.key(), AssimilationHandler.getAntennaSwitch(serverPlayer)));
+        }
+
+        if (AssimilationHandler.has(serverPlayer, Assimilations.OXYTOCINERGIC_ESCA)) {
+            PacketDistributor.sendToPlayer(serverPlayer, new ConfigurationSyncPayload(
+                ConfigurationMenu.STAT_OXYTOCIN_STACKS, serverPlayer.getData(RavenousAttachments.OXYTOCIN_STACKS)));
         }
     }
 

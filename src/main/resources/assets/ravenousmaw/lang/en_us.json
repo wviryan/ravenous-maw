@@ -66,6 +66,10 @@
   "description.ravenousmaw.grim_tracer": "Toggle homing projectiles when fully charged\n§aIris Out",
   "description.ravenousmaw.magnetic_range": "Modify magnet range\n§aElectric Mending",
   "description.ravenousmaw.magnetic_field": "Toggle item magnet\n§aElectric Mending",
+  "stat.ravenousmaw.kills": "Kills",
+  "description.ravenousmaw.kills": "Foes devoured by the Maw\n§aInsatiable Voracity",
+  "stat.ravenousmaw.oxytocin_stacks": "Oxytocinergic Esca",
+  "description.ravenousmaw.oxytocin_stacks": "Stacks from raid victories, each sweetening villager trades\n§dAssimilation",
   "description.ravenousmaw.eldritch_antenna": "Toggle creatures leaving you alone\n§dAssimilation",
   "description.ravenousmaw.dreadful_glance": "Toggle taming animals by right clicking\n§aMental Supremacy",
 
@@ -107,6 +111,8 @@
   "configuration_menu_string.ravenousmaw.unavailable": "Unavailable",
   "screen.ravenousmaw.active": "Active",
   "screen.ravenousmaw.inactive": "Inactive",
+  "screen.ravenousmaw.page_settings": "Settings",
+  "screen.ravenousmaw.page_values": "Values",
 
   "tooltip.ravenousmaw.shift": "Press Shift to see upgrades",
 

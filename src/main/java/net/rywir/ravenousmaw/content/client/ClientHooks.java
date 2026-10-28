@@ -3,6 +3,7 @@ package net.rywir.ravenousmaw.content.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.rywir.ravenousmaw.content.attachment.AssimilationData;
+import net.rywir.ravenousmaw.content.gui.menu.ConfigurationMenu;
 import net.rywir.ravenousmaw.content.gui.screen.ConfigurationScreen;
 import net.rywir.ravenousmaw.registry.RavenousAttachments;
 
@@ -23,6 +24,11 @@ public final class ClientHooks {
 
     /** Forwards a server-confirmed configuration value to the open configuration screen, if any. */
     public static void updateConfigurationScreen(String key, int val) {
+        // The stacks are kept on the local player so the screen can rebuild its pages without losing them.
+        if (key.equals(ConfigurationMenu.STAT_OXYTOCIN_STACKS) && Minecraft.getInstance().player != null) {
+            Minecraft.getInstance().player.setData(RavenousAttachments.OXYTOCIN_STACKS, val);
+        }
+
         if (Minecraft.getInstance().screen instanceof ConfigurationScreen screen) {
             screen.update(key, val);
         }
