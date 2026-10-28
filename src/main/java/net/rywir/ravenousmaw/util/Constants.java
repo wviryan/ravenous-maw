@@ -80,11 +80,14 @@ public class Constants {
     public static final int TENDRIL_LASH_EXCELSIOR_EXTRA_RANGE = 2;
 
     // MUTATION CONSTANTS - ELECTRIC MENDING
+    /** FE per melee hit at Latent; multiplied by {@link net.rywir.ravenousmaw.registry.Stages#getEnergyCostMultiplier()}. */
     public static final int ELECTRIC_MENDING_ATTACK_ENERGY_COST = 25;
     public static final float ELECTRIC_MENDING_LOW_ENERGY_DAMAGE_MULTIPLIER = 0.1F;
     /** Minimum ticks between two "battery drained" warnings (sound + message) for the same player. */
     public static final int ELECTRIC_MENDING_WARNING_COOLDOWN_TICKS = 80;
-    /** Undying Flesh shock: a paid hit arcs to up to this many other mobs within this many blocks of the target. */
+    /** Undying Flesh shock: FE spent per mob the arc reaches, so a crowd drains more. Multiplied by the stage like the hit cost. */
+    public static final int ELECTRIC_MENDING_SHOCK_ENERGY_COST_PER_ARC = 100;
+    /** Undying Flesh shock: a shock arcs to up to this many other mobs within this many blocks of the target. */
     public static final int ELECTRIC_MENDING_CHAIN_TARGETS = 3;
     public static final double ELECTRIC_MENDING_CHAIN_RANGE = 4.0D;
     public static final float ELECTRIC_MENDING_CHAIN_DAMAGE = 4.0F;

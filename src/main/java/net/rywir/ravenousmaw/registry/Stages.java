@@ -86,6 +86,11 @@ public enum Stages implements Tier {
         };
     }
 
+    /** Electric Mending FE prices are multiplied by this: 1 at Latent up to 4 at Excelsior, so a stronger Maw pays more per action. */
+    public int getEnergyCostMultiplier() {
+        return id + 1;
+    }
+
     public String getDisplayName() {
         return displayName.getString();
     }

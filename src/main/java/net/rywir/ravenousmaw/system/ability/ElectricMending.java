@@ -20,9 +20,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.MutationHandler;
+import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 import net.rywir.ravenousmaw.util.Constants;
 
@@ -48,6 +50,11 @@ public class ElectricMending implements IMutationAbility {
         stack.remove(DataComponentTypes.STORED_ENERGY);
     }
 
+    /** FE a plain hit costs: grows with the stage. */
+    private static int attackEnergyCost(ItemStack stack) {
+        return Constants.ELECTRIC_MENDING_ATTACK_ENERGY_COST * new StageHandler(stack).getStage().getEnergyCostMultiplier();
+    }
+
     /**
      * Whether the Maw holds enough FE for a full-power hit. Below it, the hit is weakened
      * (see {@link #getHitDamageMultiplier}).
@@ -55,7 +62,7 @@ public class ElectricMending implements IMutationAbility {
     public boolean canPowerHit(ItemStack stack) {
         var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
 
-        return energy != null && energy.getEnergyStored() >= Constants.ELECTRIC_MENDING_ATTACK_ENERGY_COST;
+        return energy != null && energy.getEnergyStored() >= attackEnergyCost(stack);
     }
 
     /**
@@ -87,8 +94,9 @@ public class ElectricMending implements IMutationAbility {
     }
 
     /**
-     * Each melee hit that lands costs FE. A battery below the cost is kept for mending and the magnet.
-     * With Undying Flesh the Maw never needs mending, so the paid hit also arcs lightning to nearby mobs.
+     * Each melee hit that lands costs FE, more at higher stages. A battery below the cost is kept for mending and the magnet.
+     * With Undying Flesh the Maw never needs mending, so a hit costs nothing itself; instead it arcs lightning to nearby
+     * mobs and pays per mob reached (see {@link #chainLightning}), so a crowd drains more.
      */
     @Override
     public void onAttack(ItemStack stack, LivingEntity target, Level level) {
@@ -97,17 +105,28 @@ public class ElectricMending implements IMutationAbility {
         MutationHandler handler = new MutationHandler(stack);
 
         if (!handler.has(Mutations.ELECTRIC_MENDING)) return;
-        if (!canPowerHit(stack)) return;
 
-        stack.getCapability(Capabilities.EnergyStorage.ITEM).extractEnergy(Constants.ELECTRIC_MENDING_ATTACK_ENERGY_COST, false);
+        var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+
+        if (energy == null) return;
 
         if (handler.has(Mutations.UNDYING_FLESH)) {
-            chainLightning(target, (ServerLevel) level);
+            int costPerArc = Constants.ELECTRIC_MENDING_SHOCK_ENERGY_COST_PER_ARC * new StageHandler(stack).getStage().getEnergyCostMultiplier();
+
+            chainLightning(target, (ServerLevel) level, energy, costPerArc);
+            return;
         }
+
+        if (!canPowerHit(stack)) return;
+
+        energy.extractEnergy(attackEnergyCost(stack), false);
     }
 
-    /** Arcs from the struck target to the nearest other mobs. Credited to the attacker, who is never hit. */
-    private static void chainLightning(LivingEntity target, ServerLevel level) {
+    /**
+     * Arcs from the struck target to the nearest other mobs, paying {@code costPerArc} FE for each. The battery limits
+     * how many mobs are reached, and nothing is spent when there is no one to arc to. Credited to the attacker, who is never hit.
+     */
+    private static void chainLightning(LivingEntity target, ServerLevel level, IEnergyStorage energy, int costPerArc) {
         // hurtEnemy runs right after the damage, so the target's last attacker is the wielder.
         LivingEntity attacker = target.getLastHurtByMob();
 
@@ -124,7 +143,12 @@ public class ElectricMending implements IMutationAbility {
 
         Vec3 from = target.position().add(0.0D, target.getBbHeight() / 2.0D, 0.0D);
 
-        for (LivingEntity victim : arcTargets.stream().limit(Constants.ELECTRIC_MENDING_CHAIN_TARGETS).toList()) {
+        int affordable = energy.getEnergyStored() / costPerArc;
+        List<LivingEntity> victims = arcTargets.stream().limit(Math.min(Constants.ELECTRIC_MENDING_CHAIN_TARGETS, affordable)).toList();
+
+        energy.extractEnergy(costPerArc * victims.size(), false);
+
+        for (LivingEntity victim : victims) {
             victim.hurt(source, Constants.ELECTRIC_MENDING_CHAIN_DAMAGE);
 
             Vec3 to = victim.position().add(0.0D, victim.getBbHeight() / 2.0D, 0.0D);
@@ -136,7 +160,7 @@ public class ElectricMending implements IMutationAbility {
             }
         }
 
-        if (!arcTargets.isEmpty()) {
+        if (!victims.isEmpty()) {
             level.playSound(null, target.blockPosition(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.4F, 1.6F);
         }
     }
