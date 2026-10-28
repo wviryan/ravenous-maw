@@ -16,7 +16,11 @@
       "item": {
         "item": "minecraft:raw_copper"
       },
-      "text": "The Maw can store a reserve of up to 5,000 FE, burning through this charge to restore its durability. Furthermore, this raw static potential generates a magnetic vortex, dragging nearby items into its grasp faster with each higher Stage."
+      "text": "The Maw can store a reserve of FE that grows with each Stage (5,000 at Latent, up to 40,000 at Excelsior), burning through this charge to restore its durability. Furthermore, this raw static potential generates a magnetic vortex, dragging nearby items into its grasp faster with each higher Stage."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every blow the Maw lands costs 25 FE. With less than that in reserve, its strikes fall weak, dealing only a tenth of their damage, and the Maw chimes a warning. Bolts of Iris Out are not affected."
     },
     {
       "type": "patchouli:text",

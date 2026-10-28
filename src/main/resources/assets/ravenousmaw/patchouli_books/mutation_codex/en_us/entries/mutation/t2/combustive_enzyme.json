@@ -20,6 +20,10 @@
     },
     {
       "type": "patchouli:text",
+      "text": "With Fire Aspect, the spark is not needed: the strike lights a short fuse and the victim detonates moments later."
+    },
+    {
+      "type": "patchouli:text",
       "text": "Instability (Arsonist): The Maw struggles to contain its own heat. Occasionally, it may dribble unstable secretions onto its master, coating you in the Combustive Effect."
     },
     {

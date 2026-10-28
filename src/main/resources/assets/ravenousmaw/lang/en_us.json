@@ -57,6 +57,11 @@
   "item.ravenousmaw.mutation_codex": "Mutation Codex",
 
   "ravenousmaw.maw_threshold_message": "The Ravenous Maw refuses to work in order to survive! (Feed the beast!)",
+  "ravenousmaw.tectonic_low_durability": "The Maw is too weak to devour the whole area!",
+  "ravenousmaw.electric_mending_low_energy": "The Maw's battery is drained! Hits are weakened.",
+  "ravenousmaw.stage_up_title": "The Maw ascends!",
+  "ravenousmaw.stage_up_subtitle": "%s Stage",
+  "ravenousmaw.symbiotic_aid_absorbed": "The Maw devours the affliction!",
 
   "item.ravenousmaw.ravenous_maw_latent": "Latent Maw",
   "item.ravenousmaw.ravenous_maw_advanced": "Advanced Maw",
@@ -100,6 +105,8 @@
   "warning.ravenousmaw.unknown_mutation": "Unknown mutation: %s",
   "warning.ravenousmaw.no_electric_mending": "This maw has no Electric Mending!",
   "message.ravenousmaw.already_charged": "The maw is already fully charged.",
+  "message.ravenousmaw.tick_set": "Maw tick counter set to %s (instability at %s).",
+  "message.ravenousmaw.damage": "Arcane Hypertrophy bonus: +%s | Reckless Devourer: x%s | Total bonus: +%s",
   "message.ravenousmaw.charged": "Charged +%s FE (%s / %s FE).",
 
   "dialogue.ravenousmaw.latent": "Ravenous Maw: RmVlZCBtZSBtb3J0YWwh",

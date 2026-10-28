@@ -9,7 +9,7 @@
       "item": {
         "item": "ravenousmaw:chorus_cracker"
       },
-      "text": "The Symbiotic Aid mutation forges a vital lifeline between wielder and weapon. When clutched in the main hand, the Maw acts as a biological filter, instantly purging harmful afflictions from your veins."
+      "text": "The Symbiotic Aid mutation forges a vital lifeline between wielder and weapon. When clutched in either hand, the Maw acts as a biological filter, purging harmful afflictions from your veins, even those you already carry. Whenever it devours an affliction, it lets you know with a soft chime."
     },
     {
       "type": "patchouli:spotlight",

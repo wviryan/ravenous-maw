@@ -13,5 +13,7 @@ public class RavenousRegisterCommandsEvent {
         ChargeCommand.register(event.getDispatcher());
         SurchargeCommand.register(event.getDispatcher());
         DestabilizeCommand.register(event.getDispatcher());
+        TickCommand.register(event.getDispatcher());
+        DamageCommand.register(event.getDispatcher());
     }
 }

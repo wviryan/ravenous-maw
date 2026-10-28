@@ -4,9 +4,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousItems;
@@ -40,6 +43,32 @@ public class StageHandler {
         }
 
         return null;
+    }
+
+    /**
+     * Slot of the Maw that can feast on {@code boss}, i.e. whose stage objective is that boss, or -1 if the
+     * inventory has none. The held slot wins, then the first match in slot order.
+     */
+    public static int findMawSlotFor(Inventory inventory, EntityType<?> boss) {
+        if (isMawFor(inventory.getItem(inventory.selected), boss)) {
+            return inventory.selected;
+        }
+
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            if (isMawFor(inventory.getItem(slot), boss)) {
+                return slot;
+            }
+        }
+
+        return -1;
+    }
+
+    private static boolean isMawFor(ItemStack candidate, EntityType<?> boss) {
+        if (!candidate.is(RavenousItemTagsProvider.MAW)) return false;
+
+        Stages stage = new StageHandler(candidate).getStage();
+
+        return stage != null && stage.getObjective() == boss;
     }
 
     public ItemStack stageUp(int currentStage, ItemStack source, HolderLookup.Provider registries) {

@@ -51,7 +51,8 @@ public class RavenousRenderHighlightEvent {
 
         int range = mutationHandler.getConfigVal(Mutations.Parameters.TECTONIC_AREA);
 
-        if (range <= 1) {
+        // Sneaking breaks a single block (see RavenousBreakEvent), so there is no area to preview.
+        if (range <= 1 || player.isShiftKeyDown()) {
             return;
         }
 

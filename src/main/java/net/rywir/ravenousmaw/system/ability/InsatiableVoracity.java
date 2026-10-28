@@ -35,8 +35,16 @@ public class InsatiableVoracity implements IMutationAbility {
             default -> 0.0F;
         };
 
+        float maxBonus = switch (stage) {
+            case Stages.ADVANCED -> ((float) Configs.INSATIABLE_VORACITY_ADVANCED_MAX_DAMAGE.getAsDouble());
+            case Stages.NOBLE -> ((float) Configs.INSATIABLE_VORACITY_NOBLE_MAX_DAMAGE.getAsDouble());
+            case Stages.EXCELSIOR -> ((float) Configs.INSATIABLE_VORACITY_EXCELSIOR_MAX_DAMAGE.getAsDouble());
+            default -> 0.0F;
+        };
+
         float numberOfKills = handler.getKills();
-        return (numberOfKills) * multiplier;
+        // The bonus grows with every kill until the stage's ceiling.
+        return Math.min(numberOfKills * multiplier, maxBonus);
     }
 
     @Override

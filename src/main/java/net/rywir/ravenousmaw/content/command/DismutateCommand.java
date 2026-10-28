@@ -20,12 +20,7 @@ public class DismutateCommand {
                 .then(Commands.literal("dismutate")
                     .requires(source -> source.hasPermission(2))
                     .then(Commands.argument("mutation", StringArgumentType.string())
-                        .suggests((context, builder) -> {
-                            for (var mut : Mutations.values()) {
-                                builder.suggest(mut.key());
-                            }
-                            return builder.buildFuture();
-                        })
+                        .suggests(MutationSuggestions.PROVIDER)
                         .executes(DismutateCommand::execute)
                     )
                 )

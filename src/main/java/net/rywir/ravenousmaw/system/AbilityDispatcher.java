@@ -4,18 +4,21 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.Stages;
+import net.rywir.ravenousmaw.system.ability.ElectricMending;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 
 public class AbilityDispatcher implements IMutationAbility {
     @Override
     public void onAttack(ItemStack stack, LivingEntity target, Level level) {
         Mutations.COMBUSTIVE_ENZYME.ability().onAttack(stack, target, level);
+        Mutations.ELECTRIC_MENDING.ability().onAttack(stack, target, level);
     }
 
     @Override
@@ -47,13 +50,33 @@ public class AbilityDispatcher implements IMutationAbility {
         float combustionBonus = Mutations.COMBUSTIVE_ENZYME.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float rendingBonus = Mutations.RESONANT_RENDING.ability().getAttackDamageBonus(handler, stack, target, level, stage);
         float voracityBonus = Mutations.INSATIABLE_VORACITY.ability().getAttackDamageBonus(handler, stack, target, level, stage);
-        float adaptiveMultiplier = Mutations.ADAPTIVE_SHIFT.ability().getAttackDamageBonus(handler, stack, target, level, stage);
-        float arcaneBonus = Mutations.ARCANE_HYPERTROPHY.ability().getAttackDamageBonus(handler, stack, target, level, stage);
+        float arcaneBonus = getTargetIndependentBonus(handler, stack, level, stage);
 
-        // Reckless Devourer's multiplier (Adaptive Shift) applies to every bonus, including Arcane Hypertrophy's Sharpness.
-        float bonus = (combustionBonus + rendingBonus + voracityBonus + arcaneBonus) * adaptiveMultiplier;
+        return combustionBonus + rendingBonus + voracityBonus + arcaneBonus;
+    }
 
-        return bonus;
+    /**
+     * Bonus that does not depend on the target (Arcane Hypertrophy's Sharpness).
+     * Shared by {@link #getAttackDamageBonus} and the {@code /ravenousmaw damage} command.
+     */
+    public float getTargetIndependentBonus(MutationHandler handler, ItemStack stack, Level level, Stages stage) {
+        // Arcane Hypertrophy only reads the stack's enchantments, so it needs no target.
+        return Mutations.ARCANE_HYPERTROPHY.ability().getAttackDamageBonus(handler, stack, null, level, stage);
+    }
+
+    /** Reckless Devourer (Adaptive Shift): multiplies the whole hit, base damage included. */
+    public float getDamageMultiplier(MutationHandler handler) {
+        return Mutations.ADAPTIVE_SHIFT.ability().getDamageMultiplier(handler);
+    }
+
+    /** Electric Mending: weakens the whole melee hit when the battery cannot pay for it. */
+    public float getHitDamageMultiplier(MutationHandler handler, ItemStack stack) {
+        return ((ElectricMending) Mutations.ELECTRIC_MENDING.ability()).getHitDamageMultiplier(handler, stack);
+    }
+
+    /** Electric Mending: warns the attacker that the battery could not pay for the hit. */
+    public void warnLowEnergy(ServerPlayer player) {
+        ((ElectricMending) Mutations.ELECTRIC_MENDING.ability()).warnLowEnergy(player);
     }
 
     @Override

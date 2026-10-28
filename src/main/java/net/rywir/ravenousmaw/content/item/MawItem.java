@@ -2,7 +2,6 @@ package net.rywir.ravenousmaw.content.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -16,6 +15,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -32,10 +32,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.rywir.ravenousmaw.content.attachment.MawTickData;
+import net.rywir.ravenousmaw.content.client.ClientHooks;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
 import net.rywir.ravenousmaw.content.gui.menu.ConfigurationMenu;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
@@ -55,8 +57,6 @@ public class MawItem extends Item {
     private static final int USE_DURATION               = 72000;
     private static final int FULL_CHARGE_TICKS          = 20;
     private static final int ENERGY_COST_PER_DURABIITY  = 50;
-    private static final int MAX_TICKS                  = 20 * 60 * 9;
-    private static final int DIALOGUE_FREQUENCY         = 20 * 60 * 3;
 
     private static final Component DURABILITY_WARNING = Component.translatable("ravenousmaw.maw_threshold_message");
 
@@ -120,7 +120,8 @@ public class MawItem extends Item {
             tooltipComponents.add(tooltip);
         }
 
-        if (Screen.hasShiftDown()) {
+        // Tooltips are built on the client, but the dist check keeps the client class from loading on a server.
+        if (FMLEnvironment.dist.isClient() && ClientHooks.isShiftDown()) {
             String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
             tooltipComponents.add(Component.literal(mutationString + ":").withStyle(ChatFormatting.YELLOW));
             displayNames.forEach(name -> tooltipComponents.add(Component.literal("・" + name).withStyle(ChatFormatting.GRAY))
@@ -136,6 +137,9 @@ public class MawItem extends Item {
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         AbilityDispatcher dispatcher = new AbilityDispatcher();
         dispatcher.onAttack(stack, target, target.level());
+
+        // One cost per landed hit (sweep and Tendril Lash targets are free). Unbreakable Maws (Undying Flesh) ignore it.
+        stack.hurtAndBreak(Constants.MAW_HIT_DURABILITY_COST, attacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
@@ -172,7 +176,19 @@ public class MawItem extends Item {
         MutationHandler mutationHandler = new MutationHandler(stack);
         AbilityDispatcher dispatcher = new AbilityDispatcher();
 
-        return dispatcher.getAttackDamageBonus(mutationHandler, stack, livingTarget, level, stage);
+        float bonus = dispatcher.getAttackDamageBonus(mutationHandler, stack, livingTarget, level, stage);
+        float multiplier = dispatcher.getDamageMultiplier(mutationHandler);
+
+        // Electric Mending: an empty battery weakens the whole hit, applied after every other multiplier.
+        float energyMultiplier = dispatcher.getHitDamageMultiplier(mutationHandler, stack);
+        multiplier *= energyMultiplier;
+
+        if (energyMultiplier < 1.0F && damageSource.getEntity() instanceof ServerPlayer attacker) {
+            dispatcher.warnLowEnergy(attacker);
+        }
+
+        // Vanilla adds our return value to `damage`, so return only what is left after multiplying the whole hit.
+        return (damage + bonus) * multiplier - damage;
     }
 
     @Override
@@ -266,11 +282,11 @@ public class MawItem extends Item {
             mend(stack, mutationHandler);
         }
 
-        if (ticks % DIALOGUE_FREQUENCY == 0 && ticks != 0) {
+        if (ticks % Constants.MAW_DIALOGUE_TICKS == 0 && ticks != 0) {
             talk(stack, player, stage);
         }
 
-        if (ticks >= MAX_TICKS) {
+        if (ticks >= Constants.MAW_INSTABILITY_TICKS) {
             destabilize(stack, player, stage, mutationHandler);
             tickData.resetTicks();
         }
@@ -317,8 +333,8 @@ public class MawItem extends Item {
         boolean result = dispatcher.interactLivingEntity(stack, player, entity);
 
         if (result) {
-            // SUCCESS consumes the interaction. PASS would let the pet's own mobInteract run,
-            // which sees its new owner clicking and toggles it back to standing.
+            // SUCCESS consumes the interaction on both sides, so the client does not retry with the
+            // offhand (which would make the new pet toggle back to standing).
             return InteractionResult.SUCCESS;
         } else {
             return super.interactLivingEntity(stack, player, entity, hand);
@@ -573,11 +589,26 @@ public class MawItem extends Item {
             return true;
         }
 
-        if (level.isClientSide && entity instanceof Player player) {
+        // Client only, and rate limited: holding attack or mine calls this every tick.
+        if (level.isClientSide && entity instanceof Player player && isWarningReady(level)) {
             level.playSound(player, player.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 0.5F, 0.5F);
             player.displayClientMessage(DURABILITY_WARNING, true);
         }
 
         return false;
+    }
+
+    /** Game time of the last durability warning shown on this client. Only touched on the client. */
+    private static long lastDurabilityWarningTick = Long.MIN_VALUE;
+
+    private static boolean isWarningReady(Level level) {
+        long now = level.getGameTime();
+
+        if (now - lastDurabilityWarningTick < Constants.MAW_DURABILITY_WARNING_COOLDOWN_TICKS) {
+            return false;
+        }
+
+        lastDurabilityWarningTick = now;
+        return true;
     }
 }

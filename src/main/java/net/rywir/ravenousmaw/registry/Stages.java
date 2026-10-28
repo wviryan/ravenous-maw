@@ -1,6 +1,5 @@
 package net.rywir.ravenousmaw.registry;
 
-import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -15,13 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 public enum Stages implements Tier {
-    LATENT(Component.translatable("stage.ravenousmaw.latent"), 0, Items.ROTTEN_FLESH, RavenousBlockTagsProvider.INCORRECT_MAW, Constants.LATENT_TIER_USES, Constants.LATENT_TIER_SPEED, Constants.LATENT_TIER_ATTACK_DAMAGE_BONUS, Constants.LATENT_TIER_ENCHANTMENT_VALUE, EntityType.ENDER_DRAGON, () -> Ingredient.of()),
-    ADVANCED(Component.translatable("stage.ravenousmaw.advanced"), 1, RavenousItems.PIGLIN_PIE.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.ADVANCED_TIER_USES, Constants.ADVANCED_TIER_SPEED, Constants.ADVANCED_TIER_ATTACK_DAMAGE_BONUS, Constants.ADVANCED_TIER_ENCHANTMENT_VALUE, EntityType.WITHER ,() -> Ingredient.of()),
-    NOBLE(Component.translatable("stage.ravenousmaw.noble"), 2, RavenousItems.CHORUS_CRACKER.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.NOBLE_TIER_USES, Constants.NOBLE_TIER_SPEED, Constants.NOBLE_TIER_ATTACK_DAMAGE_BONUS, Constants.NOBLE_TIER_ENCHANTMENT_VALUE, EntityType.WARDEN , () -> Ingredient.of()),
-    EXCELSIOR(Component.translatable("stage.ravenousmaw.excelsior"), 3, RavenousItems.SCULK_CROISSANT.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.EXCELSIOR_TIER_USES, Constants.EXCELSIOR_TIER_SPEED, Constants.EXCELSIOR_TIER_ATTACK_DAMAGE_BONUS, Constants.EXCELSIOR_TIER_ENCHANTMENT_VALUE, null , () -> Ingredient.of());
+    LATENT(Component.translatable("stage.ravenousmaw.latent"), 0, Items.ROTTEN_FLESH, RavenousBlockTagsProvider.INCORRECT_MAW, Constants.LATENT_TIER_USES, Constants.LATENT_TIER_SPEED, Constants.LATENT_TIER_ATTACK_DAMAGE_BONUS, Constants.LATENT_TIER_ENCHANTMENT_VALUE, EntityType.WITHER),
+    ADVANCED(Component.translatable("stage.ravenousmaw.advanced"), 1, RavenousItems.PIGLIN_PIE.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.ADVANCED_TIER_USES, Constants.ADVANCED_TIER_SPEED, Constants.ADVANCED_TIER_ATTACK_DAMAGE_BONUS, Constants.ADVANCED_TIER_ENCHANTMENT_VALUE, EntityType.ENDER_DRAGON),
+    NOBLE(Component.translatable("stage.ravenousmaw.noble"), 2, RavenousItems.CHORUS_CRACKER.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.NOBLE_TIER_USES, Constants.NOBLE_TIER_SPEED, Constants.NOBLE_TIER_ATTACK_DAMAGE_BONUS, Constants.NOBLE_TIER_ENCHANTMENT_VALUE, EntityType.WARDEN ),
+    EXCELSIOR(Component.translatable("stage.ravenousmaw.excelsior"), 3, RavenousItems.SCULK_CROISSANT.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.EXCELSIOR_TIER_USES, Constants.EXCELSIOR_TIER_SPEED, Constants.EXCELSIOR_TIER_ATTACK_DAMAGE_BONUS, Constants.EXCELSIOR_TIER_ENCHANTMENT_VALUE, null );
 
     private final Component displayName;
     private final int id;
@@ -32,11 +30,10 @@ public enum Stages implements Tier {
     private final float damage;
     private final int enchantmentValue;
     private @Nullable final EntityType<?> objective;
-    private final Supplier<Ingredient> repairIngredient;
     private static final Map<Integer, Stages> BY_ID = new HashMap<>();
     private static final Set<EntityType<?>> OBJECTIVES = new HashSet<>();
 
-    Stages(Component displayName, int id, Item feast, TagKey<Block> incorrectBlockForDrops, int uses, float speed, float damage, int enchantmentValue, EntityType<?> objective, Supplier<Ingredient> repairIngredient) {
+    Stages(Component displayName, int id, Item feast, TagKey<Block> incorrectBlockForDrops, int uses, float speed, float damage, int enchantmentValue, EntityType<?> objective) {
         this.displayName = displayName;
         this.id = id;
         this.feast = feast;
@@ -46,8 +43,6 @@ public enum Stages implements Tier {
         this.damage = damage;
         this.enchantmentValue = enchantmentValue;
         this.objective = objective;
-        Objects.requireNonNull(repairIngredient);
-        this.repairIngredient = Suppliers.memoize(repairIngredient::get);
     }
 
     @Override
@@ -77,11 +72,27 @@ public enum Stages implements Tier {
 
     @Override
     public @NotNull Ingredient getRepairIngredient() {
-        return this.repairIngredient.get();
+        // Maws are not repaired through the vanilla anvil: feasts repair them in FeedingRecipe.
+        return Ingredient.EMPTY;
+    }
+
+    /** Electric Mending battery size in FE; grows with the stage. */
+    public int getEnergyCapacity() {
+        return switch (this) {
+            case LATENT -> Constants.LATENT_TIER_ENERGY_CAPACITY;
+            case ADVANCED -> Constants.ADVANCED_TIER_ENERGY_CAPACITY;
+            case NOBLE -> Constants.NOBLE_TIER_ENERGY_CAPACITY;
+            case EXCELSIOR -> Constants.EXCELSIOR_TIER_ENERGY_CAPACITY;
+        };
     }
 
     public String getDisplayName() {
         return displayName.getString();
+    }
+
+    /** Translatable form of the stage name, for messages the client localizes itself. */
+    public Component getDisplayComponent() {
+        return displayName;
     }
 
     public int getId() {

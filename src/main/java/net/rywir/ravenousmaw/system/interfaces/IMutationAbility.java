@@ -19,6 +19,11 @@ public interface IMutationAbility {
         return 0.0F;
     }
 
+    /** Multiplier applied to the whole hit (base damage + bonuses). 1.0 means unchanged. */
+    default float getDamageMultiplier(MutationHandler handler) {
+        return 1.0F;
+    }
+
     default void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeCharged, MutationHandler handler, Stages stage, AbilityDispatcher dispatcher) {}
 
     default InteractionResultHolder<ItemStack> use(MutationHandler mutationHandler, ItemStack stack, Level level, Player player, InteractionHand hand) { return InteractionResultHolder.pass(stack); }
