@@ -1,7 +1,7 @@
 package net.rywir.ravenousmaw.content.decorator;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.rywir.ravenousmaw.system.RavenousEnergyStorage;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnergyBarDecorator implements IItemDecorator {
     @Override
-    public boolean render(@NotNull GuiGraphics graphics, @NotNull Font font, @NotNull ItemStack stack, int x, int y) {
+    public boolean render(@NotNull GuiGraphicsExtractor graphics, @NotNull Font font, @NotNull ItemStack stack, int x, int y) {
         MutationHandler handler = new MutationHandler(stack);
 
         boolean hasElectricMending = handler.has(Mutations.ELECTRIC_MENDING);
@@ -32,13 +32,8 @@ public class EnergyBarDecorator implements IItemDecorator {
 
         int top = hasUndyingFlesh || isEnergetic ? y + 13 : y + 11;
 
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 200);
-
         graphics.fill(left, top, left + 13, top + 2, 0xFF000000);
         graphics.fill(left, top, left + width, top + 1, 0xFFFFFF00);
-
-        graphics.pose().popPose();
 
         return false;
     }
