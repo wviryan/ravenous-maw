@@ -30,8 +30,6 @@ logs
 *.log
 hs_err_pid*
 
-repo
-
 # local tooling (CLAUDE.md is excluded via .git/info/exclude)
 .claude
 
