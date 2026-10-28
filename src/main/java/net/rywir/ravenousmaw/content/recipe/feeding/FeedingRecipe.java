@@ -1,7 +1,9 @@
 package net.rywir.ravenousmaw.content.recipe.feeding;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -11,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousItems;
-import net.rywir.ravenousmaw.registry.RavenousRecipes;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.StageHandler;
@@ -59,9 +60,9 @@ public class FeedingRecipe extends CustomRecipe {
         ))
     );
 
-    public FeedingRecipe(CraftingBookCategory category) {
-        super(category);
-    }
+    public static final MapCodec<FeedingRecipe> MAP_CODEC = MapCodec.unit(FeedingRecipe::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, FeedingRecipe> STREAM_CODEC = StreamCodec.unit(new FeedingRecipe());
+    public static final RecipeSerializer<FeedingRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
@@ -115,7 +116,7 @@ public class FeedingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput input) {
         ItemStack maw = ItemStack.EMPTY;
         for (int i = 0; i < input.size(); i++) {
             ItemStack stack = input.getItem(i);
@@ -153,27 +154,7 @@ public class FeedingRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 2;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return RavenousRecipes.FEEDING_RECIPE_SERIALIZER.get();
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return RecipeType.CRAFTING;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        Item finalMawItem = RavenousItems.RAVENOUS_MAW_EXCELSIOR.get();
-
-        ItemStack result = new ItemStack(finalMawItem);
-        result.setDamageValue(0);
-
-        return result;
+    public RecipeSerializer<FeedingRecipe> getSerializer() {
+        return SERIALIZER;
     }
 }
