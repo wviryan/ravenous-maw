@@ -13,16 +13,26 @@ out
 *.iml
 .idea
 
+# vscode
+.vscode
+
 # gradle
 build
 .gradle
 
 # other
 eclipse
+.eclipse
 run
 runs
 run-data
+logs
+*.log
+hs_err_pid*
 
 repo
+
+# local tooling (CLAUDE.md is excluded via .git/info/exclude)
+.claude
 
 .DS_Store
