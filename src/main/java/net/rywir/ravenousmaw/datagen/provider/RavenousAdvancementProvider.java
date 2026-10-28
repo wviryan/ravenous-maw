@@ -38,7 +38,7 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
     }
 
     private static class RavenousAdvancements implements AdvancementSubProvider {
-        private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png");
+        private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("gui/advancements/backgrounds/adventure");
 
         @Override
         public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
