@@ -20,7 +20,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Deed (Latent): remain within the Nether for a spell. The gift is lost on any who carry no Maw, and any piglin or hoglin you strike will answer in kind."
+      "text": "Deed (Latent): remain within the Nether for a spell. Any piglin or hoglin you strike will answer in kind. The deed counts only while you carry a Maw of the Latent Stage or higher, and the gift sleeps without one."
     }
   ]
 }

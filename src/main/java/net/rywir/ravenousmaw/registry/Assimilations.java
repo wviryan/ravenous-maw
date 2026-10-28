@@ -11,7 +11,8 @@ import java.util.Map;
 /**
  * Traits the Maw absorbs from the world, earned by a deed instead of crafted with a mutagen.
  * Unlike {@link Mutations} they are stored on the player (see AssimilationData), not on the item,
- * so a replacement Maw benefits at once. The stage only places the assimilation in the progression.
+ * so a replacement Maw benefits at once. The stage is the lowest Maw stage that can earn the assimilation and
+ * keep its effect active (see AssimilationHandler).
  */
 public enum Assimilations {
     GILDED_PHEROMONES       (Stages.LATENT),

@@ -1,5 +1,5 @@
 {
-  "parent": "ravenousmaw:root",
+  "parent": "ravenousmaw:assimilation/nictitating_membrane",
   "criteria": {
     "assimilated": {
       "trigger": "minecraft:impossible"

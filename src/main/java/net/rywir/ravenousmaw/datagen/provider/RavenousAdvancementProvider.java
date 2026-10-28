@@ -20,14 +20,16 @@ import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.RavenousItems;
 import net.rywir.ravenousmaw.system.AssimilationHandler;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 /**
  * Advancement tab of the mod: a root earned by obtaining a Maw, one advancement per assimilation and a
- * challenge for earning all of them. Positions are laid out by the game from the parent tree, so the challenge is a
- * child of the Eldritch Antenna (the capstone) to sit to the right of every assimilation. The assimilation ones use impossible criteria, awarded by
+ * challenge for earning all of them. The game lays positions out from the parent tree (an advancement has a single
+ * parent), so the assimilations form a chain following the stage progression, ending in the challenge. The assimilation ones use impossible criteria, awarded by
  * {@link AssimilationHandler#grant} at the moment the assimilation is granted.
  */
 public class RavenousAdvancementProvider extends AdvancementProvider {
@@ -50,18 +52,13 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
                 .build(AssimilationHandler.ROOT_ADVANCEMENT);
             saver.accept(root);
 
-            Advancement.Builder all = Advancement.Builder.advancement()
-                .display(
-                    new ItemStack(RavenousItems.RAVENOUS_MAW_EXCELSIOR.get()),
-                    Component.translatable("advancement.ravenousmaw.assimilation_all.title"),
-                    Component.translatable("advancement.ravenousmaw.assimilation_all.description"),
-                    null, AdvancementType.CHALLENGE, true, true, false);
+            Map<Assimilations, AdvancementHolder> holders = new EnumMap<>(Assimilations.class);
 
             for (Assimilations assimilation : Assimilations.values()) {
-                all.addCriterion(assimilation.getKey(), CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
+                Assimilations parent = parentOf(assimilation);
 
                 AdvancementHolder holder = Advancement.Builder.advancement()
-                    .parent(root)
+                    .parent(parent == null ? root : holders.get(parent))
                     .display(
                         new ItemStack(icon(assimilation)),
                         Component.translatable("advancement.ravenousmaw.assimilation." + assimilation.getKey() + ".title"),
@@ -70,14 +67,34 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
                     .addCriterion(AssimilationHandler.ASSIMILATED_CRITERION, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
                     .build(AssimilationHandler.advancementId(assimilation));
 
+                holders.put(assimilation, holder);
                 saver.accept(holder);
+            }
 
-                if (assimilation == Assimilations.ELDRITCH_ANTENNA) {
-                    all.parent(holder);
-                }
+            Advancement.Builder all = Advancement.Builder.advancement()
+                .parent(holders.get(Assimilations.ELDRITCH_ANTENNA))
+                .display(
+                    new ItemStack(RavenousItems.RAVENOUS_MAW_EXCELSIOR.get()),
+                    Component.translatable("advancement.ravenousmaw.assimilation_all.title"),
+                    Component.translatable("advancement.ravenousmaw.assimilation_all.description"),
+                    null, AdvancementType.CHALLENGE, true, true, false);
+
+            for (Assimilations assimilation : Assimilations.values()) {
+                all.addCriterion(assimilation.getKey(), CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
             }
 
             saver.accept(all.build(AssimilationHandler.ALL_ADVANCEMENT));
+        }
+
+        /** The assimilation an assimilation's advancement hangs from, or null for the root. Parents come earlier in the enum. */
+        private static Assimilations parentOf(Assimilations assimilation) {
+            return switch (assimilation) {
+                case GILDED_PHEROMONES    -> null;
+                case NICTITATING_MEMBRANE -> Assimilations.GILDED_PHEROMONES;
+                case AQUANAUT_COALESCENCE -> Assimilations.GILDED_PHEROMONES;
+                case OXYTOCINERGIC_ESCA   -> Assimilations.NICTITATING_MEMBRANE;
+                case ELDRITCH_ANTENNA     -> Assimilations.OXYTOCINERGIC_ESCA;
+            };
         }
 
         private static Item icon(Assimilations assimilation) {

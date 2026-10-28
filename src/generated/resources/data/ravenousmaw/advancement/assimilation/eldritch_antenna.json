@@ -1,5 +1,5 @@
 {
-  "parent": "ravenousmaw:root",
+  "parent": "ravenousmaw:assimilation/oxytocinergic_esca",
   "criteria": {
     "assimilated": {
       "trigger": "minecraft:impossible"

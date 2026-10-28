@@ -15,6 +15,7 @@ import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousAttachments;
+import net.rywir.ravenousmaw.registry.Stages;
 
 /**
  * Single entry point for assimilations on a player. Earning one goes through {@link #grant} so the
@@ -27,13 +28,17 @@ public class AssimilationHandler {
     /** Criterion of each assimilation's own advancement. */
     public static final String ASSIMILATED_CRITERION = "assimilated";
 
-    /** True if any inventory slot (hotbar, backpack, offhand) holds a Maw. */
-    public static boolean carriesMaw(Player player) {
+    /** True if any inventory slot (hotbar, backpack, offhand) holds a Maw of at least the given stage. */
+    public static boolean carriesMawOfStage(Player player, Stages stage) {
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.is(RavenousItemTagsProvider.MAW)) return true;
+            if (isMawOfStage(stack, stage)) return true;
         }
 
-        return player.getOffhandItem().is(RavenousItemTagsProvider.MAW);
+        return isMawOfStage(player.getOffhandItem(), stage);
+    }
+
+    private static boolean isMawOfStage(ItemStack stack, Stages stage) {
+        return stack.is(RavenousItemTagsProvider.MAW) && new StageHandler(stack).getStage().getId() >= stage.getId();
     }
 
     /** True if the player earned the assimilation, whether or not a Maw is carried. */
@@ -41,9 +46,9 @@ public class AssimilationHandler {
         return player.getData(RavenousAttachments.ASSIMILATIONS).has(assimilation);
     }
 
-    /** True if the player earned the assimilation and carries a Maw: the condition every effect checks. */
+    /** True if the player earned the assimilation and carries a Maw of its stage or higher: the condition every effect checks. */
     public static boolean isActive(Player player, Assimilations assimilation) {
-        return has(player, assimilation) && carriesMaw(player);
+        return has(player, assimilation) && carriesMawOfStage(player, assimilation.getStage());
     }
 
     /** Eldritch Antenna is active when earned, a Maw is carried and the player has not switched it off. */
@@ -90,8 +95,13 @@ public class AssimilationHandler {
         return stack.is(RavenousItemTagsProvider.MAW) && new MutationHandler(stack).matchMutations().size() == Mutations.values().length;
     }
 
-    /** Records the deed whatever the Maw's stage, even with no Maw on hand. Does nothing if already earned. */
+    /**
+     * Records the deed. Does nothing if already earned, or if the player carries no Maw of the assimilation's stage
+     * or higher: the deed then goes unrecorded and has to be repeated (the timed dimension deeds simply retry).
+     */
     public static void grant(ServerPlayer player, Assimilations assimilation) {
+        if (!carriesMawOfStage(player, assimilation.getStage())) return;
+
         AssimilationData data = player.getData(RavenousAttachments.ASSIMILATIONS);
 
         if (!data.grant(assimilation)) return;

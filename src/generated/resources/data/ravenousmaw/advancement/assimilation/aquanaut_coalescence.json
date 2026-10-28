@@ -1,5 +1,5 @@
 {
-  "parent": "ravenousmaw:root",
+  "parent": "ravenousmaw:assimilation/gilded_pheromones",
   "criteria": {
     "assimilated": {
       "trigger": "minecraft:impossible"
