@@ -65,8 +65,8 @@ public class MawItem extends Item {
 
     private static final Component DURABILITY_WARNING = Component.translatable("ravenousmaw.maw_threshold_message");
 
-    public MawItem(Stages stage) {
-        super(createProperties(stage));
+    public MawItem(Properties properties) {
+        super(properties);
     }
 
     @Override
