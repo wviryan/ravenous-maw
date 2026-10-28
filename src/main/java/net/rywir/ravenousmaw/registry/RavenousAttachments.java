@@ -43,6 +43,14 @@ public class RavenousAttachments {
             .build()
     );
 
+    // Eldritch Antenna on/off switch (default on), a player choice so it is saved and kept through death
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ANTENNA_ENABLED = ATTACHMENT_TYPES.register("antenna_enabled",
+        () -> AttachmentType.builder(() -> true)
+            .serialize(Codec.BOOL)
+            .copyOnDeath()
+            .build()
+    );
+
     // No serialize(): the gift cooldown (game time of the next gift) simply restarts after a relog
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> OXYTOCIN_NEXT_GIFT = ATTACHMENT_TYPES.register("oxytocin_next_gift",
         () -> AttachmentType.builder(() -> 0L).build()

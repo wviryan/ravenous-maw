@@ -39,6 +39,7 @@
   "parameter.ravenousmaw.magnetic_range": "Magnetic Range",
   "parameter.ravenousmaw.magnetic_field": "Magnetic Field",
   "parameter.ravenousmaw.dreadful_glance": "Dreadful Glance",
+  "parameter.ravenousmaw.eldritch_antenna": "Eldritch Antenna",
 
   "description.ravenousmaw.tectonic_area": "Modify digging area size\n§aTectonic Bite",
   "description.ravenousmaw.symbiotic_immunity": "Toggle harmful effect removal\n§aSymbiotic Aid",
@@ -50,6 +51,7 @@
   "description.ravenousmaw.grim_tracer": "Toggle homing projectiles when fully charged\n§aIris Out",
   "description.ravenousmaw.magnetic_range": "Modify magnet range\n§aElectric Mending",
   "description.ravenousmaw.magnetic_field": "Toggle item magnet\n§aElectric Mending",
+  "description.ravenousmaw.eldritch_antenna": "Toggle creatures leaving you alone\n§dAssimilation",
   "description.ravenousmaw.dreadful_glance": "Toggle taming animals by right clicking\n§aMental Supremacy",
 
   "creativetab.ravenousmaw.ravenous_tab": "Ravenous Maw",

@@ -26,7 +26,7 @@
     {
       "type": "patchouli:text",
       "title": "Excelsior",
-      "text": "$(l)Eldritch Antenna$(): earned by holding all fourteen Mutations and the four other Assimilations. No creature will start a fight with you, but those you strike will answer. Bosses, Elder Guardians and raiders are beyond its reach."
+      "text": "$(l)Eldritch Antenna$(): earned by holding all fourteen Mutations and the four other Assimilations. No creature will start a fight with you, but those you strike will answer. Bosses, Elder Guardians and raiders are beyond its reach. Switch it on or off in the Maw's configuration menu."
     }
   ]
 }

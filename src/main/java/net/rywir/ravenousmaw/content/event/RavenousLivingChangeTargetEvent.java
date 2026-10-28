@@ -1,10 +1,15 @@
 package net.rywir.ravenousmaw.content.event;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raider;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.system.AssimilationHandler;
@@ -29,9 +34,15 @@ public class RavenousLivingChangeTargetEvent {
 
     private static boolean ignores(LivingEntity mob, Player player) {
         if (mob instanceof Piglin || mob instanceof PiglinBrute || mob instanceof Hoglin) {
-            return AssimilationHandler.isActive(player, Assimilations.GILDED_PHEROMONES);
+            if (AssimilationHandler.isActive(player, Assimilations.GILDED_PHEROMONES)) return true;
         }
 
-        return false;
+        return AssimilationHandler.isAntennaActive(player) && !resistsAntenna(mob);
+    }
+
+    /** Eldritch Antenna cannot sway bosses, Elder Guardians or raiders. */
+    private static boolean resistsAntenna(LivingEntity mob) {
+        return mob instanceof WitherBoss || mob instanceof EnderDragon || mob instanceof Warden
+            || mob instanceof ElderGuardian || mob instanceof Raider;
     }
 }

@@ -24,6 +24,7 @@ import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.OxytocinergicEsca;
 import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.system.ability.SymbioticAid;
+import net.rywir.ravenousmaw.util.Constants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -44,6 +45,9 @@ public class RavenousPlayerTickEvent {
         applyAquanaut(player);
         if (player instanceof ServerPlayer serverPlayer && player.tickCount % GIFT_CHECK_TICKS == 0) {
             OxytocinergicEsca.tryGift(serverPlayer);
+        }
+        if (player instanceof ServerPlayer serverPlayer && player.tickCount % Constants.ELDRITCH_ANTENNA_CHECK_TICKS == 0) {
+            AssimilationHandler.checkEldritchAntenna(serverPlayer);
         }
 
         ItemStack stack = player.getMainHandItem();

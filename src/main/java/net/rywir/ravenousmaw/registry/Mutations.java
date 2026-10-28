@@ -151,7 +151,9 @@ public enum Mutations {
         RECKLESS_DEVOURER   (Type.TOGGLE,   CircularList.of(0, 1)),
         MAGNETIC_FIELD      (Type.TOGGLE,   CircularList.of(0, 1)),
         MAGNETIC_RANGE      (Type.VALUE,    CircularList.of(4, 5, 6, 7, 8)),
-        DREADFUL_GLANCE     (Type.TOGGLE,   CircularList.of(0, 1));
+        DREADFUL_GLANCE     (Type.TOGGLE,   CircularList.of(0, 1)),
+        // Owned by no mutation: the Eldritch Antenna switch lives on the player (see AssimilationHandler), not on the item
+        ELDRITCH_ANTENNA    (Type.TOGGLE,   CircularList.of(1, 0));
 
         private final String            key;
         private final Component         title;

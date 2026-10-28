@@ -40,9 +40,12 @@ import net.rywir.ravenousmaw.content.attachment.MawTickData;
 import net.rywir.ravenousmaw.content.client.ClientHooks;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
 import net.rywir.ravenousmaw.content.gui.menu.ConfigurationMenu;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.rywir.ravenousmaw.content.packet.payload.ConfigurationSyncPayload;
 import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
+import net.rywir.ravenousmaw.system.AssimilationHandler;
 import net.rywir.ravenousmaw.registry.RavenousAttachments;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.datagen.provider.RavenousBlockTagsProvider;
@@ -430,6 +433,12 @@ public class MawItem extends Item {
             (id, inv, entity) -> new ConfigurationMenu(id, player.getInventory(), stack),
             Component.translatable("maw.ravenousmaw.configuration_string")
         ));
+
+        // The client cannot read the Antenna switch (attachments are not synced), so send it for the screen just opened
+        if (AssimilationHandler.has(serverPlayer, Assimilations.ELDRITCH_ANTENNA)) {
+            PacketDistributor.sendToPlayer(serverPlayer, new ConfigurationSyncPayload(
+                Mutations.Parameters.ELDRITCH_ANTENNA.key(), AssimilationHandler.getAntennaSwitch(serverPlayer)));
+        }
     }
 
     private boolean playerHasShieldUseIntent(UseOnContext context) {

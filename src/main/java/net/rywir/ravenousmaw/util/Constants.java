@@ -67,6 +67,10 @@ public class Constants {
     /** Blocks around the player in which a villager may toss a gift. */
     public static final double OXYTOCINERGIC_ESCA_GIFT_RADIUS = 8.0;
 
+    // ASSIMILATIONS - ELDRITCH ANTENNA
+    /** Ticks between two checks of the unlock condition (all mutations and the other assimilations). */
+    public static final int ELDRITCH_ANTENNA_CHECK_TICKS = 20;
+
     // FEAST
     public static final int BASE_NUTRITION_MODIFIER = 4;
     public static final float BASE_SATURATION_MODIFIER = 2.0F;
