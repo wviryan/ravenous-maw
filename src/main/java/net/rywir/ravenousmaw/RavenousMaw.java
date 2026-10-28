@@ -91,6 +91,8 @@ public class RavenousMaw {
 
         RavenousAttachments.register(modEventBus);
 
+        RavenousLootModifiers.register(modEventBus);
+
         modEventBus.addListener(this::addCreative);
 
         // CONFIG REGISTRATION

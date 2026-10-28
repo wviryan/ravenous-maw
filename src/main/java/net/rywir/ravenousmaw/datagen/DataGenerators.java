@@ -32,6 +32,7 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new RavenousItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeServer(), new RavenousRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new RavenousBlockStateProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeServer(), new RavenousGlobalLootModifierProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(RavenousBlockLootProvider::new, LootContextParamSets.BLOCK)), lookupProvider));
     }
 }

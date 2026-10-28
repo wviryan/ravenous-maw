@@ -11,7 +11,7 @@
     {
       "type": "patchouli:text",
       "title": "Latent",
-      "text": "$(l)Gilded Pheromones$(): earned by entering the Nether. Hoglins and piglins no longer attack you unprovoked, as if you wore gold. You must stay in the Nether for a few seconds, and carry a Maw for the effect to work."
+      "text": "$(l)Gilded Pheromones$(): earned by entering the Nether. Hoglins and piglins no longer attack you unprovoked, as if you wore gold. Bartering with piglins sometimes pays double and can yield a wither skeleton skull. You must stay in the Nether for a few seconds, and carry a Maw for the effect to work."
     },
     {
       "type": "patchouli:text",
