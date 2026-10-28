@@ -15,5 +15,6 @@ public class RavenousRegisterCommandsEvent {
         DestabilizeCommand.register(event.getDispatcher());
         TickCommand.register(event.getDispatcher());
         DamageCommand.register(event.getDispatcher());
+        AssimilateCommand.register(event.getDispatcher());
     }
 }
