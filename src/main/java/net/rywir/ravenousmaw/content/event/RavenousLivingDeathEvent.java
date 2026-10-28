@@ -15,9 +15,11 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
+import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousAttachments;
 import net.rywir.ravenousmaw.registry.Stages;
+import net.rywir.ravenousmaw.system.AssimilationHandler;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.util.Constants;
@@ -34,6 +36,11 @@ public class RavenousLivingDeathEvent {
 
         if (killer != null) {
             countVoracityKill(killer);
+        }
+
+        // Aquanaut Coalescence: the deed is slaying an Elder Guardian, with or without a Maw.
+        if (dead.getType() == EntityType.ELDER_GUARDIAN && killer instanceof ServerPlayer player) {
+            AssimilationHandler.grant(player, Assimilations.AQUANAUT_COALESCENCE);
         }
 
         if (!Stages.getOBJECTIVES().contains(dead.getType())) return;
