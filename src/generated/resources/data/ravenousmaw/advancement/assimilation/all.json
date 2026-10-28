@@ -1,5 +1,5 @@
 {
-  "parent": "ravenousmaw:root",
+  "parent": "ravenousmaw:assimilation/eldritch_antenna",
   "criteria": {
     "aquanaut_coalescence": {
       "trigger": "minecraft:impossible"

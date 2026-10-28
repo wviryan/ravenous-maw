@@ -26,7 +26,8 @@ import java.util.function.Consumer;
 
 /**
  * Advancement tab of the mod: a root earned by obtaining a Maw, one advancement per assimilation and a
- * challenge for earning all of them. The assimilation ones use impossible criteria, awarded by
+ * challenge for earning all of them. Positions are laid out by the game from the parent tree, so the challenge is a
+ * child of the Eldritch Antenna (the capstone) to sit to the right of every assimilation. The assimilation ones use impossible criteria, awarded by
  * {@link AssimilationHandler#grant} at the moment the assimilation is granted.
  */
 public class RavenousAdvancementProvider extends AdvancementProvider {
@@ -50,7 +51,6 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
             saver.accept(root);
 
             Advancement.Builder all = Advancement.Builder.advancement()
-                .parent(root)
                 .display(
                     new ItemStack(RavenousItems.RAVENOUS_MAW_EXCELSIOR.get()),
                     Component.translatable("advancement.ravenousmaw.assimilation_all.title"),
@@ -60,7 +60,7 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
             for (Assimilations assimilation : Assimilations.values()) {
                 all.addCriterion(assimilation.getKey(), CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
 
-                saver.accept(Advancement.Builder.advancement()
+                AdvancementHolder holder = Advancement.Builder.advancement()
                     .parent(root)
                     .display(
                         new ItemStack(icon(assimilation)),
@@ -68,7 +68,13 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
                         Component.translatable("advancement.ravenousmaw.assimilation." + assimilation.getKey() + ".description"),
                         null, assimilation == Assimilations.ELDRITCH_ANTENNA ? AdvancementType.GOAL : AdvancementType.TASK, true, true, false)
                     .addCriterion(AssimilationHandler.ASSIMILATED_CRITERION, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
-                    .build(AssimilationHandler.advancementId(assimilation)));
+                    .build(AssimilationHandler.advancementId(assimilation));
+
+                saver.accept(holder);
+
+                if (assimilation == Assimilations.ELDRITCH_ANTENNA) {
+                    all.parent(holder);
+                }
             }
 
             saver.accept(all.build(AssimilationHandler.ALL_ADVANCEMENT));
