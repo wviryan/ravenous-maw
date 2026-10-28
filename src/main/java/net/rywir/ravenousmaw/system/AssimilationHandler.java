@@ -115,6 +115,20 @@ public class AssimilationHandler {
         award(player, ALL_ADVANCEMENT, assimilation.getKey());
     }
 
+    /**
+     * Takes an assimilation away (a developer tool: no deed removes one) and syncs the client.
+     * Advancements already earned stay earned.
+     *
+     * @return true if the player had it
+     */
+    public static boolean revoke(ServerPlayer player, Assimilations assimilation) {
+        if (!player.getData(RavenousAttachments.ASSIMILATIONS).revoke(assimilation)) return false;
+
+        RavenousAssimilationSyncEvent.sync(player);
+
+        return true;
+    }
+
     /** The assimilation's own advancement. */
     public static ResourceLocation advancementId(Assimilations assimilation) {
         return ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "assimilation/" + assimilation.getKey());

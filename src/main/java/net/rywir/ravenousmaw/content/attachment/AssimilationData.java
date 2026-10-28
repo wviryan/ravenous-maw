@@ -50,6 +50,11 @@ public class AssimilationData {
         return earned.add(assimilation);
     }
 
+    /** @return true if it was removed, false if the player did not have it */
+    public boolean revoke(Assimilations assimilation) {
+        return earned.remove(assimilation);
+    }
+
     public int count() {
         return earned.size();
     }

@@ -7,14 +7,6 @@ import net.rywir.ravenousmaw.content.command.*;
 public class RavenousRegisterCommandsEvent {
     @SubscribeEvent
     public static void onRegisterCommandsEvent(RegisterCommandsEvent event) {
-        MutateCommand.register(event.getDispatcher());
-        UpCommand.register(event.getDispatcher());
-        DismutateCommand.register(event.getDispatcher());
-        ChargeCommand.register(event.getDispatcher());
-        SurchargeCommand.register(event.getDispatcher());
-        DestabilizeCommand.register(event.getDispatcher());
-        TickCommand.register(event.getDispatcher());
-        DamageCommand.register(event.getDispatcher());
-        AssimilateCommand.register(event.getDispatcher());
+        RavenousCommands.register(event.getDispatcher());
     }
 }
