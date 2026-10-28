@@ -1,6 +1,9 @@
 package net.rywir.ravenousmaw.system;
 
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.rywir.ravenousmaw.RavenousMaw;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,9 +18,15 @@ import net.rywir.ravenousmaw.registry.RavenousAttachments;
 
 /**
  * Single entry point for assimilations on a player. Earning one goes through {@link #grant} so the
- * client sync, the feedback (and later the advancement) are never forgotten.
+ * client sync, the feedback and the advancements are never forgotten.
  */
 public class AssimilationHandler {
+    public static final ResourceLocation ROOT_ADVANCEMENT = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "root");
+    /** Challenge for earning every assimilation: one criterion per assimilation key. */
+    public static final ResourceLocation ALL_ADVANCEMENT = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "assimilation/all");
+    /** Criterion of each assimilation's own advancement. */
+    public static final String ASSIMILATED_CRITERION = "assimilated";
+
     /** True if any inventory slot (hotbar, backpack, offhand) holds a Maw. */
     public static boolean carriesMaw(Player player) {
         for (ItemStack stack : player.getInventory().items) {
@@ -91,5 +100,20 @@ public class AssimilationHandler {
 
         player.displayClientMessage(Component.translatable("ravenousmaw.assimilation_granted", Component.translatable("assimilation.ravenousmaw." + assimilation.getKey())), true);
         player.level().playSound(null, player.blockPosition(), SoundEvents.SCULK_CATALYST_BLOOM, SoundSource.PLAYERS, 1.0F, 0.8F);
+
+        award(player, advancementId(assimilation), ASSIMILATED_CRITERION);
+        award(player, ALL_ADVANCEMENT, assimilation.getKey());
+    }
+
+    /** The assimilation's own advancement. */
+    public static ResourceLocation advancementId(Assimilations assimilation) {
+        return ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "assimilation/" + assimilation.getKey());
+    }
+
+    /** Completes one criterion of an advancement; missing advancements (e.g. a datapack removed them) are ignored. */
+    private static void award(ServerPlayer player, ResourceLocation id, String criterion) {
+        AdvancementHolder advancement = player.server.getAdvancements().get(id);
+
+        if (advancement != null) player.getAdvancements().award(advancement, criterion);
     }
 }

@@ -1,0 +1,27 @@
+{
+  "parent": "ravenousmaw:root",
+  "criteria": {
+    "assimilated": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.ravenousmaw.assimilation.eldritch_antenna.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:echo_shard"
+    },
+    "title": {
+      "translate": "advancement.ravenousmaw.assimilation.eldritch_antenna.title"
+    }
+  },
+  "requirements": [
+    [
+      "assimilated"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

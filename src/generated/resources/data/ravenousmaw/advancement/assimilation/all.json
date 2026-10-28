@@ -1,0 +1,51 @@
+{
+  "parent": "ravenousmaw:root",
+  "criteria": {
+    "aquanaut_coalescence": {
+      "trigger": "minecraft:impossible"
+    },
+    "eldritch_antenna": {
+      "trigger": "minecraft:impossible"
+    },
+    "gilded_pheromones": {
+      "trigger": "minecraft:impossible"
+    },
+    "nictitating_membrane": {
+      "trigger": "minecraft:impossible"
+    },
+    "oxytocinergic_esca": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.ravenousmaw.assimilation_all.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "ravenousmaw:ravenous_maw_excelsior"
+    },
+    "title": {
+      "translate": "advancement.ravenousmaw.assimilation_all.title"
+    }
+  },
+  "requirements": [
+    [
+      "gilded_pheromones"
+    ],
+    [
+      "nictitating_membrane"
+    ],
+    [
+      "aquanaut_coalescence"
+    ],
+    [
+      "oxytocinergic_esca"
+    ],
+    [
+      "eldritch_antenna"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

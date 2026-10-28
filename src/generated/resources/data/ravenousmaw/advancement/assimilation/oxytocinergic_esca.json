@@ -1,0 +1,26 @@
+{
+  "parent": "ravenousmaw:root",
+  "criteria": {
+    "assimilated": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.ravenousmaw.assimilation.oxytocinergic_esca.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:emerald"
+    },
+    "title": {
+      "translate": "advancement.ravenousmaw.assimilation.oxytocinergic_esca.title"
+    }
+  },
+  "requirements": [
+    [
+      "assimilated"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
