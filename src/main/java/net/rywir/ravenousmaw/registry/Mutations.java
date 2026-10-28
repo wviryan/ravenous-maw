@@ -18,13 +18,13 @@ public enum Mutations {
     ELECTRIC_MENDING    (Stages.LATENT,     Items.RAW_COPPER,               Set.of(AbilityTypes.ON_CRAFT),  new ElectricMending(),      List.of(Parameters.MAGNETIC_RANGE, Parameters.MAGNETIC_FIELD)),
 
     COMBUSTIVE_ENZYME   (Stages.ADVANCED,   Items.MAGMA_CREAM,              Set.of(),                       new CombustiveEnzyme(),     List.of()),
-    INSATIABLE_VORACITY (Stages.ADVANCED,   Items.ENCHANTED_GOLDEN_APPLE,   Set.of(),                       new InsatiableVoracity(),   List.of()),
+    MENTAL_SUPREMACY    (Stages.ADVANCED,   Items.HEART_OF_THE_SEA,         Set.of(),                       new MentalSupremacy(),      List.of(Parameters.DREADFUL_GLANCE)),
     IRIS_OUT            (Stages.ADVANCED,   Items.BREEZE_ROD,               Set.of(),                       new IrisOut(),              List.of(Parameters.LIVING_PROJECTILE, Parameters.GRIM_TRACER)),
 
     UNDYING_FLESH       (Stages.NOBLE,      Items.TOTEM_OF_UNDYING,         Set.of(AbilityTypes.ON_CRAFT),  new UndyingFlesh(),         List.of()),
     SYMBIOTIC_AID       (Stages.NOBLE,      Items.PUFFERFISH,               Set.of(),                       new SymbioticAid(),         List.of(Parameters.SYMBIOTIC_IMMUNITY)),
     TENDRIL_LASH        (Stages.NOBLE,      Items.ANGLER_POTTERY_SHERD,     Set.of(AbilityTypes.ON_CRAFT),  new TendrilLash(),          List.of()),
-    MENTAL_SUPREMACY    (Stages.NOBLE,      Items.HEART_OF_THE_SEA,         Set.of(),                       new MentalSupremacy(),      List.of(Parameters.DREADFUL_GLANCE)),
+    INSATIABLE_VORACITY (Stages.NOBLE,      Items.ENCHANTED_GOLDEN_APPLE,   Set.of(),                       new InsatiableVoracity(),   List.of()),
 
     RESONANT_RENDING    (Stages.EXCELSIOR,  Items.GHAST_TEAR,               Set.of(),                       new ResonantRending(),      List.of()),
     ARCANE_HYPERTROPHY  (Stages.EXCELSIOR,  Items.PRISMARINE_SHARD,         Set.of(),                       new ArcaneHypertrophy(),    List.of()),

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_minecraft:enchanted_golden_apple": {
+    "has_minecraft:heart_of_the_sea": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:enchanted_golden_apple"
+            "items": "minecraft:heart_of_the_sea"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ravenousmaw:ravenous_maw_advanced_insatiable_voracity"
+        "recipe": "ravenousmaw:ravenous_maw_advanced_mental_supremacy"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_minecraft:enchanted_golden_apple"
+      "has_minecraft:heart_of_the_sea"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ravenousmaw:ravenous_maw_advanced_insatiable_voracity"
+      "ravenousmaw:ravenous_maw_advanced_mental_supremacy"
     ]
   }
 }

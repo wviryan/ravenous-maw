@@ -2,12 +2,12 @@
   "name": "Mental Supremacy",
   "icon": "minecraft:heart_of_the_sea",
   "category": "ravenousmaw:mutations",
-  "sortnum": 5,
+  "sortnum": 3,
   "pages": [
     {
       "type": "patchouli:spotlight",
       "item": {
-        "item": "ravenousmaw:chorus_cracker"
+        "item": "ravenousmaw:piglin_pie"
       },
       "text": "Mental Supremacy elevates the Maw to a state of psychic dominance, allowing its alien consciousness to spill over and influence the minds of others."
     },
