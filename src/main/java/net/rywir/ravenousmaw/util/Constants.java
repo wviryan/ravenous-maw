@@ -84,6 +84,10 @@ public class Constants {
     public static final float ELECTRIC_MENDING_LOW_ENERGY_DAMAGE_MULTIPLIER = 0.1F;
     /** Minimum ticks between two "battery drained" warnings (sound + message) for the same player. */
     public static final int ELECTRIC_MENDING_WARNING_COOLDOWN_TICKS = 80;
+    /** Undying Flesh shock: a paid hit arcs to up to this many other mobs within this many blocks of the target. */
+    public static final int ELECTRIC_MENDING_CHAIN_TARGETS = 3;
+    public static final double ELECTRIC_MENDING_CHAIN_RANGE = 4.0D;
+    public static final float ELECTRIC_MENDING_CHAIN_DAMAGE = 4.0F;
 
     // MUTATION CONSTANTS - SYMBIOTIC AID
     /** Minimum ticks between two "effect absorbed" notices (sound + message) for the same player. */

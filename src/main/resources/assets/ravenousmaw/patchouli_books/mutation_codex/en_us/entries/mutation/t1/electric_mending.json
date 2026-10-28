@@ -24,6 +24,10 @@
     },
     {
       "type": "patchouli:text",
+      "text": "With Undying Flesh the Maw cannot break, so there is nothing left to mend and it stops mending itself. Its hits are never weakened. Instead, each blow it can pay 25 FE for arcs lightning to up to 3 other mobs within 4 blocks of the target, dealing 4 damage to each. Without FE the blow lands plainly."
+    },
+    {
+      "type": "patchouli:text",
       "text": "Instability (Electroactivity): The current coursing through the Maw is volatile and untamed. Immersion in water invites disaster; the pent-up energy may occasionally ground itself through the wielder, inflicting a violent electrocution upon contact with the liquid."
     }
   ]

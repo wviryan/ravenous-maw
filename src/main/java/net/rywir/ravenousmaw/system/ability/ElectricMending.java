@@ -2,8 +2,10 @@ package net.rywir.ravenousmaw.system.ability;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,9 +13,12 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
@@ -21,6 +26,8 @@ import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 import net.rywir.ravenousmaw.util.Constants;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,9 +58,13 @@ public class ElectricMending implements IMutationAbility {
         return energy != null && energy.getEnergyStored() >= Constants.ELECTRIC_MENDING_ATTACK_ENERGY_COST;
     }
 
-    /** Multiplier for the whole melee hit: 1 with enough FE, a heavy penalty without. */
+    /**
+     * Multiplier for the whole melee hit: 1 with enough FE, a heavy penalty without.
+     * Undying Flesh makes the Maw unbreakable, so the battery only buys the shock there (see {@link #onAttack}) and an
+     * empty one costs no damage.
+     */
     public float getHitDamageMultiplier(MutationHandler handler, ItemStack stack) {
-        if (!handler.has(Mutations.ELECTRIC_MENDING) || canPowerHit(stack)) return 1.0F;
+        if (!handler.has(Mutations.ELECTRIC_MENDING) || handler.has(Mutations.UNDYING_FLESH) || canPowerHit(stack)) return 1.0F;
 
         return Constants.ELECTRIC_MENDING_LOW_ENERGY_DAMAGE_MULTIPLIER;
     }
@@ -75,15 +86,59 @@ public class ElectricMending implements IMutationAbility {
         player.displayClientMessage(LOW_ENERGY_WARNING, true);
     }
 
-    /** Each melee hit that lands costs FE. A battery below the cost is kept for mending and the magnet. */
+    /**
+     * Each melee hit that lands costs FE. A battery below the cost is kept for mending and the magnet.
+     * With Undying Flesh the Maw never needs mending, so the paid hit also arcs lightning to nearby mobs.
+     */
     @Override
     public void onAttack(ItemStack stack, LivingEntity target, Level level) {
         if (level.isClientSide()) return;
 
-        if (!new MutationHandler(stack).has(Mutations.ELECTRIC_MENDING)) return;
+        MutationHandler handler = new MutationHandler(stack);
+
+        if (!handler.has(Mutations.ELECTRIC_MENDING)) return;
         if (!canPowerHit(stack)) return;
 
         stack.getCapability(Capabilities.EnergyStorage.ITEM).extractEnergy(Constants.ELECTRIC_MENDING_ATTACK_ENERGY_COST, false);
+
+        if (handler.has(Mutations.UNDYING_FLESH)) {
+            chainLightning(target, (ServerLevel) level);
+        }
+    }
+
+    /** Arcs from the struck target to the nearest other mobs. Credited to the attacker, who is never hit. */
+    private static void chainLightning(LivingEntity target, ServerLevel level) {
+        // hurtEnemy runs right after the damage, so the target's last attacker is the wielder.
+        LivingEntity attacker = target.getLastHurtByMob();
+
+        DamageSource source = attacker instanceof Player player
+            ? level.damageSources().playerAttack(player)
+            : level.damageSources().magic();
+
+        AABB area = target.getBoundingBox().inflate(Constants.ELECTRIC_MENDING_CHAIN_RANGE);
+
+        List<LivingEntity> arcTargets = level.getEntitiesOfClass(LivingEntity.class, area, entity ->
+            entity != target && entity != attacker && entity.isAlive() && !entity.isAlliedTo(target) && !(entity instanceof Player) && !(entity instanceof TamableAnimal tamed && tamed.isTame()));
+
+        arcTargets.sort(Comparator.comparingDouble(target::distanceToSqr));
+
+        Vec3 from = target.position().add(0.0D, target.getBbHeight() / 2.0D, 0.0D);
+
+        for (LivingEntity victim : arcTargets.stream().limit(Constants.ELECTRIC_MENDING_CHAIN_TARGETS).toList()) {
+            victim.hurt(source, Constants.ELECTRIC_MENDING_CHAIN_DAMAGE);
+
+            Vec3 to = victim.position().add(0.0D, victim.getBbHeight() / 2.0D, 0.0D);
+            int steps = (int) (from.distanceTo(to) * 4.0D);
+
+            for (int i = 0; i <= steps; i++) {
+                Vec3 point = from.lerp(to, steps == 0 ? 0.0D : (double) i / steps);
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, point.x, point.y, point.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            }
+        }
+
+        if (!arcTargets.isEmpty()) {
+            level.playSound(null, target.blockPosition(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.4F, 1.6F);
+        }
     }
 
     @Override
