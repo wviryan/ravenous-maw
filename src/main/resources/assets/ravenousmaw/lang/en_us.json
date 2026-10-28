@@ -96,6 +96,7 @@
   "maw.ravenousmaw.stage_string": "§pStage",
   "maw.ravenousmaw.mutation_string": "§aMutations",
   "maw.ravenousmaw.assimilation_string": "Assimilated",
+  "ravenousmaw.assimilation_granted": "The Maw assimilates: %s",
   "maw.ravenousmaw.configuration_string": "Configuration",
   "maw.ravenousmaw.energy_string": "Energy",
 

@@ -8,6 +8,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.attachment.AssimilationData;
 import net.rywir.ravenousmaw.content.attachment.BossContributors;
+import net.rywir.ravenousmaw.content.attachment.DimensionDeedTimer;
 import net.rywir.ravenousmaw.content.attachment.MawTickData;
 
 public class RavenousAttachments {
@@ -31,6 +32,11 @@ public class RavenousAttachments {
             .serialize(AssimilationData.CODEC)
             .copyOnDeath()
             .build()
+    );
+
+    // No serialize(): the countdown is rebuilt from the player's dimension, and not copied on death
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<DimensionDeedTimer>> DIMENSION_DEED_TIMER = ATTACHMENT_TYPES.register("dimension_deed_timer",
+        () -> AttachmentType.builder(() -> new DimensionDeedTimer()).build()
     );
 
     public static void register(IEventBus eventBus) {

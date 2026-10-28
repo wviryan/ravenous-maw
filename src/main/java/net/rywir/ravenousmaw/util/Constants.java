@@ -47,6 +47,11 @@ public class Constants {
     /** Ticks between two dialogue lines (3 minutes). */
     public static final int MAW_DIALOGUE_TICKS = 20 * 60 * 3;
 
+    // ASSIMILATIONS
+    /** Shortest and longest stay in a dimension (10 to 30 seconds) before it grants its assimilation. */
+    public static final int DIMENSION_DEED_MIN_DELAY_TICKS = 20 * 10;
+    public static final int DIMENSION_DEED_MAX_DELAY_TICKS = 20 * 30;
+
     // FEAST
     public static final int BASE_NUTRITION_MODIFIER = 4;
     public static final float BASE_SATURATION_MODIFIER = 2.0F;
