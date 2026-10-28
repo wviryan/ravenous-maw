@@ -6,27 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "An Assimilation needs no Mutagen and no Matrix. The Maw absorbs it the moment its hunter completes a certain deed, whatever the Maw's Stage at that time. Five exist, spread across the Stages. The Maw's tooltip shows how many you have earned."
+      "text": "Not every gift is brewed in the Matrix. An Assimilation needs no Mutagen, no vessel and no ritual: the Maw simply drinks it from the world the moment its hunter completes a deed, whatever the beast's Stage. Five exist, scattered across the Stages."
     },
     {
       "type": "patchouli:text",
-      "title": "Latent",
-      "text": "$(l)Gilded Pheromones$(): earned by entering the Nether. Hoglins and piglins no longer attack you unprovoked, as if you wore gold. Bartering with piglins sometimes pays double and can yield a wither skeleton skull. You must stay in the Nether for a few seconds, and carry a Maw for the effect to work."
-    },
-    {
-      "type": "patchouli:text",
-      "title": "Advanced",
-      "text": "$(l)Nictitating Membrane$(): earned by staying a few seconds in the End. Endermen no longer take offence when you look them in the eye, but one you strike still answers.$(br2)$(l)Aquanaut Coalescence$(): earned by slaying an Elder Guardian. While in water with a Maw carried, you breathe freely and swim faster."
-    },
-    {
-      "type": "patchouli:text",
-      "title": "Noble",
-      "text": "$(l)Oxytocinergic Esca$(): earned by winning a raid under the strongest Bad Omen. Every raid won afterwards adds stacks equal to its Bad Omen level, up to ten. While you carry a Maw, each stack lowers the price of every villager trade, and a nearby villager now and then tosses you a hero gift, more often with more stacks."
-    },
-    {
-      "type": "patchouli:text",
-      "title": "Excelsior",
-      "text": "$(l)Eldritch Antenna$(): earned by holding all fourteen Mutations and the four other Assimilations. No creature will start a fight with you, but those you strike will answer. Bosses, Elder Guardians and raiders are beyond its reach. Switch it on or off in the Maw's configuration menu."
+      "text": "These traits cling to the hunter, not to the vessel. A replacement Maw benefits at once and death takes nothing away, but their power slumbers unless a Maw is carried. Hover over the beast to see how many you have taken in."
     }
   ]
 }

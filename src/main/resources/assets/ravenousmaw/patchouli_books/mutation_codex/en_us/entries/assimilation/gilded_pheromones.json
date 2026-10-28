@@ -1,0 +1,26 @@
+{
+  "name": "Gilded Pheromones",
+  "icon": "minecraft:gold_ingot",
+  "category": "ravenousmaw:assimilations",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:gold_ingot"
+      },
+      "text": "Step into the Nether and linger, and the Maw will taste the scorched air until it breathes it back as scent. Hoglins and piglins, drawn by that glimmer of gold, no longer see prey in their wielder."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:wither_skeleton_skull"
+      },
+      "text": "Barter with the piglins and the beast's glamour will sway the trade: many a bargain pays twice over, and now and then a grinning skull of the Wither is slipped into the pile."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Deed (Latent): remain within the Nether for a spell. The gift is lost on any who carry no Maw, and any piglin or hoglin you strike will answer in kind."
+    }
+  ]
+}

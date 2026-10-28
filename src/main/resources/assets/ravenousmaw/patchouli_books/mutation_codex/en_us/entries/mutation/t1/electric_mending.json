@@ -20,11 +20,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Every blow the Maw lands costs 25 FE. With less than that in reserve, its strikes fall weak, dealing only a tenth of their damage, and the Maw chimes a warning. Bolts of Iris Out are not affected."
+      "text": "Such hunger is never idle. Each blow the beast delivers is paid for in current, and a Maw left dry strikes as a starving thing would: feebly, with barely a tenth of its fury, while it chimes a plaintive warning. Only the bolts of Iris Out are spared this toll."
     },
     {
       "type": "patchouli:text",
-      "text": "With Undying Flesh the Maw cannot break, so there is nothing left to mend and it stops mending itself. Its hits are never weakened. Instead, each blow it can pay 25 FE for arcs lightning to up to 3 other mobs within 4 blocks of the target, dealing 4 damage to each. Without FE the blow lands plainly."
+      "text": "Should the Maw also bear Undying Flesh, there is no wound left to knit, and the current has no wish to sleep. It turns outward. The beast is never weakened for want of charge, and every blow it can pay for lets the stolen lightning leap from the victim to as many as three lesser creatures crowded close by. When the reserve runs dry, the blow lands plain and silent."
     },
     {
       "type": "patchouli:text",

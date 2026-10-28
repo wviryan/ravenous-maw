@@ -1,0 +1,26 @@
+{
+  "name": "Eldritch Antenna",
+  "icon": "minecraft:echo_shard",
+  "category": "ravenousmaw:assimilations",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:echo_shard"
+      },
+      "text": "Only a Maw that has swallowed every Mutation, borne by a hunter who has taken in all four other gifts, may sprout the final organ. A silent antenna unfurls, and the world's creatures stray from your path as from a thing they cannot name."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "minecraft:sculk_shrieker"
+      },
+      "text": "No creature will begin a fight with you. But strike one, and the spell breaks for that creature alone. The great Bosses, the Elder Guardian and the raiders are deaf to the antenna."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Deed (Excelsior): bear a Maw with all fourteen Mutations, having earned every other Assimilation. Commune with the beast (Shift + Right Click) to still or awaken the antenna."
+    }
+  ]
+}
