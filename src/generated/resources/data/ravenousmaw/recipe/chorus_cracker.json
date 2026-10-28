@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:shulker_shell"
-    },
-    "B": {
-      "item": "minecraft:ender_pearl"
-    },
-    "C": {
-      "item": "minecraft:chorus_fruit"
-    }
+    "A": "minecraft:shulker_shell",
+    "B": "minecraft:ender_pearl",
+    "C": "minecraft:chorus_fruit"
   },
   "pattern": [
     " A ",
@@ -18,7 +12,6 @@
     " A "
   ],
   "result": {
-    "count": 1,
     "id": "ravenousmaw:chorus_cracker"
   }
 }

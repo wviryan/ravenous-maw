@@ -16,6 +16,7 @@ repositories {
         url 'https://maven.blamejared.com'
         content {
             includeGroup "mezz.jei"
+            includeGroup "net.mezzdev.config" // JEI's config library
         }
     }
     maven {
@@ -45,8 +46,15 @@ neoForge {
             programArgument '--nogui'
         }
 
+        // 26.1 splits data generation into a client run (assets: models, item definitions) and a server run (data pack).
+        // Each run purges every generated file it did not write itself, so they need separate output folders.
         data {
             clientData()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/client/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        dataServer {
+            serverData()
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
@@ -62,7 +70,10 @@ neoForge {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    srcDir 'src/generated/client'
+}
 
 configurations {
     runtimeClasspath.extendsFrom localRuntime
@@ -74,6 +85,7 @@ dependencies {
     runtimeOnly "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
 
     // Patchouli 26.1 ships as one jar (no :api classifier), from the Modrinth maven.
+    // Fabric and NeoForge share the version number 26.1-94-beta, so the NeoForge file is addressed by its Modrinth version id.
     compileOnly "maven.modrinth:patchouli:${patchouli_version}"
     runtimeOnly "maven.modrinth:patchouli:${patchouli_version}"
 }

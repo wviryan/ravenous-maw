@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_minecraft:enchanted_golden_apple": {
+    "has_enchanted_golden_apple": {
       "conditions": {
         "items": [
           {
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_minecraft:enchanted_golden_apple"
+      "has_enchanted_golden_apple"
     ]
   ],
   "rewards": {

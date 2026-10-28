@@ -1,13 +1,14 @@
-// 1.21.1	2025-12-20T23:02:00.4888749	Tags for minecraft:item mod id ravenousmaw
+// 26.1.2	2026-10-28T15:52:09.099533	Tags for minecraft:item mod id ravenousmaw
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/c/tags/item/paxel.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/c/tags/item/tools.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/c/tags/item/tools/melee_weapon.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/breaks_decorated_pots.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/durability.json
+a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/melee_weapon.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/mining.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/mining_loot.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/sharp_weapon.json
-a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/sword.json
+a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/sweeping.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/minecraft/tags/item/enchantable/weapon.json
 88c26acd122dac0b705f628a690770d3fba066f0 data/ravenousmaw/tags/item/feast.json
 a91ea4a81a50f63e7faee31556bbb7355478e342 data/ravenousmaw/tags/item/maw.json

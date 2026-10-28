@@ -1,12 +1,6 @@
 {
   "type": "ravenousmaw:mutation_recipe_serializer",
-  "base": {
-    "item": "ravenousmaw:ravenous_maw_excelsior"
-  },
-  "feast": {
-    "item": "ravenousmaw:sculk_croissant"
-  },
-  "mutagen": {
-    "item": "minecraft:ghast_tear"
-  }
+  "base": "ravenousmaw:ravenous_maw_excelsior",
+  "feast": "ravenousmaw:sculk_croissant",
+  "mutagen": "minecraft:ghast_tear"
 }

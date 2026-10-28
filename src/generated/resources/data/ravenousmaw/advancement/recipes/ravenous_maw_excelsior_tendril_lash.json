@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_minecraft:angler_pottery_sherd": {
+    "has_angler_pottery_sherd": {
       "conditions": {
         "items": [
           {
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_minecraft:angler_pottery_sherd"
+      "has_angler_pottery_sherd"
     ]
   ],
   "rewards": {

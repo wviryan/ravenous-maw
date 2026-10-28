@@ -1,12 +1,6 @@
 {
   "type": "ravenousmaw:mutation_recipe_serializer",
-  "base": {
-    "item": "ravenousmaw:ravenous_maw_advanced"
-  },
-  "feast": {
-    "item": "ravenousmaw:piglin_pie"
-  },
-  "mutagen": {
-    "item": "minecraft:magma_cream"
-  }
+  "base": "ravenousmaw:ravenous_maw_advanced",
+  "feast": "ravenousmaw:piglin_pie",
+  "mutagen": "minecraft:magma_cream"
 }

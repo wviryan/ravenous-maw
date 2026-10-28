@@ -1,12 +1,6 @@
 {
   "type": "ravenousmaw:mutation_recipe_serializer",
-  "base": {
-    "item": "ravenousmaw:ravenous_maw_excelsior"
-  },
-  "feast": {
-    "item": "minecraft:rotten_flesh"
-  },
-  "mutagen": {
-    "item": "minecraft:slime_ball"
-  }
+  "base": "ravenousmaw:ravenous_maw_excelsior",
+  "feast": "minecraft:rotten_flesh",
+  "mutagen": "minecraft:slime_ball"
 }

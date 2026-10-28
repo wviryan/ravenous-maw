@@ -1,6 +1,7 @@
 package net.rywir.ravenousmaw.datagen.provider;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
@@ -118,7 +119,7 @@ public class RavenousRecipeProvider extends RecipeProvider {
                 }
 
                 Item mutagenItem = mutation.mutagen();
-                String unlockCriterionName = "has_" + mutagenItem.getDefaultInstance().getItem().toString().toLowerCase();
+                String unlockCriterionName = "has_" + BuiltInRegistries.ITEM.getKey(mutagenItem).getPath();
 
                 MutationRecipeBuilder.mutation(
                     Ingredient.of(mawHolder.get()),

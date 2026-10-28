@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_minecraft:breeze_rod": {
+    "has_breeze_rod": {
       "conditions": {
         "items": [
           {
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_minecraft:breeze_rod"
+      "has_breeze_rod"
     ]
   ],
   "rewards": {
