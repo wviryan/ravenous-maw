@@ -40,6 +40,7 @@ import net.rywir.ravenousmaw.content.attachment.MawTickData;
 import net.rywir.ravenousmaw.content.client.ClientHooks;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
 import net.rywir.ravenousmaw.content.gui.menu.ConfigurationMenu;
+import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.RavenousAttachments;
@@ -121,6 +122,11 @@ public class MawItem extends Item {
         }
 
         // Tooltips are built on the client, but the dist check keeps the client class from loading on a server.
+        if (FMLEnvironment.dist.isClient()) {
+            String assimilationString = Component.translatable("maw.ravenousmaw.assimilation_string").getString();
+            tooltipComponents.add(Component.literal(assimilationString + ": " + ClientHooks.getAssimilationCount() + "/" + Assimilations.values().length).withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+
         if (FMLEnvironment.dist.isClient() && ClientHooks.isShiftDown()) {
             String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
             tooltipComponents.add(Component.literal(mutationString + ":").withStyle(ChatFormatting.YELLOW));

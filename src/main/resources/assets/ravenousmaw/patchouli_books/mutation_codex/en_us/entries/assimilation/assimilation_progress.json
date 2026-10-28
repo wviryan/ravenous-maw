@@ -1,0 +1,32 @@
+{
+  "name": "Assimilation",
+  "icon": "minecraft:sculk_catalyst",
+  "category": "ravenousmaw:assimilations",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "An Assimilation needs no Mutagen and no Matrix. The Maw absorbs it the moment its hunter completes a certain deed, whatever the Maw's Stage at that time. Five exist, spread across the Stages. The Maw's tooltip shows how many you have earned."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Latent",
+      "text": "$(l)Gilded Pheromones$(): earned by entering the Nether. Hoglins and piglins no longer attack you, as if you wore gold."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Advanced",
+      "text": "$(l)Nictitating Membrane$(): earned by entering the End. Endermen ignore your gaze.$(br2)$(l)Aquanaut Coalescence$(): earned by slaying an Elder Guardian. The Maw lets you breathe and swim in the deep."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Noble",
+      "text": "$(l)Oxytocinergic Esca$(): earned by winning a raid under the strongest Bad Omen. Villagers learn to love you."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Excelsior",
+      "text": "$(l)Eldritch Antenna$(): earned by holding all fourteen Mutations and the four other Assimilations. No creature will start a fight with you, but those you strike will answer. Bosses, Elder Guardians and raiders are beyond its reach."
+    }
+  ]
+}

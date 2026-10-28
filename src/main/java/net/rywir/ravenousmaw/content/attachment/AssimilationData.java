@@ -14,15 +14,8 @@ import java.util.Set;
 public class AssimilationData {
     // Saved as keys, so reordering the enum never corrupts old saves and an unknown key is simply dropped
     public static final Codec<AssimilationData> CODEC = Codec.STRING.listOf().xmap(
-        keys -> {
-            Set<Assimilations> earned = EnumSet.noneOf(Assimilations.class);
-            for (String key : keys) {
-                Assimilations assimilation = Assimilations.byKey(key);
-                if (assimilation != null) earned.add(assimilation);
-            }
-            return new AssimilationData(earned);
-        },
-        data -> data.earned.stream().map(Assimilations::getKey).toList()
+        AssimilationData::fromKeys,
+        AssimilationData::toKeys
     );
 
     private final Set<Assimilations> earned;
@@ -33,6 +26,19 @@ public class AssimilationData {
 
     private AssimilationData(Set<Assimilations> earned) {
         this.earned = earned;
+    }
+
+    public static AssimilationData fromKeys(List<String> keys) {
+        Set<Assimilations> earned = EnumSet.noneOf(Assimilations.class);
+        for (String key : keys) {
+            Assimilations assimilation = Assimilations.byKey(key);
+            if (assimilation != null) earned.add(assimilation);
+        }
+        return new AssimilationData(earned);
+    }
+
+    public List<String> toKeys() {
+        return earned.stream().map(Assimilations::getKey).toList();
     }
 
     public boolean has(Assimilations assimilation) {

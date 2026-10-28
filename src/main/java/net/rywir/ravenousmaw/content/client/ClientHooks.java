@@ -2,7 +2,11 @@ package net.rywir.ravenousmaw.content.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.rywir.ravenousmaw.content.attachment.AssimilationData;
 import net.rywir.ravenousmaw.content.gui.screen.ConfigurationScreen;
+import net.rywir.ravenousmaw.registry.RavenousAttachments;
+
+import java.util.List;
 
 /**
  * Entry points into client-only code for classes shared with the dedicated server.
@@ -22,5 +26,19 @@ public final class ClientHooks {
         if (Minecraft.getInstance().screen instanceof ConfigurationScreen screen) {
             screen.update(key, val);
         }
+    }
+
+    /** Stores the server-sent assimilations on the local player (see RavenousAssimilationSyncEvent). */
+    public static void updateAssimilations(List<String> keys) {
+        var player = Minecraft.getInstance().player;
+        if (player != null) {
+            player.setData(RavenousAttachments.ASSIMILATIONS, AssimilationData.fromKeys(keys));
+        }
+    }
+
+    /** @return how many assimilations the local player has earned, 0 when there is no player (e.g. the main menu) */
+    public static int getAssimilationCount() {
+        var player = Minecraft.getInstance().player;
+        return player == null ? 0 : player.getData(RavenousAttachments.ASSIMILATIONS).count();
     }
 }
