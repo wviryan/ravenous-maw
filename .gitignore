@@ -16,6 +16,9 @@ out
 # vscode
 .vscode
 
+# zed
+.zed
+
 # gradle
 build
 .gradle
