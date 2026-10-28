@@ -61,7 +61,8 @@ public class FeedingRecipe extends CustomRecipe {
     );
 
     public static final MapCodec<FeedingRecipe> MAP_CODEC = MapCodec.unit(FeedingRecipe::new);
-    public static final StreamCodec<RegistryFriendlyByteBuf, FeedingRecipe> STREAM_CODEC = StreamCodec.unit(new FeedingRecipe());
+    // Not StreamCodec.unit: it demands the very same instance when encoding, but every loaded recipe is a new one.
+    public static final StreamCodec<RegistryFriendlyByteBuf, FeedingRecipe> STREAM_CODEC = StreamCodec.of((buf, recipe) -> {}, buf -> new FeedingRecipe());
     public static final RecipeSerializer<FeedingRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
     @Override
