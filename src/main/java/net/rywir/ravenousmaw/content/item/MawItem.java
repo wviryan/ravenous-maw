@@ -34,9 +34,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
+import net.rywir.ravenousmaw.system.RavenousEnergyStorage;
 import net.rywir.ravenousmaw.content.attachment.MawTickData;
 import net.rywir.ravenousmaw.content.client.ClientHooks;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
@@ -120,9 +120,9 @@ public class MawItem extends Item {
         if (hasElectricMending) {
             String energyString = Component.translatable("maw.ravenousmaw.energy_string").getString();
 
-            var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+            var energy = RavenousEnergyStorage.of(stack);
 
-            Component tooltip = Component.literal(energyString + ": " + energy.getEnergyStored() + "/" + energy.getMaxEnergyStored());
+            Component tooltip = Component.literal(energyString + ": " + energy.getAmountAsInt() + "/" + energy.getCapacityAsInt());
             lines.accept(tooltip);
         }
 
@@ -325,11 +325,11 @@ public class MawItem extends Item {
         boolean hasElectricMending = handler.has(Mutations.ELECTRIC_MENDING);
         if (!hasElectricMending) return;
 
-        boolean hasEnoughEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM).getEnergyStored() >= ENERGY_COST_PER_DURABIITY;
+        var energy = RavenousEnergyStorage.of(stack);
 
-        if (!hasEnoughEnergy) return;
+        if (energy == null || energy.getAmountAsInt() < ENERGY_COST_PER_DURABIITY) return;
 
-        stack.getCapability(Capabilities.EnergyStorage.ITEM).extractEnergy(ENERGY_COST_PER_DURABIITY, false);
+        RavenousEnergyStorage.extract(energy, ENERGY_COST_PER_DURABIITY);
         stack.setDamageValue(stack.getDamageValue() - 1);
     }
 

@@ -8,7 +8,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.rywir.ravenousmaw.system.RavenousEnergyStorage;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.MutationHandler;
 
@@ -38,11 +38,11 @@ public class EnergyCommands {
             return 0;
         }
 
-        var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        var energy = RavenousEnergyStorage.of(stack);
 
         if (energy == null) return 0;
 
-        if (energy.getEnergyStored() >= energy.getMaxEnergyStored()) {
+        if (energy.getAmountAsInt() >= energy.getCapacityAsInt()) {
             player.sendSystemMessage(Component.translatable("message.ravenousmaw.already_charged"));
             return 0;
         }
@@ -50,12 +50,12 @@ public class EnergyCommands {
         int total = 0;
         int received;
         do {
-            received = energy.receiveEnergy(energy.getMaxEnergyStored(), false);
+            received = RavenousEnergyStorage.insert(energy, energy.getCapacityAsInt());
             total += received;
         } while (untilFull && received > 0);
 
         player.sendSystemMessage(Component.translatable("message.ravenousmaw.charged", total,
-            energy.getEnergyStored(), energy.getMaxEnergyStored()));
+            energy.getAmountAsInt(), energy.getCapacityAsInt()));
 
         return 1;
     }

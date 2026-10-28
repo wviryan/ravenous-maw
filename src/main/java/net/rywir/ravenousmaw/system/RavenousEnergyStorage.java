@@ -1,84 +1,63 @@
 package net.rywir.ravenousmaw.system;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
-public class RavenousEnergyStorage extends EnergyStorage {
-    private static final int MAX_RECEIVE = 1000;
-    private static final int MAX_EXTRACT = 1000;
-    protected final ItemStack stack;
+/**
+ * The Maw's battery: FE kept in the {@code STORED_ENERGY} data component of the stack.
+ * Only exists while the Maw has Electric Mending (see {@code RavenousRegisterCapabilitiesEvent}).
+ * <p>
+ * Energy changes happen inside a {@link Transaction}, and a root transaction writes the result back to the real stack
+ * when it commits. The static helpers open and commit that root transaction for callers that just want to read or
+ * change the charge.
+ */
+public class RavenousEnergyStorage extends ItemAccessEnergyHandler {
+    private static final int MAX_TRANSFER = 1000;
 
-    public RavenousEnergyStorage(ItemStack stack) {
+    public RavenousEnergyStorage(ItemAccess itemAccess) {
         // The stage is read from the item type, so the capacity follows the Maw through stage-ups.
-        super(new StageHandler(stack).getStage().getEnergyCapacity(), MAX_RECEIVE, MAX_EXTRACT, 0);
-        this.stack = stack;
-        this.energy = stack.getOrDefault(DataComponentTypes.STORED_ENERGY, 0);
+        super(itemAccess, DataComponentTypes.STORED_ENERGY.get(),
+            new StageHandler(itemAccess.getResource().toStack()).getStage().getEnergyCapacity(), MAX_TRANSFER);
     }
 
-    private void setEnergy(int amount) {
-        stack.set(DataComponentTypes.STORED_ENERGY, amount);
+    /**
+     * The battery of this Maw, or null when it has none (no Electric Mending, or not a Maw).
+     */
+    public static @Nullable EnergyHandler of(ItemStack stack) {
+        if (stack.isEmpty()) return null;
+
+        return stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack));
     }
 
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (!canReceive())
-            return 0;
-
-        int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
-        if (!simulate) {
-            energy += energyReceived;
-            setEnergy(energy);
+    /**
+     * Adds up to {@code amount} FE and writes it to the stack.
+     *
+     * @return the amount actually stored
+     */
+    public static int insert(EnergyHandler energy, int amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = energy.insert(amount, transaction);
+            transaction.commit();
+            return inserted;
         }
-        return energyReceived;
     }
 
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        if (!canExtract())
-            return 0;
-
-        int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
-        if (!simulate) {
-            energy -= energyExtracted;
-            setEnergy(energy);
+    /**
+     * Takes up to {@code amount} FE and writes it to the stack.
+     *
+     * @return the amount actually taken
+     */
+    public static int extract(EnergyHandler energy, int amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            int extracted = energy.extract(amount, transaction);
+            transaction.commit();
+            return extracted;
         }
-        return energyExtracted;
-    }
-
-    @Override
-    public int getEnergyStored() {
-        return stack.getOrDefault(DataComponentTypes.STORED_ENERGY, 0);
-    }
-
-    @Override
-    public int getMaxEnergyStored() {
-        return capacity;
-    }
-
-    @Override
-    public boolean canExtract() {
-        return this.maxExtract > 0;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return this.maxReceive > 0;
-    }
-
-    @Override
-    public @NotNull Tag serializeNBT(HolderLookup.@NotNull Provider provider) {
-        return IntTag.valueOf(this.getEnergyStored());
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull Tag nbt) {
-        if (!(nbt instanceof IntTag intNbt))
-            throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
-        this.energy = intNbt.getAsInt();
     }
 }
