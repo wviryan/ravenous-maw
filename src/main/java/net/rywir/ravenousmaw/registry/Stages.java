@@ -1,12 +1,13 @@
 package net.rywir.ravenousmaw.registry;
 
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 import net.rywir.ravenousmaw.util.Constants;
 import net.rywir.ravenousmaw.datagen.provider.RavenousBlockTagsProvider;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public enum Stages implements Tier {
+public enum Stages {
     LATENT(Component.translatable("stage.ravenousmaw.latent"), 0, Items.ROTTEN_FLESH, RavenousBlockTagsProvider.INCORRECT_MAW, Constants.LATENT_TIER_USES, Constants.LATENT_TIER_SPEED, Constants.LATENT_TIER_ATTACK_DAMAGE_BONUS, Constants.LATENT_TIER_ENCHANTMENT_VALUE, EntityType.WITHER),
     ADVANCED(Component.translatable("stage.ravenousmaw.advanced"), 1, RavenousItems.PIGLIN_PIE.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.ADVANCED_TIER_USES, Constants.ADVANCED_TIER_SPEED, Constants.ADVANCED_TIER_ATTACK_DAMAGE_BONUS, Constants.ADVANCED_TIER_ENCHANTMENT_VALUE, EntityType.ENDER_DRAGON),
     NOBLE(Component.translatable("stage.ravenousmaw.noble"), 2, RavenousItems.CHORUS_CRACKER.get(), RavenousBlockTagsProvider.INCORRECT_MAW, Constants.NOBLE_TIER_USES, Constants.NOBLE_TIER_SPEED, Constants.NOBLE_TIER_ATTACK_DAMAGE_BONUS, Constants.NOBLE_TIER_ENCHANTMENT_VALUE, EntityType.WARDEN ),
@@ -45,35 +46,43 @@ public enum Stages implements Tier {
         this.objective = objective;
     }
 
-    @Override
     public int getUses() {
         return this.uses;
     }
 
-    @Override
     public float getSpeed() {
         return this.speed;
     }
 
-    @Override
     public float getAttackDamageBonus() {
         return this.damage;
     }
 
-    @Override
     public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
         return this.incorrectBlocksForDrops;
     }
 
-    @Override
     public int getEnchantmentValue() {
         return this.enchantmentValue;
     }
 
-    @Override
-    public @NotNull Ingredient getRepairIngredient() {
-        // Maws are not repaired through the vanilla anvil: feasts repair them in FeedingRecipe.
-        return Ingredient.EMPTY;
+    /**
+     * Tool component of this stage's Maw: blocks in {@code minesEfficiently} are mined at this stage's speed and drop,
+     * blocks in the stage's incorrect tag never drop. Maws are not repaired through the vanilla anvil (no repair
+     * ingredient): feasts repair them in FeedingRecipe.
+     */
+    public Tool createToolProperties(TagKey<Block> minesEfficiently) {
+        HolderGetter<Block> blocks = BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK);
+
+        return new Tool(
+            List.of(
+                Tool.Rule.deniesDrops(blocks.getOrThrow(this.incorrectBlocksForDrops)),
+                Tool.Rule.minesAndDrops(blocks.getOrThrow(minesEfficiently), this.speed)
+            ),
+            1.0F,
+            1,
+            true
+        );
     }
 
     /** Electric Mending battery size in FE; grows with the stage. */

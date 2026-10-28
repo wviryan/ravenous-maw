@@ -2,7 +2,7 @@ package net.rywir.ravenousmaw.system;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +22,7 @@ public class AbilityDispatcher implements IMutationAbility {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(MutationHandler mutationHandler, ItemStack stack, Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(MutationHandler mutationHandler, ItemStack stack, Level level, Player player, InteractionHand hand) {
         boolean hasIrisOut = mutationHandler.has(Mutations.IRIS_OUT);
         int isActive = mutationHandler.getConfigVal(Mutations.Parameters.LIVING_PROJECTILE);
 
@@ -30,7 +30,7 @@ public class AbilityDispatcher implements IMutationAbility {
         if (hasIrisOut && isActive == 1) {
             return Mutations.IRIS_OUT.ability().use(mutationHandler, stack, level, player, hand);
         } else {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
     }
 
