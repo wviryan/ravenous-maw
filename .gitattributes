@@ -1,3 +1,13 @@
+# Normalise line endings for text files, keep binaries untouched
+* text=auto
+*.png binary
+*.ogg binary
+*.jar binary
+
+# Scripts must keep their line endings regardless of platform
+gradlew text eol=lf
+*.bat text eol=crlf
+
 # Disable autocrlf on generated files, they always generate with LF
 # Add any extra files or paths here to make git stop saying they
 # are changed when only line endings change.
