@@ -1,12 +1,6 @@
 {
   "type": "ravenousmaw:mutation_recipe_serializer",
-  "base": {
-    "item": "ravenousmaw:ravenous_maw_excelsior"
-  },
-  "feast": {
-    "item": "ravenousmaw:chorus_cracker"
-  },
-  "mutagen": {
-    "item": "minecraft:pufferfish"
-  }
+  "base": "ravenousmaw:ravenous_maw_excelsior",
+  "feast": "ravenousmaw:chorus_cracker",
+  "mutagen": "minecraft:pufferfish"
 }

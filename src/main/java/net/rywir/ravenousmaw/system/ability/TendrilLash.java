@@ -3,7 +3,7 @@ package net.rywir.ravenousmaw.system.ability;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -20,12 +20,12 @@ import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
 import net.rywir.ravenousmaw.util.Constants;
 
 public class TendrilLash implements IMutationAbility {
-    private static final ResourceLocation BLOCK_RANGE_ID = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "tendril_lash_block_range");
-    private static final ResourceLocation ENTITY_RANGE_ID = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "tendril_lash_entity_range");
+    private static final Identifier BLOCK_RANGE_ID = Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "tendril_lash_block_range");
+    private static final Identifier ENTITY_RANGE_ID = Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "tendril_lash_entity_range");
 
     // Early versions used vanilla's base ids, which also stacked on every update. Clean those up on existing items.
-    private static final ResourceLocation LEGACY_BLOCK_RANGE_ID = ResourceLocation.withDefaultNamespace("base_block_interaction_range");
-    private static final ResourceLocation LEGACY_ENTITY_RANGE_ID = ResourceLocation.withDefaultNamespace("base_entity_interaction_range");
+    private static final Identifier LEGACY_BLOCK_RANGE_ID = Identifier.withDefaultNamespace("base_block_interaction_range");
+    private static final Identifier LEGACY_ENTITY_RANGE_ID = Identifier.withDefaultNamespace("base_entity_interaction_range");
 
     @Override
     public void onCraft(ItemStack stack, HolderLookup.Provider registries) {
@@ -87,7 +87,7 @@ public class TendrilLash implements IMutationAbility {
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
 
         existingModifiers.modifiers().forEach(entry -> {
-            ResourceLocation id = entry.modifier().id();
+            Identifier id = entry.modifier().id();
 
             boolean isReachModifier = id.equals(BLOCK_RANGE_ID) || id.equals(ENTITY_RANGE_ID)
                 || id.equals(LEGACY_BLOCK_RANGE_ID) || id.equals(LEGACY_ENTITY_RANGE_ID);
@@ -116,6 +116,6 @@ public class TendrilLash implements IMutationAbility {
         player.setItemSlot(EquipmentSlot.MAINHAND, off);
         player.setItemSlot(EquipmentSlot.OFFHAND, main);
 
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.tendril_lash"), true);
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.tendril_lash"));
     }
 }

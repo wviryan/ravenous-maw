@@ -26,7 +26,7 @@ public class RavenousLivingDamageEvent {
 
         if (!isMaw) return;
 
-        float damage = event.getNewDamage();
+        float damage = event.getHealthDamage();
 
         Mutations.PERPETUAL_MOTION.ability().stealLife(stack, damage, player);
     }

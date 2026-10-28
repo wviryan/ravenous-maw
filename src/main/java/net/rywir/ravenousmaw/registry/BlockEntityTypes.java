@@ -12,9 +12,8 @@ import java.util.function.Supplier;
 public class BlockEntityTypes {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, RavenousMaw.MOD_ID);
 
-    @SuppressWarnings("ConstantConditions")
     public static final Supplier<BlockEntityType<MutationMatrixBlockEntity>> MUTATION_MATRIX_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("mutation_matrix_block_entity",
-        () -> BlockEntityType.Builder.of(MutationMatrixBlockEntity::new, RavenousBlocks.MUTATION_MATRIX.get()).build(null));
+        () -> new BlockEntityType<>(MutationMatrixBlockEntity::new, RavenousBlocks.MUTATION_MATRIX.get()));
 
 
     public static void register(IEventBus eventBus) {

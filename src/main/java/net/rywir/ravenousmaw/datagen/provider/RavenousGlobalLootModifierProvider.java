@@ -2,7 +2,7 @@ package net.rywir.ravenousmaw.datagen.provider;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
@@ -19,7 +19,7 @@ public class RavenousGlobalLootModifierProvider extends GlobalLootModifierProvid
     @Override
     protected void start() {
         add("piglin_barter", new PiglinBarterModifier(new LootItemCondition[]{
-            LootTableIdCondition.builder(ResourceLocation.withDefaultNamespace("gameplay/piglin_bartering")).build()
-        }));
+            LootTableIdCondition.builder(Identifier.withDefaultNamespace("gameplay/piglin_bartering")).build()
+        }, 0));
     }
 }

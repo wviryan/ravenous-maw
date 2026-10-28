@@ -19,8 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.rywir.ravenousmaw.system.RavenousEnergyStorage;
 import net.rywir.ravenousmaw.registry.DataComponentTypes;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.MutationHandler;
@@ -60,9 +60,9 @@ public class ElectricMending implements IMutationAbility {
      * (see {@link #getHitDamageMultiplier}).
      */
     public boolean canPowerHit(ItemStack stack) {
-        var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        var energy = RavenousEnergyStorage.of(stack);
 
-        return energy != null && energy.getEnergyStored() >= attackEnergyCost(stack);
+        return energy != null && energy.getAmountAsInt() >= attackEnergyCost(stack);
     }
 
     /**
@@ -90,7 +90,7 @@ public class ElectricMending implements IMutationAbility {
 
         LAST_WARNING_TICK.put(player.getUUID(), now);
         player.level().playSound(null, player.blockPosition(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.8F, 1.0F);
-        player.displayClientMessage(LOW_ENERGY_WARNING, true);
+        player.sendOverlayMessage(LOW_ENERGY_WARNING);
     }
 
     /**
@@ -106,7 +106,7 @@ public class ElectricMending implements IMutationAbility {
 
         if (!handler.has(Mutations.ELECTRIC_MENDING)) return;
 
-        var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        var energy = RavenousEnergyStorage.of(stack);
 
         if (energy == null) return;
 
@@ -119,14 +119,14 @@ public class ElectricMending implements IMutationAbility {
 
         if (!canPowerHit(stack)) return;
 
-        energy.extractEnergy(attackEnergyCost(stack), false);
+        RavenousEnergyStorage.extract(energy, attackEnergyCost(stack));
     }
 
     /**
      * Arcs from the struck target to the nearest other mobs, paying {@code costPerArc} FE for each. The battery limits
      * how many mobs are reached, and nothing is spent when there is no one to arc to. Credited to the attacker, who is never hit.
      */
-    private static void chainLightning(LivingEntity target, ServerLevel level, IEnergyStorage energy, int costPerArc) {
+    private static void chainLightning(LivingEntity target, ServerLevel level, EnergyHandler energy, int costPerArc) {
         // hurtEnemy runs right after the damage, so the target's last attacker is the wielder.
         LivingEntity attacker = target.getLastHurtByMob();
 
@@ -143,10 +143,10 @@ public class ElectricMending implements IMutationAbility {
 
         Vec3 from = target.position().add(0.0D, target.getBbHeight() / 2.0D, 0.0D);
 
-        int affordable = energy.getEnergyStored() / costPerArc;
+        int affordable = energy.getAmountAsInt() / costPerArc;
         List<LivingEntity> victims = arcTargets.stream().limit(Math.min(Constants.ELECTRIC_MENDING_CHAIN_TARGETS, affordable)).toList();
 
-        energy.extractEnergy(costPerArc * victims.size(), false);
+        RavenousEnergyStorage.extract(energy, costPerArc * victims.size());
 
         for (LivingEntity victim : victims) {
             victim.hurt(source, Constants.ELECTRIC_MENDING_CHAIN_DAMAGE);
@@ -169,11 +169,11 @@ public class ElectricMending implements IMutationAbility {
     public void onInstability(MutationHandler mutationHandler, ItemStack stack, Player player) {
         if (!player.isInWater()) return;
 
-        Holder<DamageType> type = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.PLAYER_ATTACK);
+        Holder<DamageType> type = player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.PLAYER_ATTACK);
 
         DamageSource source = new DamageSource(type, player, player, player.position());
 
         player.hurt(source, 8.0F);
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.electric_mending"), true);
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.electric_mending"));
     }
 }

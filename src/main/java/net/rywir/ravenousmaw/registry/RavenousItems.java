@@ -21,38 +21,36 @@ public class RavenousItems {
 
 
     // FEASTS
-    public static final DeferredItem<Item> PIGLIN_PIE = FEASTS.register("piglin_pie",
-        () -> new FeastItem(MobEffects.POISON, Constants.BASE_NUTRITION_MODIFIER, Constants.BASE_SATURATION_MODIFIER));
+    public static final DeferredItem<Item> PIGLIN_PIE = FEASTS.registerItem("piglin_pie",
+        props -> new FeastItem(props, MobEffects.POISON, Constants.BASE_NUTRITION_MODIFIER, Constants.BASE_SATURATION_MODIFIER));
 
-    public static final DeferredItem<Item> CHORUS_CRACKER = FEASTS.register("chorus_cracker",
-        () -> new FeastItem(MobEffects.LEVITATION, Constants.BASE_NUTRITION_MODIFIER * 2, Constants.BASE_SATURATION_MODIFIER * 2));
+    public static final DeferredItem<Item> CHORUS_CRACKER = FEASTS.registerItem("chorus_cracker",
+        props -> new FeastItem(props, MobEffects.LEVITATION, Constants.BASE_NUTRITION_MODIFIER * 2, Constants.BASE_SATURATION_MODIFIER * 2));
 
-    public static final DeferredItem<Item> SCULK_CROISSANT = FEASTS.register("sculk_croissant",
-        () -> new FeastItem(MobEffects.DARKNESS, Constants.BASE_NUTRITION_MODIFIER * 4, Constants.BASE_SATURATION_MODIFIER * 4));
+    public static final DeferredItem<Item> SCULK_CROISSANT = FEASTS.registerItem("sculk_croissant",
+        props -> new FeastItem(props, MobEffects.DARKNESS, Constants.BASE_NUTRITION_MODIFIER * 4, Constants.BASE_SATURATION_MODIFIER * 4));
 
 
     // MAWS
     public static final Map<Stages, Item> MAW_BY_STAGE = new HashMap<>();
 
-    public static final DeferredItem<Item> RAVENOUS_MAW_LATENT = MAWS.register("ravenous_maw_latent",
-        () -> new MawItem(Stages.LATENT));
+    public static final DeferredItem<Item> RAVENOUS_MAW_LATENT = MAWS.registerItem("ravenous_maw_latent",
+        MawItem::new, () -> MawItem.createProperties(Stages.LATENT));
 
-    public static final DeferredItem<Item> RAVENOUS_MAW_ADVANCED = MAWS.register("ravenous_maw_advanced",
-        () -> new MawItem(Stages.ADVANCED));
+    public static final DeferredItem<Item> RAVENOUS_MAW_ADVANCED = MAWS.registerItem("ravenous_maw_advanced",
+        MawItem::new, () -> MawItem.createProperties(Stages.ADVANCED));
 
-    public static final DeferredItem<Item> RAVENOUS_MAW_NOBLE = MAWS.register("ravenous_maw_noble",
-        () -> new MawItem(Stages.NOBLE));
+    public static final DeferredItem<Item> RAVENOUS_MAW_NOBLE = MAWS.registerItem("ravenous_maw_noble",
+        MawItem::new, () -> MawItem.createProperties(Stages.NOBLE));
 
-    public static final DeferredItem<Item> RAVENOUS_MAW_EXCELSIOR = MAWS.register("ravenous_maw_excelsior",
-        () -> new MawItem(Stages.EXCELSIOR));
+    public static final DeferredItem<Item> RAVENOUS_MAW_EXCELSIOR = MAWS.registerItem("ravenous_maw_excelsior",
+        MawItem::new, () -> MawItem.createProperties(Stages.EXCELSIOR));
 
 
     // OTHER ITEMS
-    public static final DeferredItem<Item> CONTAMINATION_CORE = ITEMS.register("contamination_core",
-        () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> CONTAMINATION_CORE = ITEMS.registerSimpleItem("contamination_core");
 
-    public static final DeferredItem<Item> MUTATION_CODEX = ITEMS.register("mutation_codex",
-        () -> new CodexItem(new Item.Properties()));
+    public static final DeferredItem<Item> MUTATION_CODEX = ITEMS.registerItem("mutation_codex", CodexItem::new);
 
 
     public static void registerFeasts(IEventBus bus) {

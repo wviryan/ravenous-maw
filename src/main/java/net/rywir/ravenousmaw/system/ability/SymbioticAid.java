@@ -71,7 +71,7 @@ public class SymbioticAid implements IMutationAbility {
 
             if (effect.getCategory() != MobEffectCategory.HARMFUL) continue;
             if (effect == RavenousMobEffects.SYMBIOTIC_INFECTION.get()) continue;
-            if (isInfected && effect == MobEffects.CONFUSION.value()) continue;
+            if (isInfected && effect == MobEffects.NAUSEA.value()) continue;
 
             player.removeEffect(instance.getEffect());
             absorbed = true;
@@ -91,19 +91,19 @@ public class SymbioticAid implements IMutationAbility {
 
         LAST_ABSORB_NOTICE_TICK.put(player.getUUID(), now);
         player.level().playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.8F, 1.0F);
-        player.displayClientMessage(ABSORBED_MESSAGE, true);
+        player.sendOverlayMessage(ABSORBED_MESSAGE);
     }
 
     @Override
     public void onInstability(MutationHandler mutationHandler, ItemStack stack, Player player) {
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
 
         boolean hasSymbioticAid = mutationHandler.has(Mutations.SYMBIOTIC_AID);
 
         if (!hasSymbioticAid) return;
 
         player.addEffect(new MobEffectInstance(RavenousMobEffects.SYMBIOTIC_INFECTION, DURATION));
-        player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, DURATION));
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.symbiotic_aid"), true);
+        player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, DURATION));
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.symbiotic_aid"));
     }
 }

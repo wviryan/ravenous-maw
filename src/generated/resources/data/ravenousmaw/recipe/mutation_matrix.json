@@ -2,24 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "ravenousmaw:contamination_core"
-    },
-    "B": {
-      "item": "minecraft:clay_ball"
-    },
-    "C": {
-      "item": "minecraft:campfire"
-    },
-    "D": {
-      "item": "minecraft:rotten_flesh"
-    },
-    "E": {
-      "item": "minecraft:leather"
-    },
-    "F": {
-      "item": "minecraft:bone"
-    }
+    "A": "ravenousmaw:contamination_core",
+    "B": "minecraft:clay_ball",
+    "C": "minecraft:campfire",
+    "D": "minecraft:rotten_flesh",
+    "E": "minecraft:leather",
+    "F": "minecraft:bone"
   },
   "pattern": [
     "FEF",
@@ -27,7 +15,6 @@
     "BCB"
   ],
   "result": {
-    "count": 1,
     "id": "ravenousmaw:mutation_matrix"
   }
 }

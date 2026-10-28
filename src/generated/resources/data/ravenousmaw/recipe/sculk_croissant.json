@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:echo_shard"
-    },
-    "B": {
-      "item": "minecraft:amethyst_shard"
-    },
-    "C": {
-      "item": "minecraft:glow_berries"
-    }
+    "A": "minecraft:echo_shard",
+    "B": "minecraft:amethyst_shard",
+    "C": "minecraft:glow_berries"
   },
   "pattern": [
     " A ",
@@ -18,7 +12,6 @@
     " A "
   ],
   "result": {
-    "count": 1,
     "id": "ravenousmaw:sculk_croissant"
   }
 }

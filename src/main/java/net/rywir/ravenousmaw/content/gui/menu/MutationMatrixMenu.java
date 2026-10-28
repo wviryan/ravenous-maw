@@ -7,7 +7,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import net.rywir.ravenousmaw.content.block.entity.MutationMatrixBlockEntity;
 import net.rywir.ravenousmaw.registry.MenuTypes;
 import net.rywir.ravenousmaw.registry.RavenousBlocks;
@@ -39,12 +39,12 @@ public class MutationMatrixMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
         addPlayerInventory(inv);
 
-        this.addSlot(new SlotItemHandler(entity.itemHandler, 0, 30, 35));
-        this.addSlot(new SlotItemHandler(entity.itemHandler, 1, 48, 35));
-        this.addSlot(new SlotItemHandler(entity.itemHandler, 2, 66, 35));
-        // Result slot: take-only, because the handler's isItemValid rejects inserts into it
+        this.addSlot(new ResourceHandlerSlot(entity.itemHandler, entity.itemHandler::set, 0, 30, 35));
+        this.addSlot(new ResourceHandlerSlot(entity.itemHandler, entity.itemHandler::set, 1, 48, 35));
+        this.addSlot(new ResourceHandlerSlot(entity.itemHandler, entity.itemHandler::set, 2, 66, 35));
+        // Result slot: take-only, because the handler's isValid rejects inserts into it
         // (this also stops shift-click from moving inventory items here).
-        this.addSlot(new SlotItemHandler(entity.itemHandler, 3, 124, 35));
+        this.addSlot(new ResourceHandlerSlot(entity.itemHandler, entity.itemHandler::set, 3, 124, 35));
 
         addDataSlots(data);
     }

@@ -5,7 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +29,7 @@ public class IrisOut implements IMutationAbility {
     private static final int DURABILITY_COST = 10;
 
     @Override
-    public InteractionResultHolder<ItemStack> use(
+    public InteractionResult use(
         MutationHandler handler,
         ItemStack stack,
         Level level,
@@ -37,7 +37,7 @@ public class IrisOut implements IMutationAbility {
         InteractionHand hand
     ) {
         player.startUsingItem(hand);
-        return InteractionResultHolder.consume(stack);
+        return InteractionResult.CONSUME;
     }
 
     @Override

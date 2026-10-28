@@ -74,7 +74,7 @@ public class RavenousBlockDropsEvent {
         int fortuneLevel = enchantmentHandler.getEnchLevel(Enchantments.FORTUNE, level.registryAccess());
 
         // 0 to fortuneLevel extra copies of every drop, so Fortune III gives 1x to 4x the vanilla amount
-        int extraCopies = level.random.nextInt(fortuneLevel + 1);
+        int extraCopies = level.getRandom().nextInt(fortuneLevel + 1);
 
         // Snapshot, because the duplicates are added to the same list
         List<ItemEntity> originals = List.copyOf(event.getDrops());

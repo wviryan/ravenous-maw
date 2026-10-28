@@ -32,13 +32,13 @@ public class PiglinBarterModifier extends LootModifier {
     /** Chance that a barter also pays a wither skeleton skull. */
     private static final float SKULL_CHANCE = 0.10F;
 
-    public PiglinBarterModifier(LootItemCondition[] conditions) {
-        super(conditions);
+    public PiglinBarterModifier(LootItemCondition[] conditions, int priority) {
+        super(conditions, priority);
     }
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if (!(context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof Piglin piglin)) return generatedLoot;
+        if (!(context.getOptionalParameter(LootContextParams.THIS_ENTITY) instanceof Piglin piglin)) return generatedLoot;
 
         Player barterer = piglin.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).orElse(null);
         if (barterer == null || !AssimilationHandler.isActive(barterer, Assimilations.GILDED_PHEROMONES)) return generatedLoot;

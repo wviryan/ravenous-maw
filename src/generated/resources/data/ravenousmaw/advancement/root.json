@@ -12,12 +12,11 @@
     }
   },
   "display": {
-    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "background": "minecraft:gui/advancements/backgrounds/adventure",
     "description": {
       "translate": "advancement.ravenousmaw.root.description"
     },
     "icon": {
-      "count": 1,
       "id": "ravenousmaw:ravenous_maw_latent"
     },
     "title": {

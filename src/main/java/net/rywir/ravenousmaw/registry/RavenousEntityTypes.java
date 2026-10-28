@@ -1,6 +1,8 @@
 package net.rywir.ravenousmaw.registry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
@@ -15,11 +17,11 @@ public class RavenousEntityTypes {
         DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, RavenousMaw.MOD_ID);
 
     public static final Supplier<EntityType<IrisBulletEntity>> IRIS_BULLET_ENTITY_TYPE = ENTITY_TYPES.register("iris_bullet",
-        () -> EntityType.Builder.<IrisBulletEntity>of(IrisBulletEntity::new, MobCategory.MISC)
+        id -> EntityType.Builder.<IrisBulletEntity>of(IrisBulletEntity::new, MobCategory.MISC)
             // The bullet holds live references (handler, dispatcher, stack) that cannot be
             // serialized, so it must never be written to disk. It simply vanishes on unload.
             .noSave()
-            .sized(0.5f, 1.15f).build("iris_bullet")
+            .sized(0.5f, 1.15f).build(ResourceKey.create(Registries.ENTITY_TYPE, id))
     );
 
     public static void register(IEventBus eventBus) {

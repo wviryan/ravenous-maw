@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.system.ability;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +22,7 @@ public class PerpetualMotion implements IMutationAbility {
         if (!hasPerpetualMotion) return;
 
         player.heal(damage / DIVIDER);
-        player.eat(player.level(), new ItemStack(Items.PUMPKIN_PIE));
-        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, SPEED_DURATION));
+        player.getFoodData().eat(Items.PUMPKIN_PIE.components().get(DataComponents.FOOD));
+        player.addEffect(new MobEffectInstance(MobEffects.SPEED, SPEED_DURATION));
     }
 }

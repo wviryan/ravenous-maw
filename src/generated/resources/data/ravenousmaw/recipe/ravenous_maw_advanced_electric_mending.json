@@ -1,12 +1,6 @@
 {
   "type": "ravenousmaw:mutation_recipe_serializer",
-  "base": {
-    "item": "ravenousmaw:ravenous_maw_advanced"
-  },
-  "feast": {
-    "item": "minecraft:rotten_flesh"
-  },
-  "mutagen": {
-    "item": "minecraft:raw_copper"
-  }
+  "base": "ravenousmaw:ravenous_maw_advanced",
+  "feast": "minecraft:rotten_flesh",
+  "mutagen": "minecraft:raw_copper"
 }

@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.rywir.ravenousmaw.content.decorator.EnergyBarDecorator;
@@ -57,7 +57,7 @@ public class RavenousMaw {
         NeoForge.EVENT_BUS.addListener(PlayerEvent.BreakSpeed.class, RavenousBreakSpeedEvent::onBreakSpeedEvent);
         NeoForge.EVENT_BUS.addListener(LivingDropsEvent.class, RavenousLivingDropsEvent::onLivingDropsEvent);
         NeoForge.EVENT_BUS.addListener(BlockDropsEvent.class, RavenousBlockDropsEvent::onBlockDropsEvent);
-        NeoForge.EVENT_BUS.addListener(BlockEvent.BreakEvent.class, RavenousBreakEvent::onBreakEvent);
+        NeoForge.EVENT_BUS.addListener(BreakBlockEvent.class, RavenousBreakEvent::onBreakEvent);
         NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, RavenousRegisterCommandsEvent::onRegisterCommandsEvent);
         NeoForge.EVENT_BUS.addListener(PlayerEvent.Clone.class, RavenousCloneEvent::onCloneEvent);
         NeoForge.EVENT_BUS.addListener(LivingDamageEvent.Post.class, RavenousLivingDamageEvent::onLivingDamageEvent);
@@ -112,12 +112,12 @@ public class RavenousMaw {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {}
 
-    @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 			NeoForge.EVENT_BUS.addListener(MovementInputUpdateEvent.class, RavenousMovementInputUpdateEvent::onMovementInputUpdateEvent);
-			NeoForge.EVENT_BUS.addListener(RenderHighlightEvent.Block.class, RavenousRenderHighlightEvent::onRenderHighlightEvent);
+			NeoForge.EVENT_BUS.addListener(ExtractBlockOutlineRenderStateEvent.class, RavenousRenderHighlightEvent::onExtractBlockOutlineRenderStateEvent);
 		}
 
         @SubscribeEvent

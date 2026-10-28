@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,7 +18,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.rywir.ravenousmaw.content.gui.menu.MutationMatrixMenu;
 import net.rywir.ravenousmaw.content.recipe.matrix.MutationRecipe;
 import net.rywir.ravenousmaw.content.recipe.matrix.MutationRecipeInput;
@@ -42,16 +45,16 @@ public class MutationMatrixBlockEntity extends BlockEntity implements MenuProvid
 
     protected final ContainerData data;
 
-    public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
-        // The result slot is output only: crafting fills it through setStackInSlot (which skips
-        // this check), and players can only take from it. A foreign item there would block crafting.
+    public final ItemStacksResourceHandler itemHandler = new ItemStacksResourceHandler(4) {
+        // The result slot is output only: crafting fills it through set (which skips this
+        // check), and players can only take from it. A foreign item there would block crafting.
         @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
+        public boolean isValid(int slot, ItemResource resource) {
             return slot != RESULT_SLOT;
         }
 
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack previousContents) {
             setChanged();
             resetProgress();
 
@@ -104,29 +107,26 @@ public class MutationMatrixBlockEntity extends BlockEntity implements MenuProvid
         return new MutationMatrixMenu(id, inv, this, this.data);
     }
 
-    public void drops() {
-        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            inventory.setItem(i, itemHandler.getStackInSlot(i));
-        }
-
-        Containers.dropContents(this.level, this.worldPosition, inventory);
+    // Called by the chunk (server side only) when the block is replaced, so the contents drop.
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        Containers.dropContents(this.level, pos, itemHandler.copyToList());
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("inventory", itemHandler.serializeNBT(registries));
-        tag.putInt("mutation_matrix.progress", progress);
-        tag.putInt("mutation_matrix.max_progress", maxProgress);
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        itemHandler.serialize(output.child("inventory"));
+        output.putInt("mutation_matrix.progress", progress);
+        output.putInt("mutation_matrix.max_progress", maxProgress);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        itemHandler.deserializeNBT(registries, tag.getCompound("inventory"));
-        progress = tag.getInt("mutation_matrix.progress");
-        maxProgress = tag.getInt("mutation_matrix.max_progress");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        input.child("inventory").ifPresent(itemHandler::deserialize);
+        progress = input.getIntOr("mutation_matrix.progress", 0);
+        maxProgress = input.getIntOr("mutation_matrix.max_progress", 72);
     }
 
     @Override
@@ -144,14 +144,14 @@ public class MutationMatrixBlockEntity extends BlockEntity implements MenuProvid
             return;
         }
 
-        if (!itemHandler.getStackInSlot(RESULT_SLOT).isEmpty()) {
+        if (!getStack(RESULT_SLOT).isEmpty()) {
             return;
         }
 
         if (this.cachedRecipe == null) {
-            ItemStack maw = itemHandler.getStackInSlot(INPUT_SLOT);
-            ItemStack feast = itemHandler.getStackInSlot(FEAST_SLOT);
-            ItemStack mutagen = itemHandler.getStackInSlot(MUTAGEN_SLOT);
+            ItemStack maw = getStack(INPUT_SLOT);
+            ItemStack feast = getStack(FEAST_SLOT);
+            ItemStack mutagen = getStack(MUTAGEN_SLOT);
 
             if (maw.isEmpty() || feast.isEmpty() || mutagen.isEmpty()) {
                 resetProgress();
@@ -175,9 +175,9 @@ public class MutationMatrixBlockEntity extends BlockEntity implements MenuProvid
         setChanged(level, blockPos, blockState);
 
         if (this.progress >= this.maxProgress) {
-            ItemStack maw = itemHandler.getStackInSlot(INPUT_SLOT);
-            ItemStack feast = itemHandler.getStackInSlot(FEAST_SLOT);
-            ItemStack mutagen = itemHandler.getStackInSlot(MUTAGEN_SLOT);
+            ItemStack maw = getStack(INPUT_SLOT);
+            ItemStack feast = getStack(FEAST_SLOT);
+            ItemStack mutagen = getStack(MUTAGEN_SLOT);
             MutationRecipeInput input = new MutationRecipeInput(maw, feast, mutagen);
 
             craftItem(this.cachedRecipe.value(), input, level.registryAccess());
@@ -187,13 +187,24 @@ public class MutationMatrixBlockEntity extends BlockEntity implements MenuProvid
         }
     }
 
+    private ItemStack getStack(int slot) {
+        return itemHandler.getResource(slot).toStack(itemHandler.getAmountAsInt(slot));
+    }
+
     private void craftItem(MutationRecipe recipe, MutationRecipeInput input, HolderLookup.Provider provider) {
         ItemStack finalResult = recipe.assemble(input, provider);
 
-        itemHandler.extractItem(INPUT_SLOT, 1, false);
-        itemHandler.extractItem(FEAST_SLOT, 1, false);
-        itemHandler.extractItem(MUTAGEN_SLOT, 1, false);
-        itemHandler.setStackInSlot(RESULT_SLOT, finalResult);
+        shrink(INPUT_SLOT);
+        shrink(FEAST_SLOT);
+        shrink(MUTAGEN_SLOT);
+        itemHandler.set(RESULT_SLOT, ItemResource.of(finalResult), finalResult.getCount());
+    }
+
+    private void shrink(int slot) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            itemHandler.extract(slot, itemHandler.getResource(slot), 1, transaction);
+            transaction.commit();
+        }
     }
 
     private void resetProgress() {

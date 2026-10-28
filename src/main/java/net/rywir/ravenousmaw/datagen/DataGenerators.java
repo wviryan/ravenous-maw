@@ -7,8 +7,6 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.datagen.provider.*;
@@ -17,23 +15,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = RavenousMaw.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+/** In 26.1 the data run fires a client event (models and item definitions) and a server event (data pack content). */
+@EventBusSubscriber(modid = RavenousMaw.MOD_ID)
 public class DataGenerators {
     @SubscribeEvent
-    public static void generate(GatherDataEvent event) {
+    public static void generateClient(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+
+        generator.addProvider(true, new RavenousModelProvider(packOutput));
+    }
+
+    @SubscribeEvent
+    public static void generateServer(GatherDataEvent.Server event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        BlockTagsProvider blockTagsProvider = new RavenousBlockTagsProvider(packOutput, lookupProvider, existingFileHelper);
-        generator.addProvider(event.includeServer(), blockTagsProvider);
-        generator.addProvider(event.includeServer(), new RavenousItemTagsProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeClient(), new RavenousItemModelProvider(packOutput, existingFileHelper));
-        generator.addProvider(event.includeServer(), new RavenousRecipeProvider(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new RavenousAdvancementProvider(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new RavenousBlockStateProvider(packOutput, existingFileHelper));
-        generator.addProvider(event.includeServer(), new RavenousGlobalLootModifierProvider(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(RavenousBlockLootProvider::new, LootContextParamSets.BLOCK)), lookupProvider));
+        generator.addProvider(true, new RavenousBlockTagsProvider(packOutput, lookupProvider));
+        generator.addProvider(true, new RavenousItemTagsProvider(packOutput, lookupProvider));
+        generator.addProvider(true, new RavenousRecipeProvider.Runner(packOutput, lookupProvider));
+        generator.addProvider(true, new RavenousAdvancementProvider(packOutput, lookupProvider));
+        generator.addProvider(true, new RavenousGlobalLootModifierProvider(packOutput, lookupProvider));
+        generator.addProvider(true, new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(RavenousBlockLootProvider::new, LootContextParamSets.BLOCK)), lookupProvider));
     }
 }

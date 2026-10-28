@@ -13,8 +13,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.rywir.ravenousmaw.system.RavenousEnergyStorage;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.Mutations;
@@ -68,7 +68,7 @@ public class RavenousPlayerTickEvent {
         AABB area = player.getBoundingBox().inflate(range);
         List<ItemEntity> items = player.level().getEntitiesOfClass(ItemEntity.class, area);
 
-        var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        var energy = RavenousEnergyStorage.of(stack);
 
         if (energy == null) return;
 
@@ -83,7 +83,7 @@ public class RavenousPlayerTickEvent {
         };
 
         for (ItemEntity item : items) {
-            if (energy.getEnergyStored() < ENERGY_COST_PER_OPERATION) return;
+            if (energy.getAmountAsInt() < ENERGY_COST_PER_OPERATION) return;
 
             if (!canReachPlayer(player, item)) continue;
 
@@ -94,14 +94,14 @@ public class RavenousPlayerTickEvent {
             ).normalize().scale(scale);
 
             item.setDeltaMovement(motion);
-            item.hasImpulse = true;
+            item.needsSync = true;
 
-            energy.extractEnergy(ENERGY_COST_PER_OPERATION, false);
+            RavenousEnergyStorage.extract(energy, ENERGY_COST_PER_OPERATION);
         }
 
         List<ExperienceOrb> orbs = player.level().getEntitiesOfClass(ExperienceOrb.class, area);
         for (ExperienceOrb orb : orbs) {
-            if (energy.getEnergyStored() < ENERGY_COST_PER_OPERATION) return;
+            if (energy.getAmountAsInt() < ENERGY_COST_PER_OPERATION) return;
 
             Vec3 motion = new Vec3(
                 player.getX() - orb.getX(),
@@ -111,7 +111,7 @@ public class RavenousPlayerTickEvent {
 
             orb.setDeltaMovement(motion);
 
-            energy.extractEnergy(ENERGY_COST_PER_OPERATION, false);
+            RavenousEnergyStorage.extract(energy, ENERGY_COST_PER_OPERATION);
         }
     }
 
@@ -121,7 +121,7 @@ public class RavenousPlayerTickEvent {
      */
     private static void applyAquanaut(Player player) {
         if (player.tickCount % AQUANAUT_REFRESH_TICKS != 0) return;
-        if (!player.isInWaterOrBubble()) return;
+        if (!player.isInWater()) return;
         if (!AssimilationHandler.isActive(player, Assimilations.AQUANAUT_COALESCENCE)) return;
 
         // Ambient, no particles, no HUD icon: the trait is part of the Maw, not a potion.

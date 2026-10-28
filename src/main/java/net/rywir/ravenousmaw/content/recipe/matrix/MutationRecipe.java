@@ -3,7 +3,10 @@ package net.rywir.ravenousmaw.content.recipe.matrix;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -22,10 +25,6 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
         this.base = base;
         this.feast = feast;
         this.mutagen = mutagen;
-    }
-
-    public MutationRecipe(MutationRecipeInput input) {
-        this(Ingredient.of(input.base()), Ingredient.of(input.feast()), Ingredient.of(input.mutagen()));
     }
 
     @Override
@@ -60,7 +59,15 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
         return true;
     }
 
+    /**
+     * Mutating a Maw needs registries (some abilities apply enchantments in onCraft), which 26.1's
+     * {@code assemble(input)} no longer receives. The Matrix uses {@link #assemble(MutationRecipeInput, HolderLookup.Provider)}.
+     */
     @Override
+    public ItemStack assemble(MutationRecipeInput input) {
+        throw new UnsupportedOperationException("Mutation recipes need registries, use assemble(input, provider)");
+    }
+
     public ItemStack assemble(MutationRecipeInput input, HolderLookup.Provider provider) {
         Mutations target = Mutations.byMutagen(input.mutagen().getItem());
 
@@ -75,12 +82,12 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
         return mutationHandler.getStack();
     }
 
-    @Override
+    /** The mutated Maw this recipe displays as its result (first accepted base and mutagen). */
     public ItemStack getResultItem(HolderLookup.Provider provider) {
-        ItemStack baseStack = this.base.getItems().length > 0 ? this.base.getItems()[0].copy() : ItemStack.EMPTY;
+        ItemStack baseStack = this.base.items().findFirst().map(item -> new ItemStack(item.value())).orElse(ItemStack.EMPTY);
         if (baseStack.isEmpty()) return ItemStack.EMPTY;
 
-        Mutations target = Mutations.byMutagen(mutagen.getItems()[0].getItem());
+        Mutations target = this.mutagen.items().findFirst().map(item -> Mutations.byMutagen(item.value())).orElse(null);
         if (target == null) return baseStack;
 
         MutationHandler handler = new MutationHandler(baseStack);
@@ -92,18 +99,40 @@ public class MutationRecipe implements Recipe<MutationRecipeInput> {
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int i1) {
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public String group() {
+        return "";
+    }
+
+    @Override
+    public RecipeSerializer<MutationRecipe> getSerializer() {
+        return MutationRecipeSerializer.SERIALIZER;
+    }
+
+    @Override
+    public RecipeType<MutationRecipe> getType() {
+        return RavenousRecipes.MUTATION_RECIPE_TYPE.get();
+    }
+
+    /** Only the Mutation Matrix runs this recipe, so it never shows in the recipe book (also silences the "can't be placed" warning). */
+    @Override
+    public boolean isSpecial() {
         return true;
     }
 
+    /** Only the Mutation Matrix runs this recipe, so it never takes part in recipe-book placement. */
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return RavenousRecipes.MUTATION_RECIPE_SERIALIZER.get();
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return RavenousRecipes.MUTATION_RECIPE_TYPE.get();
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public Ingredient getBase() {

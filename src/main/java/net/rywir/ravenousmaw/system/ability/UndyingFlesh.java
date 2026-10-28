@@ -3,11 +3,11 @@ package net.rywir.ravenousmaw.system.ability;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Unit;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.Unbreakable;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import net.rywir.ravenousmaw.system.interfaces.IMutationAbility;
@@ -29,7 +29,7 @@ public class UndyingFlesh implements IMutationAbility {
             return;
         }
 
-        stack.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
+        stack.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class UndyingFlesh implements IMutationAbility {
             return;
         }
 
-        player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, DURATION, AMPLIFIER));
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.undying_flesh"), true);
+        player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, DURATION, AMPLIFIER));
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.undying_flesh"));
     }
 }

@@ -11,7 +11,7 @@ import net.rywir.ravenousmaw.system.RavenousEnergyStorage;
 public class RavenousRegisterCapabilitiesEvent {
     @SubscribeEvent
     public static void onRegisterCapabilitiesEvent(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> {
+        event.registerItem(Capabilities.Energy.ITEM, (stack, itemAccess) -> {
                 MutationHandler handler = new MutationHandler(stack);
 
                 boolean hasElectricMending = handler.has(Mutations.ELECTRIC_MENDING);
@@ -20,7 +20,7 @@ public class RavenousRegisterCapabilitiesEvent {
                     return null;
                 }
 
-                return new RavenousEnergyStorage(stack);
+                return new RavenousEnergyStorage(itemAccess);
             },
 
             RavenousItems.RAVENOUS_MAW_LATENT.get(),

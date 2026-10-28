@@ -1,29 +1,26 @@
 package net.rywir.ravenousmaw.content.recipe.matrix;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRequirements;
-import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.recipes.RecipeUnlockAdvancementBuilder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.registry.Mutations;
-import net.rywir.ravenousmaw.system.MutationHandler;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public class MutationRecipeBuilder implements RecipeBuilder {
     private final Ingredient base;
     private final Ingredient feast;
     private final Ingredient mutagen;
 
-    private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    private final RecipeUnlockAdvancementBuilder advancementBuilder = new RecipeUnlockAdvancementBuilder();
 
     private MutationRecipeBuilder(Ingredient base, Ingredient feast, Ingredient mutagen) {
         this.base = base;
@@ -37,7 +34,7 @@ public class MutationRecipeBuilder implements RecipeBuilder {
 
     @Override
     public RecipeBuilder unlockedBy(String name, Criterion<?> criterion) {
-        this.criteria.put(name, criterion);
+        this.advancementBuilder.unlockedBy(name, criterion);
         return this;
     }
 
@@ -46,34 +43,22 @@ public class MutationRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
+    /** {@code <first base item>_<mutation>}, the id the provider used to pass by hand. */
     @Override
-    public Item getResult() {
-        ItemStack baseStack = this.base.getItems().length > 0 ? this.base.getItems()[0].copy() : ItemStack.EMPTY;
-        if (baseStack.isEmpty()) return ItemStack.EMPTY.getItem();
+    public ResourceKey<Recipe<?>> defaultId() {
+        Item baseItem = this.base.items().findFirst().orElseThrow().value();
+        Mutations target = Mutations.byMutagen(this.mutagen.items().findFirst().orElseThrow().value());
+        if (target == null) {
+            throw new IllegalStateException("Mutation recipe has a mutagen that belongs to no mutation");
+        }
 
-        Mutations target = Mutations.byMutagen(mutagen.getItems()[0].getItem());
-        if (target == null) return baseStack.getItem();
-
-        MutationHandler handler = new MutationHandler(baseStack);
-        handler.add(target);
-
-        return handler.getStack().getItem();
+        String path = BuiltInRegistries.ITEM.getKey(baseItem).getPath() + "_" + target.name().toLowerCase();
+        return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, path));
     }
 
     @Override
-    public void save(RecipeOutput output, ResourceLocation id) {
-        if (this.criteria.isEmpty()) {
-            throw new IllegalStateException("Mutation Recipe " + id + " has no advancement criteria defined!");
-        }
-
-        Advancement.Builder advancement = output.advancement()
-            .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-            .rewards(AdvancementRewards.Builder.recipe(id))
-            .requirements(AdvancementRequirements.Strategy.OR);
-
-        this.criteria.forEach(advancement::addCriterion);
-
-        MutationRecipe recipe = new MutationRecipe(base, feast, mutagen);
-        output.accept(id, recipe, advancement.build(id.withPrefix("recipes/")));
+    public void save(RecipeOutput output, ResourceKey<Recipe<?>> id) {
+        // No category folder, so advancements stay at recipes/<id> as before.
+        output.accept(id, new MutationRecipe(base, feast, mutagen), this.advancementBuilder.build(output, id, (String) null));
     }
 }

@@ -4,12 +4,13 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.boss.EnderDragonPart;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
@@ -23,7 +24,7 @@ import net.rywir.ravenousmaw.system.AbilityDispatcher;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class IrisBulletEntity extends AbstractArrow {
@@ -105,7 +106,7 @@ public class IrisBulletEntity extends AbstractArrow {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (isTracing()) {
                 this.level().addParticle(
                     ParticleTypes.ENCHANT,
@@ -122,7 +123,7 @@ public class IrisBulletEntity extends AbstractArrow {
             return;
         }
 
-        if (this.inGround || this.tickCount > 200) {
+        if (this.isInGround() || this.tickCount > 200) {
             onGroundTicks++;
 
             if (onGroundTicks >= DESTRUCTION_TICKS) {
@@ -238,18 +239,20 @@ public class IrisBulletEntity extends AbstractArrow {
 
     @Nullable
     private LivingEntity findNearestEntity() {
-        return this.level().getNearestEntity(
-            LivingEntity.class,
+        // Only reached from the server-side tick.
+        if (!(this.level() instanceof ServerLevel serverLevel)) return null;
+
+        return serverLevel.getNearestEntity(
+            serverLevel.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(MAX_HOMING_DISTANCE)),
             TargetingConditions.forCombat().range(MAX_HOMING_DISTANCE),
             null,
-            this.getX(), this.getY(), this.getZ(),
-            this.getBoundingBox().inflate(MAX_HOMING_DISTANCE)
+            this.getX(), this.getY(), this.getZ()
         );
     }
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult result) {
-        if (this.level().isClientSide) return;
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
 
         Entity hit = result.getEntity();
         if (hit instanceof EnderDragonPart part) {
@@ -260,7 +263,8 @@ public class IrisBulletEntity extends AbstractArrow {
             float bonus = this.dispatcher.getAttackDamageBonus(handler, stack, entity, level(), stage);
             RavenousMaw.LOGGER.debug("Bonus damage: {}", bonus);
 
-            entity.hurt(
+            entity.hurtServer(
+                serverLevel,
                 this.damageSources().thrown(this, this.getOwner()),
                 (2.0F + bonus) * dispatcher.getDamageMultiplier(handler) * getPower()
             );

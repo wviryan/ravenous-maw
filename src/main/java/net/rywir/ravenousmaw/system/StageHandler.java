@@ -50,8 +50,8 @@ public class StageHandler {
      * inventory has none. The held slot wins, then the first match in slot order.
      */
     public static int findMawSlotFor(Inventory inventory, EntityType<?> boss) {
-        if (isMawFor(inventory.getItem(inventory.selected), boss)) {
-            return inventory.selected;
+        if (isMawFor(inventory.getSelectedItem(), boss)) {
+            return inventory.getSelectedSlot();
         }
 
         for (int slot = 0; slot < inventory.getContainerSize(); slot++) {

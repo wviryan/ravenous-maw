@@ -2,7 +2,7 @@ package net.rywir.ravenousmaw.content.event;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,16 +21,17 @@ public class RavenousCloneEvent {
         Player dead = event.getOriginal();
         Player reborn = event.getEntity();
 
-        CompoundTag inheritance = dead.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
+        CompoundTag inheritance = dead.getPersistentData().getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
 
-        ListTag savedMaws = inheritance.getList(SAVED_MAWS_KEY, Tag.TAG_COMPOUND);
+        ListTag savedMaws = inheritance.getListOrEmpty(SAVED_MAWS_KEY);
 
-        if (inheritance.contains(LEGACY_SAVED_MAW_KEY)) {
-            savedMaws.add(inheritance.getCompound(LEGACY_SAVED_MAW_KEY));
-        }
+        inheritance.getCompound(LEGACY_SAVED_MAW_KEY).ifPresent(savedMaws::add);
 
         for (int i = 0; i < savedMaws.size(); i++) {
-            ItemStack restoredMaw = ItemStack.parseOptional(reborn.registryAccess(), savedMaws.getCompound(i));
+            ItemStack restoredMaw = ItemStack.OPTIONAL_CODEC
+                .parse(reborn.registryAccess().createSerializationContext(NbtOps.INSTANCE), savedMaws.getCompoundOrEmpty(i))
+                .result()
+                .orElse(ItemStack.EMPTY);
 
             if (restoredMaw.isEmpty()) continue;
 
@@ -43,7 +44,7 @@ public class RavenousCloneEvent {
         inheritance.remove(SAVED_MAWS_KEY);
         inheritance.remove(LEGACY_SAVED_MAW_KEY);
 
-        CompoundTag rebornPersisted = reborn.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
+        CompoundTag rebornPersisted = reborn.getPersistentData().getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
         rebornPersisted.remove(SAVED_MAWS_KEY);
         rebornPersisted.remove(LEGACY_SAVED_MAW_KEY);
     }

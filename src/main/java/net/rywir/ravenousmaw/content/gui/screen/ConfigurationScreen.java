@@ -1,17 +1,16 @@
 package net.rywir.ravenousmaw.content.gui.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.gui.custom.ConfigurationButton;
@@ -40,7 +39,7 @@ public class ConfigurationScreen extends AbstractContainerScreen<ConfigurationMe
     /** Kept across rebuilds (e.g. a window resize) so the screen stays on the page the player chose. */
     private int page = PAGE_SETTINGS;
 
-    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier GUI_TEXTURE = Identifier.fromNamespaceAndPath(
         RavenousMaw.MOD_ID,
         "textures/gui/configuration_menu.png"
     );
@@ -179,10 +178,8 @@ public class ConfigurationScreen extends AbstractContainerScreen<ConfigurationMe
             .bounds(centerX + 30, y, 20, 20).build());
 
         Component name = Component.translatable(page == PAGE_SETTINGS ? "screen.ravenousmaw.page_settings" : "screen.ravenousmaw.page_values");
-        StringWidget label = new StringWidget(centerX - 28, y + 6, 56, 10, name, font);
-        label.alignCenter();
-
-        this.addRenderableWidget(label);
+        int nameWidth = font.width(name);
+        this.addRenderableWidget(new StringWidget(centerX - nameWidth / 2, y + 6, nameWidth, 10, name, font));
     }
 
     private void switchPage(int newPage) {
@@ -191,25 +188,17 @@ public class ConfigurationScreen extends AbstractContainerScreen<ConfigurationMe
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics graphics, float v, int i, int i1) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
+    public void extractBackground(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
 
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        graphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GUI_TEXTURE, x, y, 0.0F, 0.0F, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void extractLabels(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY) {}
 
     public void update(String key, int value) {
         StringWidget widget = widgets.get(key);

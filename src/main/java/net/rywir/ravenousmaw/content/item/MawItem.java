@@ -6,12 +6,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -20,11 +20,12 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -33,9 +34,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
+import net.rywir.ravenousmaw.system.RavenousEnergyStorage;
 import net.rywir.ravenousmaw.content.attachment.MawTickData;
 import net.rywir.ravenousmaw.content.client.ClientHooks;
 import net.rywir.ravenousmaw.content.component.MutationComponent;
@@ -57,6 +58,7 @@ import net.rywir.ravenousmaw.util.Constants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class MawItem extends Item {
     private static final int USE_DURATION               = 72000;
@@ -65,8 +67,8 @@ public class MawItem extends Item {
 
     private static final Component DURABILITY_WARNING = Component.translatable("ravenousmaw.maw_threshold_message");
 
-    public MawItem(Stages stage) {
-        super(createProperties(stage));
+    public MawItem(Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -104,12 +106,12 @@ public class MawItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> lines, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, display, lines, tooltipFlag);
 
         StageHandler stageHandler = new StageHandler(stack);
         String stageString = Component.translatable("maw.ravenousmaw.stage_string").getString();
-        tooltipComponents.add(Component.literal(stageString + ": " + stageHandler.getStage().getDisplayName()));
+        lines.accept(Component.literal(stageString + ": " + stageHandler.getStage().getDisplayName()));
 
         MutationHandler handler = new MutationHandler(stack);
 
@@ -118,35 +120,34 @@ public class MawItem extends Item {
         if (hasElectricMending) {
             String energyString = Component.translatable("maw.ravenousmaw.energy_string").getString();
 
-            var energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+            var energy = RavenousEnergyStorage.of(stack);
 
-            Component tooltip = Component.literal(energyString + ": " + energy.getEnergyStored() + "/" + energy.getMaxEnergyStored());
-            tooltipComponents.add(tooltip);
+            Component tooltip = Component.literal(energyString + ": " + energy.getAmountAsInt() + "/" + energy.getCapacityAsInt());
+            lines.accept(tooltip);
         }
 
         // Tooltips are built on the client, but the dist check keeps the client class from loading on a server.
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             String assimilationString = Component.translatable("maw.ravenousmaw.assimilation_string").getString();
-            tooltipComponents.add(Component.literal(assimilationString + ": " + ClientHooks.getAssimilationCount() + "/" + Assimilations.values().length).withStyle(ChatFormatting.LIGHT_PURPLE));
+            lines.accept(Component.literal(assimilationString + ": " + ClientHooks.getAssimilationCount() + "/" + Assimilations.values().length).withStyle(ChatFormatting.LIGHT_PURPLE));
         }
 
-        if (FMLEnvironment.dist.isClient() && ClientHooks.isShiftDown()) {
-            tooltipComponents.addAll(MawTooltip.mutationLines(stack));
+        if (FMLEnvironment.getDist().isClient() && ClientHooks.isShiftDown()) {
+            MawTooltip.mutationLines(stack).forEach(lines);
         } else {
             String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();
-            tooltipComponents.add(Component.literal(mutationString + ": " + handler.matchMutations().size() + "/" + Mutations.values().length).withStyle(ChatFormatting.YELLOW));
-            tooltipComponents.add(Component.translatable("tooltip.ravenousmaw.shift").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+            lines.accept(Component.literal(mutationString + ": " + handler.matchMutations().size() + "/" + Mutations.values().length).withStyle(ChatFormatting.YELLOW));
+            lines.accept(Component.translatable("tooltip.ravenousmaw.shift").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         }
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         AbilityDispatcher dispatcher = new AbilityDispatcher();
         dispatcher.onAttack(stack, target, target.level());
 
         // One cost per landed hit (sweep and Tendril Lash targets are free). Unbreakable Maws (Undying Flesh) ignore it.
         stack.hurtAndBreak(Constants.MAW_HIT_DURABILITY_COST, attacker, EquipmentSlot.MAINHAND);
-        return true;
     }
 
     @Override
@@ -198,19 +199,19 @@ public class MawItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!canSurvive(stack, level, player)) return InteractionResultHolder.fail(stack);
+        if (!canSurvive(stack, level, player)) return InteractionResult.FAIL;
 
         boolean isClientSide = level.isClientSide();
 
         if (isClientSide) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         if (!(player instanceof ServerPlayer serverPlayer)) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         boolean isShiftDown = player.isShiftKeyDown();
@@ -225,22 +226,25 @@ public class MawItem extends Item {
         // The menu is bound to the main hand. From the offhand, let shift+use fall through so the main hand
         // item (e.g. a torch) keeps working.
         if (hand != InteractionHand.MAIN_HAND) {
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         }
 
         callMenu(serverPlayer, player, stack);
 
-        return InteractionResultHolder.success(stack);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         AbilityDispatcher dispatcher = new AbilityDispatcher();
         MutationHandler handler = new MutationHandler(stack);
         StageHandler stageHandler = new StageHandler(stack);
 
         dispatcher.releaseUsing(stack, level, entity, timeLeft, handler, stageHandler.getStage(), dispatcher);
         stack.set(DataComponentTypes.CHARGING_SOUND_TYPE, false);
+
+        // False: no vanilla after-use side effects (use cooldown, remainder); the dispatcher handles the shot itself.
+        return false;
     }
 
     @Override
@@ -258,22 +262,18 @@ public class MawItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     @Override
-    public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
-        ItemStack stack = player.getMainHandItem();
-
-        if (!canSurvive(stack, level, player)) return false;
-
-        return true;
+    public boolean canDestroyBlock(ItemStack stack, BlockState state, Level level, BlockPos pos, LivingEntity user) {
+        return canSurvive(stack, level, user);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (!(entity instanceof ServerPlayer player) || level.isClientSide()) return;
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, EquipmentSlot slot) {
+        if (!(entity instanceof ServerPlayer player)) return;
 
         MawTickData tickData = player.getData(RavenousAttachments.MAW_TICK_DATA);
         tickData.advance(level.getGameTime());
@@ -313,7 +313,7 @@ public class MawItem extends Item {
 
     private void talk(ItemStack stack, @NotNull Player player, Stages stage) {
         String dialogue = generateDialogue(stage);
-        player.displayClientMessage(Component.literal(dialogue), true);
+        player.sendOverlayMessage(Component.literal(dialogue));
     }
 
     private void mend(@NotNull ItemStack stack, MutationHandler handler) {
@@ -325,11 +325,11 @@ public class MawItem extends Item {
         boolean hasElectricMending = handler.has(Mutations.ELECTRIC_MENDING);
         if (!hasElectricMending) return;
 
-        boolean hasEnoughEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM).getEnergyStored() >= ENERGY_COST_PER_DURABIITY;
+        var energy = RavenousEnergyStorage.of(stack);
 
-        if (!hasEnoughEnergy) return;
+        if (energy == null || energy.getAmountAsInt() < ENERGY_COST_PER_DURABIITY) return;
 
-        stack.getCapability(Capabilities.EnergyStorage.ITEM).extractEnergy(ENERGY_COST_PER_DURABIITY, false);
+        RavenousEnergyStorage.extract(energy, ENERGY_COST_PER_DURABIITY);
         stack.setDamageValue(stack.getDamageValue() - 1);
     }
 
@@ -407,11 +407,11 @@ public class MawItem extends Item {
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+    public boolean canPerformAction(ItemInstance stack, ItemAbility itemAbility) {
+        // 26.1 has no pickaxe or sword dig abilities (the Tool component drives mining); sweeping remains.
         return ItemAbilities.DEFAULT_AXE_ACTIONS.contains(itemAbility)
-            || ItemAbilities.DEFAULT_PICKAXE_ACTIONS.contains(itemAbility)
             || ItemAbilities.DEFAULT_SHOVEL_ACTIONS.contains(itemAbility)
-            || ItemAbilities.DEFAULT_SWORD_ACTIONS.contains(itemAbility);
+            || itemAbility == ItemAbilities.SWORD_SWEEP;
     }
 
     // todo: add more dialogues in future
@@ -555,10 +555,10 @@ public class MawItem extends Item {
         if (!level.isClientSide()) {
             level.setBlock(pos, newState, 11);
             level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newState));
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
+            stack.hurtAndBreak(1, player, context.getHand());
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     public static Item.Properties createProperties(Stages stage) {
@@ -607,9 +607,9 @@ public class MawItem extends Item {
         }
 
         // Client only, and rate limited: holding attack or mine calls this every tick.
-        if (level.isClientSide && entity instanceof Player player && isWarningReady(level)) {
+        if (level.isClientSide() && entity instanceof Player player && isWarningReady(level)) {
             level.playSound(player, player.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 0.5F, 0.5F);
-            player.displayClientMessage(DURABILITY_WARNING, true);
+            player.sendOverlayMessage(DURABILITY_WARNING);
         }
 
         return false;
