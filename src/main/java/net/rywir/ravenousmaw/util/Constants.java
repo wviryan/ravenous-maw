@@ -61,6 +61,11 @@ public class Constants {
     public static final float OXYTOCINERGIC_ESCA_DISCOUNT_PER_STACK = 0.03F;
     /** Blocks around the player searched for the villager they are trading with. */
     public static final double OXYTOCINERGIC_ESCA_TRADER_SEARCH_RADIUS = 16.0;
+    /** Ticks between villager gifts with one stack; each extra stack shortens it by the step below. */
+    public static final int OXYTOCINERGIC_ESCA_GIFT_BASE_COOLDOWN_TICKS = 20 * 60 * 10;
+    public static final int OXYTOCINERGIC_ESCA_GIFT_COOLDOWN_STEP_TICKS = 20 * 60;
+    /** Blocks around the player in which a villager may toss a gift. */
+    public static final double OXYTOCINERGIC_ESCA_GIFT_RADIUS = 8.0;
 
     // FEAST
     public static final int BASE_NUTRITION_MODIFIER = 4;

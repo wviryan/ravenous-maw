@@ -21,7 +21,7 @@
     {
       "type": "patchouli:text",
       "title": "Noble",
-      "text": "$(l)Oxytocinergic Esca$(): earned by winning a raid under the strongest Bad Omen. Every raid won afterwards adds stacks equal to its Bad Omen level, up to ten. While you carry a Maw, each stack lowers the price of every villager trade."
+      "text": "$(l)Oxytocinergic Esca$(): earned by winning a raid under the strongest Bad Omen. Every raid won afterwards adds stacks equal to its Bad Omen level, up to ten. While you carry a Maw, each stack lowers the price of every villager trade, and a nearby villager now and then tosses you a hero gift, more often with more stacks."
     },
     {
       "type": "patchouli:text",

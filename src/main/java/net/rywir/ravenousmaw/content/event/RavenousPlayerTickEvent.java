@@ -1,5 +1,6 @@
 package net.rywir.ravenousmaw.content.event;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -20,6 +21,7 @@ import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.registry.Stages;
 import net.rywir.ravenousmaw.system.AssimilationHandler;
 import net.rywir.ravenousmaw.system.MutationHandler;
+import net.rywir.ravenousmaw.system.OxytocinergicEsca;
 import net.rywir.ravenousmaw.system.StageHandler;
 import net.rywir.ravenousmaw.system.ability.SymbioticAid;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +31,7 @@ import java.util.List;
 public class RavenousPlayerTickEvent {
     private static final int ENERGY_COST_PER_OPERATION = 5;
     private static final int AQUANAUT_REFRESH_TICKS = 20;
+    private static final int GIFT_CHECK_TICKS = 20;
     private static final int AQUANAUT_EFFECT_TICKS = 60;
 
     @SubscribeEvent
@@ -39,6 +42,9 @@ public class RavenousPlayerTickEvent {
 
         SymbioticAid.cleanse(player);
         applyAquanaut(player);
+        if (player instanceof ServerPlayer serverPlayer && player.tickCount % GIFT_CHECK_TICKS == 0) {
+            OxytocinergicEsca.tryGift(serverPlayer);
+        }
 
         ItemStack stack = player.getMainHandItem();
 

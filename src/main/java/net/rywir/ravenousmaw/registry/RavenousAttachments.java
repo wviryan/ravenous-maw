@@ -43,6 +43,11 @@ public class RavenousAttachments {
             .build()
     );
 
+    // No serialize(): the gift cooldown (game time of the next gift) simply restarts after a relog
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> OXYTOCIN_NEXT_GIFT = ATTACHMENT_TYPES.register("oxytocin_next_gift",
+        () -> AttachmentType.builder(() -> 0L).build()
+    );
+
     // No serialize(): the countdown is rebuilt from the player's dimension, and not copied on death
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<DimensionDeedTimer>> DIMENSION_DEED_TIMER = ATTACHMENT_TYPES.register("dimension_deed_timer",
         () -> AttachmentType.builder(() -> new DimensionDeedTimer()).build()
