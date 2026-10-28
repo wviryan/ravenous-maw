@@ -7,11 +7,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.registry.RavenousBlocks;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,8 +17,8 @@ public class RavenousBlockTagsProvider extends BlockTagsProvider {
     public static final TagKey<Block> CORRECT_FOR_MAW = create("correct_for_maw");
     public static final TagKey<Block> INCORRECT_MAW = create("incorrect_for_maw");
 
-    public RavenousBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, RavenousMaw.MOD_ID, existingFileHelper);
+    public RavenousBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, RavenousMaw.MOD_ID);
     }
 
     @Override

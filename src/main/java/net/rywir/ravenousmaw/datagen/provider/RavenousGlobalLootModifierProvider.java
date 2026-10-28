@@ -20,6 +20,6 @@ public class RavenousGlobalLootModifierProvider extends GlobalLootModifierProvid
     protected void start() {
         add("piglin_barter", new PiglinBarterModifier(new LootItemCondition[]{
             LootTableIdCondition.builder(Identifier.withDefaultNamespace("gameplay/piglin_bartering")).build()
-        }));
+        }, 0));
     }
 }

@@ -4,17 +4,17 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.rywir.ravenousmaw.registry.Assimilations;
 import net.rywir.ravenousmaw.registry.RavenousItems;
@@ -44,11 +44,11 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
         public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
             AdvancementHolder root = Advancement.Builder.advancement()
                 .display(
-                    new ItemStack(RavenousItems.RAVENOUS_MAW_LATENT.get()),
+                    RavenousItems.RAVENOUS_MAW_LATENT.get(),
                     Component.translatable("advancement.ravenousmaw.root.title"),
                     Component.translatable("advancement.ravenousmaw.root.description"),
                     BACKGROUND, AdvancementType.TASK, true, true, false)
-                .addCriterion("has_maw", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(RavenousItemTagsProvider.MAW)))
+                .addCriterion("has_maw", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), RavenousItemTagsProvider.MAW)))
                 .build(AssimilationHandler.ROOT_ADVANCEMENT);
             saver.accept(root);
 
@@ -60,7 +60,7 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
                 AdvancementHolder holder = Advancement.Builder.advancement()
                     .parent(parent == null ? root : holders.get(parent))
                     .display(
-                        new ItemStack(icon(assimilation)),
+                        icon(assimilation),
                         Component.translatable("advancement.ravenousmaw.assimilation." + assimilation.getKey() + ".title"),
                         Component.translatable("advancement.ravenousmaw.assimilation." + assimilation.getKey() + ".description"),
                         null, assimilation == Assimilations.ELDRITCH_ANTENNA ? AdvancementType.GOAL : AdvancementType.TASK, true, true, false)
@@ -74,7 +74,7 @@ public class RavenousAdvancementProvider extends AdvancementProvider {
             Advancement.Builder all = Advancement.Builder.advancement()
                 .parent(holders.get(Assimilations.ELDRITCH_ANTENNA))
                 .display(
-                    new ItemStack(RavenousItems.RAVENOUS_MAW_EXCELSIOR.get()),
+                    RavenousItems.RAVENOUS_MAW_EXCELSIOR.get(),
                     Component.translatable("advancement.ravenousmaw.assimilation_all.title"),
                     Component.translatable("advancement.ravenousmaw.assimilation_all.description"),
                     null, AdvancementType.CHALLENGE, true, true, false);

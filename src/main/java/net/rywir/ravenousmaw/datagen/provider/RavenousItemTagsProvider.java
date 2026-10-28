@@ -2,20 +2,17 @@ package net.rywir.ravenousmaw.datagen.provider;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.registry.RavenousItems;
 import org.jetbrains.annotations.NotNull;
 
-import org.jspecify.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class RavenousItemTagsProvider extends ItemTagsProvider {
@@ -24,8 +21,8 @@ public class RavenousItemTagsProvider extends ItemTagsProvider {
     public static final TagKey<Item> MUTAGEN = ItemTags.create(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "mutagen"));
     public static final TagKey<Item> MAW = ItemTags.create(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "maw"));
 
-    public RavenousItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, blockTags, RavenousMaw.MOD_ID, existingFileHelper);
+    public RavenousItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, RavenousMaw.MOD_ID);
     }
 
     @Override
@@ -78,7 +75,13 @@ public class RavenousItemTagsProvider extends ItemTagsProvider {
             .add(RavenousItems.CHORUS_CRACKER.get())
             .add(RavenousItems.SCULK_CROISSANT.get());
 
-        this.tag(ItemTags.SWORD_ENCHANTABLE)
+        // 26.1 split the old sword tag: melee enchantments (fire aspect, knockback...) and sweeping edge.
+        this.tag(ItemTags.MELEE_WEAPON_ENCHANTABLE)
+            .add(RavenousItems.RAVENOUS_MAW_LATENT.get())
+            .add(RavenousItems.RAVENOUS_MAW_ADVANCED.get())
+            .add(RavenousItems.RAVENOUS_MAW_NOBLE.get())
+            .add(RavenousItems.RAVENOUS_MAW_EXCELSIOR.get());
+        this.tag(ItemTags.SWEEPING_ENCHANTABLE)
             .add(RavenousItems.RAVENOUS_MAW_LATENT.get())
             .add(RavenousItems.RAVENOUS_MAW_ADVANCED.get())
             .add(RavenousItems.RAVENOUS_MAW_NOBLE.get())
