@@ -17,20 +17,20 @@ public class RavenousAttachments {
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MawTickData>> MAW_TICK_DATA = ATTACHMENT_TYPES.register("maw_tick_data",
         () -> AttachmentType.builder(() -> new MawTickData())
-            .serialize(MawTickData.CODEC)
+            .serialize(MawTickData.CODEC.fieldOf("value"))
             .build()
     );
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<BossContributors>> BOSS_CONTRIBUTORS = ATTACHMENT_TYPES.register("boss_contributors",
         () -> AttachmentType.builder(() -> new BossContributors())
-            .serialize(BossContributors.CODEC)
+            .serialize(BossContributors.CODEC.fieldOf("value"))
             .build()
     );
 
     // copyOnDeath: assimilations are earned deeds, so they must survive respawning
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<AssimilationData>> ASSIMILATIONS = ATTACHMENT_TYPES.register("assimilations",
         () -> AttachmentType.builder(() -> new AssimilationData())
-            .serialize(AssimilationData.CODEC)
+            .serialize(AssimilationData.CODEC.fieldOf("value"))
             .copyOnDeath()
             .build()
     );
@@ -38,7 +38,7 @@ public class RavenousAttachments {
     // Oxytocinergic Esca stacks (raid wins), kept through death like the assimilation they belong to
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> OXYTOCIN_STACKS = ATTACHMENT_TYPES.register("oxytocin_stacks",
         () -> AttachmentType.builder(() -> 0)
-            .serialize(Codec.INT)
+            .serialize(Codec.INT.fieldOf("value"))
             .copyOnDeath()
             .build()
     );
@@ -46,7 +46,7 @@ public class RavenousAttachments {
     // Eldritch Antenna on/off switch (default on), a player choice so it is saved and kept through death
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ANTENNA_ENABLED = ATTACHMENT_TYPES.register("antenna_enabled",
         () -> AttachmentType.builder(() -> true)
-            .serialize(Codec.BOOL)
+            .serialize(Codec.BOOL.fieldOf("value"))
             .copyOnDeath()
             .build()
     );

@@ -30,7 +30,7 @@ public class AssimilationHandler {
 
     /** True if any inventory slot (hotbar, backpack, offhand) holds a Maw of at least the given stage. */
     public static boolean carriesMawOfStage(Player player, Stages stage) {
-        for (ItemStack stack : player.getInventory().items) {
+        for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             if (isMawOfStage(stack, stage)) return true;
         }
 
@@ -84,7 +84,7 @@ public class AssimilationHandler {
     }
 
     private static boolean carriesFullyMutatedMaw(Player player) {
-        for (ItemStack stack : player.getInventory().items) {
+        for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             if (hasAllMutations(stack)) return true;
         }
 
@@ -108,7 +108,7 @@ public class AssimilationHandler {
 
         RavenousAssimilationSyncEvent.sync(player);
 
-        player.displayClientMessage(Component.translatable("ravenousmaw.assimilation_granted", Component.translatable("assimilation.ravenousmaw." + assimilation.getKey())), true);
+        player.sendOverlayMessage(Component.translatable("ravenousmaw.assimilation_granted", Component.translatable("assimilation.ravenousmaw." + assimilation.getKey())));
         player.level().playSound(null, player.blockPosition(), SoundEvents.SCULK_CATALYST_BLOOM, SoundSource.PLAYERS, 1.0F, 0.8F);
 
         award(player, advancementId(assimilation), ASSIMILATED_CRITERION);
@@ -136,7 +136,7 @@ public class AssimilationHandler {
 
     /** Completes one criterion of an advancement; missing advancements (e.g. a datapack removed them) are ignored. */
     private static void award(ServerPlayer player, Identifier id, String criterion) {
-        AdvancementHolder advancement = player.server.getAdvancements().get(id);
+        AdvancementHolder advancement = player.level().getServer().getAdvancements().get(id);
 
         if (advancement != null) player.getAdvancements().award(advancement, criterion);
     }

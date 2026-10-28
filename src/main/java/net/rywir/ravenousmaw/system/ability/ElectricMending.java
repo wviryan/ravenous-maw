@@ -90,7 +90,7 @@ public class ElectricMending implements IMutationAbility {
 
         LAST_WARNING_TICK.put(player.getUUID(), now);
         player.level().playSound(null, player.blockPosition(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.8F, 1.0F);
-        player.displayClientMessage(LOW_ENERGY_WARNING, true);
+        player.sendOverlayMessage(LOW_ENERGY_WARNING);
     }
 
     /**
@@ -169,11 +169,11 @@ public class ElectricMending implements IMutationAbility {
     public void onInstability(MutationHandler mutationHandler, ItemStack stack, Player player) {
         if (!player.isInWater()) return;
 
-        Holder<DamageType> type = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.PLAYER_ATTACK);
+        Holder<DamageType> type = player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.PLAYER_ATTACK);
 
         DamageSource source = new DamageSource(type, player, player, player.position());
 
         player.hurt(source, 8.0F);
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.electric_mending"), true);
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.electric_mending"));
     }
 }

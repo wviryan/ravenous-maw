@@ -91,7 +91,7 @@ public class RavenousLivingDeathEvent {
 
     /** Totem sound for everyone nearby, a soul particle burst, and a title with the new stage for the player. */
     private static void announceStageUp(ServerPlayer player, Stages newStage) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
 
         level.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
         level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, player.getX(), player.getY() + 1.0, player.getZ(),

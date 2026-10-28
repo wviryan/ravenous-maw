@@ -2,7 +2,7 @@ package net.rywir.ravenousmaw.content.event;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -47,13 +47,15 @@ public class RavenousLivingDropsEvent {
             }
 
             if (!toSave.isEmpty()) {
-                CompoundTag persisted = player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
+                CompoundTag persisted = player.getPersistentData().getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
                 // Every saved Maw is appended, so several Symbiotic Aid Maws never overwrite each other
-                ListTag savedMaws = persisted.getList(RavenousCloneEvent.SAVED_MAWS_KEY, Tag.TAG_COMPOUND);
+                ListTag savedMaws = persisted.getListOrEmpty(RavenousCloneEvent.SAVED_MAWS_KEY);
 
                 for (ItemEntity saved : toSave) {
                     event.getDrops().remove(saved);
-                    savedMaws.add(saved.getItem().save(player.registryAccess()));
+                    savedMaws.add(ItemStack.CODEC
+                        .encodeStart(player.registryAccess().createSerializationContext(NbtOps.INSTANCE), saved.getItem())
+                        .getOrThrow());
                 }
 
                 persisted.put(RavenousCloneEvent.SAVED_MAWS_KEY, savedMaws);

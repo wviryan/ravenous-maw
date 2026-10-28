@@ -1,6 +1,7 @@
 package net.rywir.ravenousmaw.registry;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -18,7 +19,7 @@ public class RavenousMobEffects {
         () -> new CombustiveMobEffect(MobEffectCategory.HARMFUL, 8889187, ParticleTypes.LAVA));
 
     public static final DeferredHolder<MobEffect, SymbioticInfectionMobEffect> SYMBIOTIC_INFECTION = MOB_EFFECTS.register("symbiotic_infection",
-        () -> new SymbioticInfectionMobEffect(MobEffectCategory.HARMFUL, 4000, ParticleTypes.DRAGON_BREATH));
+        () -> new SymbioticInfectionMobEffect(MobEffectCategory.HARMFUL, 4000, PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F)));
 
     public static void register(IEventBus bus) {
         MOB_EFFECTS.register(bus);

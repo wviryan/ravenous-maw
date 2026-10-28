@@ -1,7 +1,7 @@
 package net.rywir.ravenousmaw.content.event;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.rywir.ravenousmaw.system.OxytocinergicEsca;

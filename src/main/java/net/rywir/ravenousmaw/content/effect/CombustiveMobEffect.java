@@ -1,6 +1,7 @@
 package net.rywir.ravenousmaw.content.effect;
 
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -29,8 +30,8 @@ public class CombustiveMobEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity target, int amplifier) {
-        if (amplifier == FUSE_AMPLIFIER && !target.level().isClientSide()) {
+    public boolean applyEffectTick(@NotNull ServerLevel level, @NotNull LivingEntity target, int amplifier) {
+        if (amplifier == FUSE_AMPLIFIER) {
             // The effect carries no source, so the last attacker is credited and spared from the blast.
             explode(target, target.getLastHurtByMob());
         }
@@ -39,13 +40,7 @@ public class CombustiveMobEffect extends MobEffect {
     }
 
     @Override
-    public void onMobHurt(LivingEntity target, int amplifier, @NotNull DamageSource damageSource, float amount) {
-        Level level = target.level();
-
-        if (level.isClientSide()) {
-            return;
-        }
-
+    public void onMobHurt(@NotNull ServerLevel level, @NotNull LivingEntity target, int amplifier, @NotNull DamageSource damageSource, float amount) {
         // The fuse variant explodes on its own timer, not on fire damage.
         if (amplifier == FUSE_AMPLIFIER || !damageSource.is(DamageTypeTags.IS_FIRE)) {
             return;
@@ -56,7 +51,7 @@ public class CombustiveMobEffect extends MobEffect {
 
         // Vanilla calls this while iterating the live effect map, so removing the effect here would throw a
         // ConcurrentModificationException when the target has other effects. Remove it after the loop instead.
-        target.getServer().execute(() -> target.removeEffect(RavenousMobEffects.COMBUSTIVE));
+        level.getServer().execute(() -> target.removeEffect(RavenousMobEffects.COMBUSTIVE));
     }
 
     private static void explode(LivingEntity target, Entity owner) {

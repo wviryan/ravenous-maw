@@ -3,9 +3,12 @@ package net.rywir.ravenousmaw.content.event;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -14,21 +17,24 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.rywir.ravenousmaw.content.item.MawItem;
 import net.rywir.ravenousmaw.registry.Mutations;
 import net.rywir.ravenousmaw.system.MutationHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RavenousRenderHighlightEvent {
-    private static final float RED = 0.0F;
-    private static final float GREEN = 0.0F;
-    private static final float BLUE = 0.0F;
-    private static final float ALPHA = 0.2F;
+    // Black at 20% opacity (ARGB), as before the port.
+    private static final int COLOR = 0x33000000;
 
+    /**
+     * Collects the shapes of the extra blocks Tectonic Bite would break and hands them to a renderer. In 26.1
+     * the outline is drawn later from extracted state, so nothing but plain shapes may be captured here.
+     */
     @SubscribeEvent
-    public static void onRenderHighlightEvent(RenderHighlightEvent.Block event) {
+    public static void onExtractBlockOutlineRenderStateEvent(ExtractBlockOutlineRenderStateEvent event) {
         Player player = Minecraft.getInstance().player;
 
         if (player == null) {
@@ -43,9 +49,7 @@ public class RavenousRenderHighlightEvent {
 
         MutationHandler mutationHandler = new MutationHandler(heldItem);
 
-        boolean hasTectonicBite = mutationHandler.has(Mutations.TECTONIC_BITE);
-
-        if (!hasTectonicBite) {
+        if (!mutationHandler.has(Mutations.TECTONIC_BITE)) {
             return;
         }
 
@@ -56,75 +60,57 @@ public class RavenousRenderHighlightEvent {
             return;
         }
 
-        BlockPos targetPos = event.getTarget().getBlockPos();
-        List<BlockPos> blocksToDestroy = MawItem.getBlocksToBeDestroyed(range, targetPos, player);
+        BlockPos targetPos = event.getBlockPos();
+        Level level = player.level();
+        List<Outline> outlines = new ArrayList<>();
 
-        Vec3 cameraPos = event.getCamera().getPosition();
-        VertexConsumer lineRenderer = event.getMultiBufferSource().getBuffer(RenderType.lines());
-
-        for (BlockPos pos : blocksToDestroy) {
+        for (BlockPos pos : MawItem.getBlocksToBeDestroyed(range, targetPos, player)) {
             if (pos.equals(targetPos)) {
                 continue;
             }
 
-            renderBlockOutline(
-                event.getPoseStack(),
-                lineRenderer,
-                player.level(),
-                pos,
-                cameraPos,
-                player
-            );
+            BlockState blockState = level.getBlockState(pos);
+            outlines.add(new Outline(pos, blockState.getShape(level, pos, CollisionContext.of(player))));
         }
+
+        event.addCustomRenderer(new Renderer(outlines));
     }
 
-    private static void renderBlockOutline(
-        PoseStack poseStack,
-        VertexConsumer consumer,
-        Level level,
-        BlockPos blockPos,
-        Vec3 cameraPos,
-        Player player
-    ) {
-        BlockState blockState = level.getBlockState(blockPos);
-        VoxelShape shape = blockState.getShape(level, blockPos, CollisionContext.of(player));
+    private record Outline(BlockPos pos, VoxelShape shape) {}
 
-        double offsetX = blockPos.getX() - cameraPos.x;
-        double offsetY = blockPos.getY() - cameraPos.y;
-        double offsetZ = blockPos.getZ() - cameraPos.z;
+    private record Renderer(List<Outline> outlines) implements net.neoforged.neoforge.client.CustomBlockOutlineRenderer {
+        @Override
+        public boolean render(
+            BlockOutlineRenderState renderState,
+            MultiBufferSource.BufferSource buffer,
+            PoseStack poseStack,
+            boolean translucentPass,
+            LevelRenderState levelRenderState
+        ) {
+            // Same pass as the vanilla outline of the targeted block.
+            if (renderState.isTranslucent() != translucentPass) {
+                return false;
+            }
 
-        renderVoxelShape(poseStack, consumer, shape, offsetX, offsetY, offsetZ);
-    }
+            Vec3 cameraPos = levelRenderState.cameraRenderState.pos;
+            float lineWidth = Minecraft.getInstance().gameRenderer.getGameRenderState().windowRenderState.appropriateLineWidth;
+            VertexConsumer lines = buffer.getBuffer(RenderTypes.lines());
 
-    private static void renderVoxelShape(
-        PoseStack poseStack,
-        VertexConsumer consumer,
-        VoxelShape shape,
-        double offsetX,
-        double offsetY,
-        double offsetZ
-    ) {
-        PoseStack.Pose pose = poseStack.last();
+            for (Outline outline : outlines) {
+                ShapeRenderer.renderShape(
+                    poseStack,
+                    lines,
+                    outline.shape(),
+                    outline.pos().getX() - cameraPos.x,
+                    outline.pos().getY() - cameraPos.y,
+                    outline.pos().getZ() - cameraPos.z,
+                    COLOR,
+                    lineWidth
+                );
+            }
 
-        shape.forAllEdges((startX, startY, startZ, endX, endY, endZ) -> {
-            float deltaX = (float) (endX - startX);
-            float deltaY = (float) (endY - startY);
-            float deltaZ = (float) (endZ - startZ);
-
-            float length = Mth.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-            float normalX = deltaX / length;
-            float normalY = deltaY / length;
-            float normalZ = deltaZ / length;
-
-            consumer
-                .addVertex(pose, (float) (startX + offsetX), (float) (startY + offsetY), (float) (startZ + offsetZ))
-                .setColor(RED, GREEN, BLUE, ALPHA)
-                .setNormal(pose, normalX, normalY, normalZ);
-
-            consumer
-                .addVertex(pose, (float) (endX + offsetX), (float) (endY + offsetY), (float) (endZ + offsetZ))
-                .setColor(RED, GREEN, BLUE, ALPHA)
-                .setNormal(pose, normalX, normalY, normalZ);
-        });
+            // Keep the vanilla outline of the targeted block.
+            return false;
+        }
     }
 }

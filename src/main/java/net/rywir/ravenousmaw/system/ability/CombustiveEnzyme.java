@@ -106,6 +106,6 @@ public class CombustiveEnzyme implements IMutationAbility {
         if (!handler.has(Mutations.COMBUSTIVE_ENZYME)) return;
 
         player.addEffect(new MobEffectInstance(RavenousMobEffects.COMBUSTIVE, DURATION));
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.combustive_enzyme"), true);
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.combustive_enzyme"));
     }
 }

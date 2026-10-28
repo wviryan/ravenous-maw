@@ -67,11 +67,11 @@ public class InsatiableVoracity implements IMutationAbility {
             return;
         }
 
-        Holder<DamageType> type = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MOB_ATTACK);
+        Holder<DamageType> type = player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.MOB_ATTACK);
 
         DamageSource source = new DamageSource(type, player, player, player.position());
 
         player.hurt(source, 4.0F);
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.insatiable_voracity"), true);
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.insatiable_voracity"));
     }
 }

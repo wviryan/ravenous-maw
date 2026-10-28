@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -84,7 +84,7 @@ public class OxytocinergicEsca {
         if (villager.isBaby()) return List.of(new ItemStack(Items.POPPY));
 
         ServerLevel level = (ServerLevel) villager.level();
-        Identifier profession = BuiltInRegistries.VILLAGER_PROFESSION.getKey(villager.getVillagerData().getProfession());
+        Identifier profession = villager.getVillagerData().profession().unwrapKey().orElseThrow().identifier();
         ResourceKey<LootTable> tableKey = ResourceKey.create(Registries.LOOT_TABLE,
             Identifier.withDefaultNamespace("gameplay/hero_of_the_village/" + profession.getPath() + "_gift"));
         LootTable table = level.getServer().reloadableRegistries().getLootTable(tableKey);

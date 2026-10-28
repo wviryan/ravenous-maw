@@ -12,7 +12,7 @@ public class RavenousCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
             Commands.literal("ravenousmaw")
-                .requires(source -> source.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(MutationCommands.build())
                 .then(AssimilationCommands.build())
                 .then(EnergyCommands.build())

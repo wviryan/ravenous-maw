@@ -19,7 +19,7 @@ public final class ClientHooks {
     private ClientHooks() {}
 
     public static boolean isShiftDown() {
-        return Screen.hasShiftDown();
+        return Minecraft.getInstance().hasShiftDown();
     }
 
     /** Forwards a server-confirmed configuration value to the open configuration screen, if any. */

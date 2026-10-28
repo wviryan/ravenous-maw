@@ -31,7 +31,6 @@ public class MentalSupremacy implements IMutationAbility {
         if (player.level().isClientSide()) return true;
 
         tamable.tame(player);
-        tamable.setOwnerUUID(player.getUUID());
         // Same cleanup as vanilla taming: an angry wolf must not keep chasing its target.
         tamable.getNavigation().stop();
         tamable.setTarget(null);
@@ -46,7 +45,7 @@ public class MentalSupremacy implements IMutationAbility {
     public void onInstability(MutationHandler mutationHandler, ItemStack stack, Player player) {
         if (player.level().isClientSide()) return;
 
-        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, STUN_DURATION, AMPLIFIER));
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.mental_supremacy"), true);
+        player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, STUN_DURATION, AMPLIFIER));
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.mental_supremacy"));
     }
 }

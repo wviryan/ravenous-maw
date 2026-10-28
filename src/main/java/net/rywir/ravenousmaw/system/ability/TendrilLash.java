@@ -116,6 +116,6 @@ public class TendrilLash implements IMutationAbility {
         player.setItemSlot(EquipmentSlot.MAINHAND, off);
         player.setItemSlot(EquipmentSlot.OFFHAND, main);
 
-        player.displayClientMessage(Component.translatable("instability_message.ravenousmaw.tendril_lash"), true);
+        player.sendOverlayMessage(Component.translatable("instability_message.ravenousmaw.tendril_lash"));
     }
 }

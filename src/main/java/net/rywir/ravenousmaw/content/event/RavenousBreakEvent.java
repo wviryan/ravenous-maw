@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.rywir.ravenousmaw.content.item.MawItem;
 import net.rywir.ravenousmaw.datagen.provider.RavenousItemTagsProvider;
 import net.rywir.ravenousmaw.registry.Mutations;
@@ -28,7 +28,7 @@ public class RavenousBreakEvent {
     private static final Component LOW_DURABILITY_WARNING = Component.translatable("ravenousmaw.tectonic_low_durability");
 
     @SubscribeEvent
-    public static void onBreakEvent(BlockEvent.BreakEvent event) {
+    public static void onBreakEvent(BreakBlockEvent event) {
         Player player = event.getPlayer();
 
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -118,6 +118,6 @@ public class RavenousBreakEvent {
 
         LAST_WARNING_TICK.put(player.getUUID(), now);
         player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 0.25F, 0.5F);
-        player.displayClientMessage(LOW_DURABILITY_WARNING, true);
+        player.sendOverlayMessage(LOW_DURABILITY_WARNING);
     }
 }
