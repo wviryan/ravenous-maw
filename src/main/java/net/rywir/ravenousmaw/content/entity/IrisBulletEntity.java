@@ -23,7 +23,7 @@ import net.rywir.ravenousmaw.system.AbilityDispatcher;
 import net.rywir.ravenousmaw.system.MutationHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class IrisBulletEntity extends AbstractArrow {

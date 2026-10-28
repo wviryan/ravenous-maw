@@ -1,7 +1,7 @@
 package net.rywir.ravenousmaw.datagen.provider;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -31,6 +31,6 @@ public class RavenousItemModelProvider extends ItemModelProvider {
 
     private void handheldItem(DeferredHolder<Item, ?> itemHolder) {
         String name = itemHolder.getId().getPath();
-        withExistingParent(name, ResourceLocation.parse("item/handheld")).texture("layer0", ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID,"item/" + name));
+        withExistingParent(name, Identifier.parse("item/handheld")).texture("layer0", Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID,"item/" + name));
     }
 }

@@ -2,7 +2,7 @@ package net.rywir.ravenousmaw.datagen.provider;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -40,10 +40,10 @@ public class RavenousBlockTagsProvider extends BlockTagsProvider {
     }
 
     private static @NotNull TagKey<Block> create(String name) {
-        return BlockTags.create(ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, name));
+        return BlockTags.create(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, name));
     }
 
     private static @NotNull TagKey<Block> forge(String name) {
-        return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+        return BlockTags.create(Identifier.fromNamespaceAndPath("c", name));
     }
 }

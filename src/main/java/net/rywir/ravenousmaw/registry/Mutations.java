@@ -2,7 +2,7 @@ package net.rywir.ravenousmaw.registry;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.rywir.ravenousmaw.RavenousMaw;
@@ -158,7 +158,7 @@ public enum Mutations {
         private final String            key;
         private final Component         title;
         private final Component         description;
-        private final ResourceLocation  icon;
+        private final Identifier  icon;
         private final CircularList      values;
         private final Type              type;
 
@@ -169,7 +169,7 @@ public enum Mutations {
             this.title = Component.translatable("parameter.ravenousmaw." + this.key);
             this.type = type;
             this.description = Component.translatable("description.ravenousmaw." + this.key);
-            this.icon = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/icon/" + this.key + ".png");
+            this.icon = Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/icon/" + this.key + ".png");
             this.values = values;
         }
 
@@ -189,7 +189,7 @@ public enum Mutations {
             return values;
         }
 
-        public ResourceLocation icon() {
+        public Identifier icon() {
             return icon;
         }
 

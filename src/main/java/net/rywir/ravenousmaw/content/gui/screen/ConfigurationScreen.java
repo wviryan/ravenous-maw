@@ -11,7 +11,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.gui.custom.ConfigurationButton;
@@ -40,7 +40,7 @@ public class ConfigurationScreen extends AbstractContainerScreen<ConfigurationMe
     /** Kept across rebuilds (e.g. a window resize) so the screen stays on the page the player chose. */
     private int page = PAGE_SETTINGS;
 
-    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier GUI_TEXTURE = Identifier.fromNamespaceAndPath(
         RavenousMaw.MOD_ID,
         "textures/gui/configuration_menu.png"
     );

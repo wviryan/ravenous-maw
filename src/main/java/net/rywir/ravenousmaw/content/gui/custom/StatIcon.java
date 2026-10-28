@@ -4,14 +4,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 /** A configuration-screen icon with a tooltip and no click action, for read-only values such as a kill count. */
 public class StatIcon extends AbstractWidget {
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    public StatIcon(int x, int y, int width, int height, Component message, ResourceLocation texture) {
+    public StatIcon(int x, int y, int width, int height, Component message, Identifier texture) {
         super(x, y, width, height, message);
         this.texture = texture;
     }

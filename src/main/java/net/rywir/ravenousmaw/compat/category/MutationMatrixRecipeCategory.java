@@ -11,7 +11,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.recipe.matrix.MutationRecipe;
@@ -19,8 +19,8 @@ import net.rywir.ravenousmaw.registry.RavenousBlocks;
 import org.jetbrains.annotations.Nullable;
 
 public class MutationMatrixRecipeCategory implements IRecipeCategory<MutationRecipe> {
-    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "mutation_matrix");
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/gui/mutation_matrix.png");
+    public static final Identifier UID = Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "mutation_matrix");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/gui/mutation_matrix.png");
 
     public static final RecipeType<MutationRecipe> MUTATION_RECIPE_RECIPE_TYPE = new RecipeType<>(UID, MutationRecipe.class);
 
@@ -31,7 +31,7 @@ public class MutationMatrixRecipeCategory implements IRecipeCategory<MutationRec
     public MutationMatrixRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 7, 16, 162, 54);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(RavenousBlocks.MUTATION_MATRIX));
-        this.arrow = helper.createDrawable(ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/gui/progress_arrow.png"), 0, 0, 24, 16);
+        this.arrow = helper.createDrawable(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/gui/progress_arrow.png"), 0, 0, 24, 16);
     }
 
     @Override

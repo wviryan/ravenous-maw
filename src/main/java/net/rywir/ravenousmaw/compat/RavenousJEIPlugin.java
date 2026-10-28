@@ -9,7 +9,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.rywir.ravenousmaw.RavenousMaw;
@@ -28,8 +28,8 @@ import java.util.List;
 @JeiPlugin
 public class RavenousJEIPlugin implements IModPlugin {
     @Override
-    public ResourceLocation getPluginUid() {
-         return ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "jei_plugin");
+    public Identifier getPluginUid() {
+         return Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "jei_plugin");
     }
 
     @Override
@@ -69,7 +69,7 @@ public class RavenousJEIPlugin implements IModPlugin {
                     )
                 );
 
-                ResourceLocation id = ResourceLocation.fromNamespaceAndPath("ravenous", "jei_feeding_" + stage.name().toLowerCase() + "_" + BuiltInRegistries.ITEM.getKey(entry.asItem()).getPath());
+                Identifier id = Identifier.fromNamespaceAndPath("ravenous", "jei_feeding_" + stage.name().toLowerCase() + "_" + BuiltInRegistries.ITEM.getKey(entry.asItem()).getPath());
                 RecipeHolder<CraftingRecipe> holder = new RecipeHolder<>(id, dummyRecipe);
                 feedingRecipes.add(holder);
             }

@@ -3,7 +3,7 @@ package net.rywir.ravenousmaw.datagen.provider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -15,14 +15,14 @@ import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.registry.RavenousItems;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class RavenousItemTagsProvider extends ItemTagsProvider {
-    public static final TagKey<Item> FEAST = ItemTags.create(ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "feast"));
-    public static final TagKey<Item> PAXEL = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "paxel"));
-    public static final TagKey<Item> MUTAGEN = ItemTags.create(ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "mutagen"));
-    public static final TagKey<Item> MAW = ItemTags.create(ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "maw"));
+    public static final TagKey<Item> FEAST = ItemTags.create(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "feast"));
+    public static final TagKey<Item> PAXEL = ItemTags.create(Identifier.fromNamespaceAndPath("c", "paxel"));
+    public static final TagKey<Item> MUTAGEN = ItemTags.create(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "mutagen"));
+    public static final TagKey<Item> MAW = ItemTags.create(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "maw"));
 
     public RavenousItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, blockTags, RavenousMaw.MOD_ID, existingFileHelper);

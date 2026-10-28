@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.entity.IrisBulletEntity;
@@ -38,7 +38,7 @@ public class IrisBulletRenderer extends EntityRenderer<IrisBulletEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull IrisBulletEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/entity/iris_bullet.png");
+    public @NotNull Identifier getTextureLocation(@NotNull IrisBulletEntity entity) {
+        return Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/entity/iris_bullet.png");
     }
 }

@@ -1,7 +1,7 @@
 package net.rywir.ravenousmaw.registry;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
@@ -19,7 +19,7 @@ public class RavenousRecipes {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, RavenousMaw.MOD_ID);
 
     public static final Supplier<RecipeType<MutationRecipe>> MUTATION_RECIPE_TYPE = RECIPE_TYPES.register("mutation_recipe_type",
-            () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "mutation_matrix"))
+            () -> RecipeType.simple(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "mutation_matrix"))
     );
 
     // SERIALIZERS

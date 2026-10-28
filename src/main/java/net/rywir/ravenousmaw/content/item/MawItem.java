@@ -125,12 +125,12 @@ public class MawItem extends Item {
         }
 
         // Tooltips are built on the client, but the dist check keeps the client class from loading on a server.
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             String assimilationString = Component.translatable("maw.ravenousmaw.assimilation_string").getString();
             tooltipComponents.add(Component.literal(assimilationString + ": " + ClientHooks.getAssimilationCount() + "/" + Assimilations.values().length).withStyle(ChatFormatting.LIGHT_PURPLE));
         }
 
-        if (FMLEnvironment.dist.isClient() && ClientHooks.isShiftDown()) {
+        if (FMLEnvironment.getDist().isClient() && ClientHooks.isShiftDown()) {
             tooltipComponents.addAll(MawTooltip.mutationLines(stack));
         } else {
             String mutationString = Component.translatable("maw.ravenousmaw.mutation_string").getString();

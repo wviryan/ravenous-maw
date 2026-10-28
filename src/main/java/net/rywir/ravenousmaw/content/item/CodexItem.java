@@ -1,6 +1,6 @@
 package net.rywir.ravenousmaw.content.item;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +22,7 @@ public class CodexItem extends Item {
             return InteractionResultHolder.fail(stack);
         }
 
-        PatchouliAPI.get().openBookGUI(ResourceLocation.fromNamespaceAndPath("ravenousmaw", "mutation_codex"));
+        PatchouliAPI.get().openBookGUI(Identifier.fromNamespaceAndPath("ravenousmaw", "mutation_codex"));
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
 }

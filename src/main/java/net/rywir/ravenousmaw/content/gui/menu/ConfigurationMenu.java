@@ -1,7 +1,7 @@
 package net.rywir.ravenousmaw.content.gui.menu;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -70,7 +70,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
     public static final String STAT_OXYTOCIN_STACKS = "oxytocin_stacks";
 
     /** A read-only value of the second page. {@code max} is 0 for a plain count, else it is shown as value/max. */
-    public record Stat(String key, Component title, Component description, ResourceLocation icon, int value, int max) {
+    public record Stat(String key, Component title, Component description, Identifier icon, int value, int max) {
         public Stat withValue(int newValue) {
             return new Stat(key, title, description, icon, newValue, max);
         }
@@ -92,7 +92,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
                 STAT_KILLS,
                 Component.translatable("stat.ravenousmaw.kills"),
                 Component.translatable("description.ravenousmaw.kills"),
-                ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/icon/insatiable_voracity_kills.png"),
+                Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/icon/insatiable_voracity_kills.png"),
                 this.handler.getKills(),
                 0
             ));
@@ -103,7 +103,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
                 STAT_OXYTOCIN_STACKS,
                 Component.translatable("stat.ravenousmaw.oxytocin_stacks"),
                 Component.translatable("description.ravenousmaw.oxytocin_stacks"),
-                ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/codex/oxytocinergic_esca.png"),
+                Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "textures/codex/oxytocinergic_esca.png"),
                 player.getData(RavenousAttachments.OXYTOCIN_STACKS),
                 Constants.OXYTOCINERGIC_ESCA_MAX_STACKS
             ));

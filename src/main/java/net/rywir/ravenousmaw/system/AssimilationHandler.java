@@ -2,7 +2,7 @@ package net.rywir.ravenousmaw.system;
 
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -22,9 +22,9 @@ import net.rywir.ravenousmaw.registry.Stages;
  * client sync, the feedback and the advancements are never forgotten.
  */
 public class AssimilationHandler {
-    public static final ResourceLocation ROOT_ADVANCEMENT = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "root");
+    public static final Identifier ROOT_ADVANCEMENT = Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "root");
     /** Challenge for earning every assimilation: one criterion per assimilation key. */
-    public static final ResourceLocation ALL_ADVANCEMENT = ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "assimilation/all");
+    public static final Identifier ALL_ADVANCEMENT = Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "assimilation/all");
     /** Criterion of each assimilation's own advancement. */
     public static final String ASSIMILATED_CRITERION = "assimilated";
 
@@ -130,12 +130,12 @@ public class AssimilationHandler {
     }
 
     /** The assimilation's own advancement. */
-    public static ResourceLocation advancementId(Assimilations assimilation) {
-        return ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "assimilation/" + assimilation.getKey());
+    public static Identifier advancementId(Assimilations assimilation) {
+        return Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "assimilation/" + assimilation.getKey());
     }
 
     /** Completes one criterion of an advancement; missing advancements (e.g. a datapack removed them) are ignored. */
-    private static void award(ServerPlayer player, ResourceLocation id, String criterion) {
+    private static void award(ServerPlayer player, Identifier id, String criterion) {
         AdvancementHolder advancement = player.server.getAdvancements().get(id);
 
         if (advancement != null) player.getAdvancements().award(advancement, criterion);

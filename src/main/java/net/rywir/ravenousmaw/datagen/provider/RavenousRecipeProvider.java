@@ -3,7 +3,7 @@ package net.rywir.ravenousmaw.datagen.provider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -111,7 +111,7 @@ public class RavenousRecipeProvider extends RecipeProvider implements ICondition
                     Ingredient.of(mawHolder.get()),
                     Ingredient.of(mutation.stage().getFeast()),
                     Ingredient.of(mutation.mutagen())
-                ).unlockedBy(unlockCriterionName, has(mutagenItem)).save(output, ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, recipeId));
+                ).unlockedBy(unlockCriterionName, has(mutagenItem)).save(output, Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, recipeId));
             }
         }
     }

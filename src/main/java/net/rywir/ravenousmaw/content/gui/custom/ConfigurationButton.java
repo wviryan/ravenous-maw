@@ -7,16 +7,16 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.rywir.ravenousmaw.content.packet.payload.ConfigurationPayload;
 import net.rywir.ravenousmaw.util.dstruct.ConfigAction;
 
 public class ConfigurationButton extends Button {
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final String key;
 
-    public ConfigurationButton(String key, int x, int y, int width, int height, Component message, OnPress onPress, ResourceLocation texture) {
+    public ConfigurationButton(String key, int x, int y, int width, int height, Component message, OnPress onPress, Identifier texture) {
         super(x, y, width, height, message, onPress, Button.DEFAULT_NARRATION);
         this.texture = texture;
         this.key = key;

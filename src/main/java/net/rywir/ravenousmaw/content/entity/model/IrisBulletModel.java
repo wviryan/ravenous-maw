@@ -7,13 +7,13 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.rywir.ravenousmaw.RavenousMaw;
 import net.rywir.ravenousmaw.content.entity.IrisBulletEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class IrisBulletModel extends EntityModel<IrisBulletEntity> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(RavenousMaw.MOD_ID, "iris_bullet"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(RavenousMaw.MOD_ID, "iris_bullet"), "main");
     private final ModelPart iris_bullet;
 
     public IrisBulletModel(ModelPart root) {
